@@ -9,6 +9,8 @@ signal fragment_added(found: int, total: int)
 
 const SCENE_MENU := "res://scenes/main_menu/main_menu.tscn"
 const SCENE_VN := "res://scenes/visual_novel/vn_stage.tscn"
+const SCENE_SETTINGS := "res://scenes/ui/settings_menu.tscn"
+const SCENE_CREDITS := "res://scenes/ui/credits.tscn"
 const FRAGMENTS_TOTAL := 7
 
 var current_chapter := -1
@@ -21,6 +23,9 @@ var finished_game := false
 ## Параметры для следующей сцены, например {"chapter": 3}.
 var pending: Dictionary = {}
 
+var _about_cache: Dictionary = {}
+var _fading := false
+
 
 func _process(delta: float) -> void:
 	# Время игры тикает только внутри VN-сцены.
@@ -31,9 +36,9 @@ func _process(delta: float) -> void:
 
 # ---------- флоу ----------
 
-func start_new_game() -> void:
+func start_new_game(faded: bool = false) -> void:
 	reset_run_state()
-	goto_chapter(0)
+	goto_chapter(0, "", 0, faded)
 
 
 ## Продолжить: autosave, иначе самый свежий ручной слот.
@@ -62,12 +67,15 @@ func _latest_slot() -> String:
 	return best
 
 
-func goto_chapter(chapter: int, label: String = "", step_index: int = 0) -> void:
+func goto_chapter(chapter: int, label: String = "", step_index: int = 0, faded: bool = false) -> void:
 	current_chapter = chapter
 	current_label = label
 	dialogue_step_index = step_index
 	pending = {"chapter": chapter}
-	change_scene(SCENE_VN)
+	if faded:
+		change_scene_faded(SCENE_VN)
+	else:
+		change_scene(SCENE_VN)
 
 
 func goto_menu() -> void:
@@ -76,6 +84,41 @@ func goto_menu() -> void:
 
 func change_scene(path: String) -> void:
 	get_tree().change_scene_to_file(path)
+
+
+## Смена сцены с плавным затемнением (GDD §8.2: «при выборе PLAY экран
+## плавно затемняется»). Асинхронна — вызывай без await, если не нужно ждать.
+func change_scene_faded(path: String, fade_out: float = 0.55, fade_in: float = 0.55) -> void:
+	if _fading:
+		return
+	_fading = true
+	var layer := CanvasLayer.new()
+	layer.layer = 100
+	var rect := ColorRect.new()
+	rect.color = Color("#060409")
+	rect.modulate.a = 0.0
+	rect.mouse_filter = Control.MOUSE_FILTER_STOP
+	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(rect)
+	get_tree().root.add_child(layer)
+	var tw := create_tween()
+	tw.tween_property(rect, "modulate:a", 1.0, fade_out)
+	await tw.finished
+	get_tree().change_scene_to_file(path)
+	var tw2 := create_tween()
+	tw2.tween_property(rect, "modulate:a", 0.0, fade_in)
+	await tw2.finished
+	layer.queue_free()
+	_fading = false
+
+
+## Личный контент из data/custom/about.json (кэшируется).
+func custom_about() -> Dictionary:
+	if _about_cache.is_empty() and FileAccess.file_exists("res://data/custom/about.json"):
+		var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/custom/about.json"))
+		if raw is Dictionary:
+			_about_cache = raw
+	return _about_cache
 
 
 # ---------- состояние прохождения ----------

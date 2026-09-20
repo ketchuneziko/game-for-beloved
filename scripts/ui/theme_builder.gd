@@ -2,10 +2,12 @@ extends RefCounted
 ## Единая минималистичная тема UI, собранная кодом (GDD §8.6).
 ## Подключение в сценах: const UITheme := preload("res://scripts/ui/theme_builder.gd")
 ## (без class_name — чтобы не зависеть от кэша глобальных классов редактора).
-## Палитра — из ТЗ. Шрифты подхватываются из assets/fonts/, если там
-## лежат файлы (JetBrains Mono — основной текст, Press Start 2P —
-## крупные латинские заголовки). Пока шрифтов нет — встроенный шрифт
-## Godot (OpenSans, кириллица поддерживается).
+##
+## Шрифты: JetBrains Mono (основной текст — читаемая кириллица) и
+## Press Start 2P (крупные латинские заголовки). Оба — SIL OFL, лежат в
+## assets/fonts/. Загружаются двумя путями: обычный load() (если проект
+## открывался в редакторе и шрифты импортированы) либо напрямую через
+## FontFile.load_dynamic_font() — работает всегда, даже в headless.
 
 const COL_SHADOW := Color("#110d15")
 const COL_PANEL := Color("#1c1521")
@@ -16,7 +18,6 @@ const COL_TEXT := Color("#fff2f6")
 
 const FONT_REGULAR_PATHS := [
 	"res://assets/fonts/JetBrainsMono-Regular.ttf",
-	"res://assets/fonts/JetBrainsMono-Medium.ttf",
 	"res://assets/fonts/PTMono-Regular.ttf",
 ]
 const FONT_BOLD_PATHS := [
@@ -25,13 +26,14 @@ const FONT_BOLD_PATHS := [
 ]
 const FONT_DISPLAY_PATHS := [
 	"res://assets/fonts/PressStart2P-Regular.ttf",
+	"res://assets/fonts/PressStart2P-Regular.woff2",
 ]
 
 
 static func build() -> Theme:
 	var th := Theme.new()
 
-	var regular := _first_font(FONT_REGULAR_PATHS)
+	var regular := font(FONT_REGULAR_PATHS)
 	if regular != null:
 		th.default_font = regular
 	th.default_font_size = 20
@@ -72,6 +74,9 @@ static func build() -> Theme:
 	th.set_color("font_focus_color", "Button", COL_ACCENT_SOFT)
 	th.set_color("font_disabled_color", "Button", Color(COL_TEXT, 0.3))
 
+	# CheckButton/Slider: акцент при наведении.
+	th.set_color("font_hover_color", "CheckButton", COL_ACCENT)
+
 	# PanelContainer: диалоговое окно, панели оверлеев.
 	var panel := StyleBoxFlat.new()
 	panel.bg_color = Color(COL_PANEL, 0.92)
@@ -84,20 +89,49 @@ static func build() -> Theme:
 	# RichTextLabel (реплики, история).
 	th.set_color("default_color", "RichTextLabel", COL_TEXT)
 
+	# HSlider: розовый «ползунок».
+	th.set_stylebox("grabber_area", "HSlider", _flat_sb(Color(COL_ACCENT, 0.55), 3))
+	th.set_stylebox("grabber_area_highlight", "HSlider", _flat_sb(COL_ACCENT, 3))
+
 	return th
 
 
-## Дополнительный шрифт для крупных латинских заголовков (лого, THE END).
+static func _flat_sb(color: Color, radius: int = 0) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = color
+	sb.set_corner_radius_all(radius)
+	return sb
+
+
+## Первый найденный шрифт из списка путей.
+static func font(paths: Array) -> FontFile:
+	for p: String in paths:
+		var f := _load_font_file(p)
+		if f != null:
+			return f
+	return null
+
+
 static func display_font() -> FontFile:
-	return _first_font(FONT_DISPLAY_PATHS)
+	return font(FONT_DISPLAY_PATHS)
 
 
 static func bold_font() -> FontFile:
-	return _first_font(FONT_BOLD_PATHS)
+	return font(FONT_BOLD_PATHS)
 
 
-static func _first_font(paths: Array) -> FontFile:
-	for p: String in paths:
-		if ResourceLoader.exists(p):
-			return load(p) as FontFile
+static func _load_font_file(path: String) -> FontFile:
+	if not FileAccess.file_exists(path):
+		return null
+	if ResourceLoader.exists(path):
+		var res := load(path)
+		if res is FontFile:
+			return res
+	# Импорта редактора ещё не было (или проект только склонирован) —
+	# грузим шрифт напрямую в рантайме.
+	var f := FontFile.new()
+	if f.load_dynamic_font(path) == OK:
+		f.antialiasing = TextServer.FONT_ANTIALIASING_GRAY
+		f.hinting = TextServer.HINTING_LIGHT
+		return f
 	return null

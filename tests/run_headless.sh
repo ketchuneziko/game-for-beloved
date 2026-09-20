@@ -26,5 +26,19 @@ grep -q "AUTOTEST: chapter 0 -> 1" /tmp/t_vn.log && echo "chapter transition OK"
 echo "--- vn log (хвост):"
 tail -6 /tmp/t_vn.log
 
+echo "== 4. шрифты =="
+"$GODOT" --headless --path "$PROJ" --script tests/font_check.gd 2>&1 | grep -i "FONT"
+"$GODOT" --headless --path "$PROJ" --script tests/font_check.gd > /dev/null 2>&1 || fail=1
+
+echo "== 5. настройки и титры (soak) =="
+for sc in scenes/ui/settings_menu.tscn scenes/ui/credits.tscn; do
+	timeout 60 "$GODOT" --headless --path "$PROJ" "res://$sc" --quit-after 300 > /tmp/t_scene.log 2>&1
+	if grep -i "SCRIPT ERROR\|Parse Error" /tmp/t_scene.log | grep -q .; then
+		echo "--- $sc:"; grep -i "ERROR" /tmp/t_scene.log | head -6; fail=1
+	else
+		echo "$sc OK"
+	fi
+done
+
 echo "== ИТОГ: $([ $fail -eq 0 ] && echo PASS || echo FAIL) =="
 exit $fail

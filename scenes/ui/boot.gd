@@ -44,4 +44,4 @@ func _to_menu() -> void:
 	if _done:
 		return
 	_done = true
-	GameManager.goto_menu()
+	GameManager.change_scene_faded(GameManager.SCENE_MENU, 0.7, 0.9)
