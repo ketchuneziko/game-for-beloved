@@ -39,23 +39,39 @@ func _finished() -> bool:
 
 
 func _build_background() -> void:
-	# Градиентное небо: ночное — или рассветное после финала.
+	# Фон планетария (если ассет уже есть) под затемнением, иначе градиент.
+	var tex: Texture2D = null
+	for p in ["res://assets/backgrounds/bg_planetarium_night.jpg", "res://assets/backgrounds/bg_planetarium_night.png"]:
+		if ResourceLoader.exists(p):
+			tex = load(p)
+			break
+	if tex != null:
+		var bgr := TextureRect.new()
+		bgr.texture = tex
+		bgr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		bgr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		bgr.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		bgr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		bgr.modulate = Color(0.62, 0.58, 0.72) if not _finished() else Color(0.85, 0.75, 0.75)
+		add_child(bgr)
+
+	# Градиентная вуаль: ночная — или рассветная после финала.
 	var grad := Gradient.new()
 	if _finished():
-		grad.colors = PackedColorArray([Color("#3b2547"), Color("#7a4a58"), Color("#c98a6a")])
+		grad.colors = PackedColorArray([Color(0.23, 0.15, 0.28, 0.25), Color(0.48, 0.29, 0.35, 0.35), Color(0.79, 0.54, 0.42, 0.45)])
 		grad.offsets = PackedFloat32Array([0.0, 0.55, 1.0])
 	else:
-		grad.colors = PackedColorArray([Color("#0b0812"), Color("#110d15"), Color("#241a2b")])
+		grad.colors = PackedColorArray([Color(0.043, 0.031, 0.07, 0.55), Color(0.067, 0.051, 0.082, 0.35), Color(0.14, 0.1, 0.17, 0.6)])
 		grad.offsets = PackedFloat32Array([0.0, 0.5, 1.0])
 	var gt := GradientTexture2D.new()
 	gt.gradient = grad
 	gt.fill_from = Vector2(0.35, 0.0)
 	gt.fill_to = Vector2(0.65, 1.0)
-	var bg := TextureRect.new()
-	bg.texture = gt
-	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(bg)
+	var veil := TextureRect.new()
+	veil.texture = gt
+	veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(veil)
 
 	var stars := Starfield.new()
 	stars.warm = _finished()
