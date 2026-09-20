@@ -65,13 +65,13 @@ jobs:
         run: |
           set +e
           mkdir -p exports
-          script -q export-mac.log ~/godot-bin/godot --headless --path . --export-release "macOS" "exports/ToEternityAndBeyond.app"
-          rc=$?
+          script -q /dev/null ~/godot-bin/godot --headless --path "$PWD" --export-release "macOS" "$PWD/exports/ToEternityAndBeyond.app" 2>&1 | tee export-mac.log
+          rc=${PIPESTATUS[0]}
           echo "GODOT_EXIT=$rc"
-          tail -12 export-mac.log || true
           if [ "$rc" -ne 0 ]; then
             cat export-mac.log >> "$GITHUB_STEP_SUMMARY" 2>/dev/null
-            tail -40 export-mac.log | sed 's/\r//' | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::MAC %.900s\n' "$l"; done
+            echo "::error::MAC rc=$rc bytes=$(wc -c < export-mac.log 2>/dev/null || echo NA)"
+            tail -40 export-mac.log | sed 's/\r//' | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::M %.900s\n' "$l"; done
             exit "$rc"
           fi
       - name: Failure diagnostics (macOS)
@@ -164,9 +164,10 @@ jobs:
       - name: Package Windows zip
         run: |
           cd exports
-          cp "../КАК ОТКРЫТЬ.txt" ./КАК ОТКРЫТЬ.txt
-          zip -q ToEternityAndBeyond-Windows.zip ToEternityAndBeyond.exe "КАК ОТКРЫТЬ.txt"
-          ls -la
+          ls -la || echo "::error::no exports dir"
+          cp "../КАК ОТКРЫТЬ.txt" ./КАК ОТКРЫТЬ.txt || echo "::error::cp howto failed"
+          zip -q ToEternityAndBeyond-Windows.zip ToEternityAndBeyond.exe "КАК ОТКРЫТЬ.txt" || echo "::error::zip win failed rc=$?"
+          ls -la || true
       - uses: actions/upload-artifact@v4
         with:
           name: build-linux
