@@ -36,6 +36,7 @@ jobs:
 
   export:
     name: macOS + Windows builds
+    needs: linux-demo
     runs-on: macos-15-intel
     steps:
       - uses: actions/checkout@v4
@@ -61,40 +62,54 @@ jobs:
           ls "$TPL_DIR" | head -12
       - name: Import project resources (required before headless export in 4.3)
         run: ~/godot-bin/godot --headless --path . --import 2>&1 | tee import.log || true
-      - name: Probe A - export-release
+      - name: Probe - export-release (science check)
         run: |
           set +e
           mkdir -p exports
           ~/godot-bin/godot --headless --path "$PWD" --export-release "macOS" "$PWD/exports/ToEternityAndBeyond.app"
-          rc=$?
-          echo "::error::A_RC=$rc"
+          echo "::error::A_RC=$?"
           true
-      - name: Probe B - export-pack (pck only)
+      - uses: actions/download-artifact@v4
+        with:
+          name: data-pck
+          path: exports/
+      - name: Assemble .app from template (binary rename + pck + codesign)
         run: |
           set +e
-          ~/godot-bin/godot --headless --path "$PWD" --export-pack "macOS" "$PWD/exports/ToEternityAndBeyond.pck"
-          rc=$?
-          echo "::error::B_RC=$rc pck=$(wc -c < "$PWD/exports/ToEternityAndBeyond.pck" 2>/dev/null || echo missing)"
-          true
-      - name: Assemble .app from template zip
-        run: |
-          set +e
+          echo "::error::PCK size=$(wc -c < exports/ToEternityAndBeyond.pck 2>/dev/null || echo missing)"
           TPL_ZIP="$HOME/Library/Application Support/Godot/export_templates/4.3.stable/macos.zip"
-          unzip -l "$TPL_ZIP" 2>/dev/null | head -15 | while IFS= read -r l; do printf '::error::ZIP %s\n' "$l"; done || echo "::error::no template zip"
           rm -rf /tmp/appx && mkdir -p /tmp/appx
           unzip -q -o "$TPL_ZIP" -d /tmp/appx || echo "::error::unzip template failed"
-          TOP=$(ls /tmp/appx | head -1)
-          echo "::error::TOP=$TOP"
-          if [ -d "/tmp/appx/$TOP" ]; then
-            cp -R "/tmp/appx/$TOP" "$PWD/exports/ToEternityAndBeyond.app" || echo "::error::copy app failed"
-            if [ -f "$PWD/exports/ToEternityAndBeyond.pck" ]; then
-              mkdir -p "$PWD/exports/ToEternityAndBeyond.app/Contents/Resources"
-              cp "$PWD/exports/ToEternityAndBeyond.pck" "$PWD/exports/ToEternityAndBeyond.app/Contents/Resources/ToEternityAndBeyond.pck" || echo "::error::copy pck failed"
-            fi
-            codesign --force --deep -s - "$PWD/exports/ToEternityAndBeyond.app" 2>&1 | head -3 || true
-            echo "::error::ASSEMBLED size=$(du -sk "$PWD/exports/ToEternityAndBeyond.app" 2>/dev/null | cut -f1)KB"
-          fi
+          cp -R /tmp/appx/macos_template.app "$PWD/exports/ToEternityAndBeyond.app" || echo "::error::copy app failed"
+          cd "$PWD/exports/ToEternityAndBeyond.app/Contents" || exit 0
+          mv MacOS/godot_macos_release.universal MacOS/ToEternityAndBeyond
+          chmod +x MacOS/ToEternityAndBeyond
+          plutil -replace CFBundleExecutable -string ToEternityAndBeyond Info.plist
+          plutil -replace CFBundleName -string "To Eternity and Beyond" Info.plist
+          plutil -replace CFBundleIdentifier -string com.eternity.beyond Info.plist
+          plutil -replace CFBundleShortVersionString -string "1.0" Info.plist
+          mkdir -p Resources MacOS
+          cp "$OLDPWD/exports/ToEternityAndBeyond.pck" Resources/ToEternityAndBeyond.pck || echo "::error::pck->Resources failed"
+          cp "$OLDPWD/exports/ToEternityAndBeyond.pck" MacOS/ToEternityAndBeyond.pck || true
+          codesign --force --deep -s - "$OLDPWD/exports/ToEternityAndBeyond.app" 2>&1 | head -3 || true
+          echo "::error::ASSEMBLED=$(du -sk "$OLDPWD/exports/ToEternityAndBeyond.app" 2>/dev/null | cut -f1)KB"
           true
+      - name: Dump editor log + .ips crash reports
+        if: always()
+        run: |
+          for f in $(ls -t ~/Library/Logs/DiagnosticReports/*.ips 2>/dev/null | head -2); do
+            python3 -c "
+              import json
+              lines = open('$f', errors='replace').read().splitlines()
+              try:
+                  d = json.loads('\n'.join(lines[1:]))
+                  print('TERM:', json.dumps(d.get('termination', {}))[:350])
+                  print('EXC:', json.dumps(d.get('exception', {}))[:350])
+                  print('BT:', d.get('bug_type', ''), d.get('procPath', '')[:140])
+              except Exception as e:
+                  print('RAWERR:', str(e)[:120])
+            " 2>&1 | while IFS= read -r l; do printf '::error::IPS %s\n' "$l"; done
+          done || true
       - name: Dump editor log + .ips crash reports
         if: always()
         run: |
@@ -195,6 +210,13 @@ jobs:
             tail -40 export-win.log | sed 's/\r//' | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::WIN %.900s\n' "$l"; done
             exit "$rc"
           fi
+      - name: Export data pack (PCK, platform-agnostic)
+        run: |
+          set +e
+          godot --headless --path . --export-pack "Linux" "exports/ToEternityAndBeyond.pck"
+          rc=$?
+          echo "::error::PCK_RC=$rc size=$(wc -c < exports/ToEternityAndBeyond.pck 2>/dev/null || echo missing)"
+          [ "$rc" -eq 0 ] || exit 1
       - name: Package Windows zip
         run: |
           cd exports
@@ -211,6 +233,11 @@ jobs:
         with:
           name: build-windows
           path: exports/ToEternityAndBeyond-Windows.zip
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: data-pck
+          path: exports/ToEternityAndBeyond.pck
           if-no-files-found: error
       - name: Attach to release (on tag)
         if: startsWith(github.ref, 'refs/tags/')
