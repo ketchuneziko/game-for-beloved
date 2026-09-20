@@ -47,6 +47,14 @@
 			}
 		},
 		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Правила простые: смотри сколько хочешь. Смеяться можно. Плакать — тоже, но по желанию.",
+				"en": "The rules are simple: look as long as you want. Laughing is allowed. Crying too — but that one's optional."
+			}
+		},
+		{
 			"type": "choice",
 			"id": "ch2_first_memory"
 		},
@@ -167,6 +175,19 @@
 			}
 		},
 		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Я потом специально пересчитывал: две ложки. Всегда две. Я выучил это раньше, чем её расписание.",
+				"en": "Afterwards I counted on purpose: two spoons. Always two. I learned that before I ever learned her schedule."
+			}
+		},
+		{
 			"type": "set_flag",
 			"flag": "mem_seen_tea"
 		},
@@ -283,6 +304,27 @@
 			"text": {
 				"ru": "Это была попытка.",
 				"en": "It was an attempt."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "mira",
+			"expr": "happy"
+		},
+		{
+			"type": "line",
+			"who": "mira",
+			"text": {
+				"ru": "Тогда рассказывай ещё. У меня как раз есть время спасать твои шутки.",
+				"en": "Then keep going. I happen to have time to rescue your jokes."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Это была самая щедрая помощь за весь год.",
+				"en": "That was the most generous help I got all year."
 			}
 		},
 		{
@@ -425,6 +467,19 @@
 			"text": {
 				"ru": "Браво. А теперь про чёрные дыры — попроще.",
 				"en": "Bravo. Now black holes — but simpler."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Она единственная аплодировала стоя. Ну… технически сидя. Но по ощущениям — стоя.",
+				"en": "She was the only one who gave a standing ovation. Well… technically sitting. But it felt standing."
 			}
 		},
 		{
@@ -690,6 +745,19 @@
 			"text": {
 				"ru": "Оставим её на потом. Вдруг что-то поместится.",
 				"en": "Let's leave it for later. Something might fit in it."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Пустые кадры — самые честные. В них помещается всё, что ещё не случилось.",
+				"en": "Blank frames are the most honest ones. Everything that hasn't happened yet still fits in them."
 			}
 		},
 		{

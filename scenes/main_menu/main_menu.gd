@@ -25,6 +25,7 @@ var _title_glow: Label
 var _title: Label
 var _time := 0.0
 var _rng := RandomNumberGenerator.new()
+var _code_buf := ""
 
 
 func _ready() -> void:
@@ -210,7 +211,7 @@ func _on_action(action: String) -> void:
 			GameManager.start_new_game(true)
 		"continue":
 			if not GameManager.continue_game():
-				_flash("Сохранений пока нет")
+				_flash(LocalizationManager.t("menu.no_saves", "Сохранений пока нет"))
 			else:
 				GameManager.change_scene_faded(GameManager.SCENE_VN, 0.45, 0.45)
 		"chapters":
@@ -225,6 +226,24 @@ func _on_action(action: String) -> void:
 			GameManager.change_scene_faded(GameManager.SCENE_CREDITS)
 		"exit":
 			get_tree().quit()
+
+
+## Секрет (GDD «Секреты» #2): набери её имя в меню — тихо, без подсказок.
+func _unhandled_input(event: InputEvent) -> void:
+	if not (event is InputEventKey) or not event.pressed or event.echo:
+		return
+	var ch := char(event.unicode).to_upper()
+	if ch.length() != 1 or ch < "A" or ch > "Я":
+		return
+	_code_buf = (_code_buf + ch).substr(-12)
+	var secret := str(GameManager.custom_about().get("secret_word", "MARIA")).to_upper()
+	if secret != "" and _code_buf.ends_with(secret):
+		_code_buf = ""
+		if not GalleryManager.is_unlocked("secrets", "menu_code"):
+			GalleryManager.unlock("secrets", "menu_code")
+			AchievementManager.unlock("whisper")
+			AudioManager.play_sfx("notification")
+			_flash(LocalizationManager.t("menu.code_found", "…она это услышала. Смотри Галерею → СЕКРЕТЫ."))
 
 
 func _flash(msg: String) -> void:

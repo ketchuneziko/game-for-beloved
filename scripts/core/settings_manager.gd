@@ -32,6 +32,11 @@ var language := "ru"
 
 func _ready() -> void:
 	load_settings()
+	# Тесты/CI: TB_LANG=en переопределяет язык (без записи в настройки).
+	var env_lang := OS.get_environment("TB_LANG")
+	if env_lang in LocalizationManager.SUPPORTED:
+		language = env_lang
+		LocalizationManager.set_locale(env_lang)
 
 
 func load_settings() -> void:

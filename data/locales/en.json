@@ -69,5 +69,10 @@
 	"ach.hidden_hint": "hidden achievement — reveals if you look for it",
 	"viewer.close_hint": "click to close",
 	"ending.continue_hint": "click to continue",
-	"ending.ps": "P.S. This is not the end. This is the very first page."
+	"ending.ps": "P.S. This is not the end. This is the very first page.",
+	"menu.no_saves": "No saves yet",
+	"menu.code_found": "…she heard that. Check Gallery → SECRETS.",
+	"quiet.line": "You know what I like most? Being silent next to someone and not feeling like you have to say anything.",
+	"moon.looks": "☾ …looks back",
+	"moon.final": "☾ \"finally\""
 }

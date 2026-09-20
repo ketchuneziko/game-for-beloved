@@ -42,6 +42,10 @@ var _headless := false
 var _question_answered := false
 signal _question_done
 var _first_line_shown := false
+var _silence_t := 0.0
+var _silence_done := false
+var _moon: Label
+var _moon_clicks := 0
 var _awaiting_click_gate := 0.0   # защита от двойного клика после choice
 
 # --- слои ---
@@ -663,6 +667,7 @@ func _on_chapter_ended(step: Dictionary = {}) -> void:
 # ============================================================
 
 func _unhandled_input(event: InputEvent) -> void:
+	_silence_t = 0.0
 	if event.is_action_pressed("vn_advance"):
 		if _history.visible:
 			_history.close_history()
@@ -809,6 +814,17 @@ func _close_pause() -> void:
 func _process(delta: float) -> void:
 	if _awaiting_click_gate > 0.0:
 		_awaiting_click_gate -= delta
+	# Секрет «сцена молчания»: под дождём не нажимать ничего 30 секунд.
+	if not _headless and not _silence_done \
+			and _bg_layer.current_id() == "bg_rain_window" \
+			and _state in [State.TYPING, State.WAITING]:
+		_silence_t += delta
+		if _silence_t >= 30.0:
+			_silence_done = true
+			AchievementManager.unlock("patient_heart")
+			GalleryManager.unlock("secrets", "silence")
+			_show_quiet_line(LocalizationManager.t("quiet.line",
+				"Знаешь, что мне нравится больше всего? Молчать рядом с кем-то и не чувствовать, что надо что-то говорить."))
 	match _state:
 		State.TYPING:
 			var speed := SettingsManager.text_speed_value()
@@ -871,6 +887,7 @@ func _set_arrow(on: bool) -> void:
 # ============================================================
 
 func _apply_bg_effects(bg_id: String) -> void:
+	_update_moon(bg_id)
 	if bg_id == "bg_rain_window":
 		AudioManager.play_ambience("rain")
 	else:
@@ -899,6 +916,55 @@ func _apply_bg_effects(bg_id: String) -> void:
 	elif not want_rain and _fx_rain != null:
 		_fx_rain.queue_free()
 		_fx_rain = null
+
+
+## Тихая строка поверх сцены (секрет молчания).
+func _show_quiet_line(text: String) -> void:
+	var l := Label.new()
+	l.text = text
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.custom_minimum_size = Vector2(760, 0)
+	l.add_theme_font_size_override("font_size", 17)
+	l.add_theme_color_override("font_color", Color(UITheme.COL_ACCENT_SOFT, 0.9))
+	l.set_anchors_preset(Control.PRESET_CENTER)
+	l.position = Vector2(260.0, 210.0)
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_ui_root.add_child(l)
+	l.modulate.a = 0.0
+	var tw := create_tween()
+	tw.tween_property(l, "modulate:a", 1.0, 1.4)
+	tw.tween_interval(5.0)
+	tw.tween_property(l, "modulate:a", 0.0, 1.4)
+	tw.tween_callback(l.queue_free)
+
+
+## Луна (GDD «Секреты» #6): кликнуть 7 раз — она ответит.
+func _update_moon(bg_id: String) -> void:
+	var want := bg_id in ["bg_street_night", "bg_rooftop_dawn"]
+	if want and _moon == null:
+		_moon = Label.new()
+		_moon.text = "☾"
+		_moon.add_theme_font_size_override("font_size", 46)
+		_moon.add_theme_color_override("font_color", Color(0.93, 0.88, 0.78, 0.85))
+		_moon.position = Vector2(1150.0, 64.0)
+		_moon.mouse_filter = Control.MOUSE_FILTER_STOP
+		_moon.gui_input.connect(_on_moon_input)
+		_fx_layer.add_child(_moon)
+	if _moon != null:
+		_moon.visible = want
+
+
+func _on_moon_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		_moon_clicks += 1
+		AudioManager.play_sfx("click", 1.3)
+		if _moon_clicks == 3:
+			_toast.show_toast(LocalizationManager.t("moon.looks", "☾ …смотрит в ответ"), 1.8)
+		elif _moon_clicks >= 7:
+			_moon_clicks = 0
+			AchievementManager.unlock("night_owl")
+			_toast.show_toast(LocalizationManager.t("moon.final", "☾ «наконец-то»"), 2.2)
 
 
 func _on_fragment_added(found: int, total: int) -> void:

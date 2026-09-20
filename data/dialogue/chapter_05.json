@@ -47,6 +47,19 @@
 		{
 			"type": "expr",
 			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "На обложке ничего особенного. Обычная пластинка. Так не бывает: «особенное» всегда выглядит обычно.",
+				"en": "Nothing special on the cover. An ordinary record. It's always like that: 'special' looks ordinary."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
 			"expr": "smiling"
 		},
 		{
@@ -95,6 +108,27 @@
 			"text": {
 				"ru": "Теперь она — сыграна. Для тебя.",
 				"en": "Now it's played. For you."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Знаешь, почему я приберегал? Боялся, что в неправильный вечер она прозвучит неправильно.",
+				"en": "You know why I kept it waiting? I was afraid that on the wrong evening it would sound wrong."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Глупо. Песни не портятся от вечеров. Портятся от молчания.",
+				"en": "Silly. Songs don't spoil from evenings. They spoil from silence."
 			}
 		},
 		{
@@ -239,6 +273,19 @@
 			"text": {
 				"ru": "Кто-то очень последовательно раскладывает подсказки по этому зданию. Начинает надоедать не знать, кто.",
 				"en": "Someone is very methodically scattering clues around this building. It's starting to get tiring, not knowing who."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Хотя нет. Пугает другое: это писал кто-то, кто знает меня лучше, чем я сам.",
+				"en": "No — what's scarier is that this was written by someone who knows me better than I do."
 			}
 		},
 		{

@@ -18,7 +18,8 @@ if grep -i "ERROR" /tmp/t_menu.log | grep -iv "global script cache\|get_global_c
 fi
 echo "menu log lines: $(wc -l < /tmp/t_menu.log)"
 
-echo "== 3. VN scaffold полный прогон (autotest) =="
+echo "== 3. VN полный прогон (autotest, свежие данные) =="
+rm -rf "$HOME/.local/share/godot/app_userdata/To Eternity and Beyond"
 timeout 300 "$GODOT" --headless --path "$PROJ" res://scenes/visual_novel/vn_stage.tscn --quit-after 26000 > /tmp/t_vn.log 2>&1
 PROG="$HOME/.local/share/godot/app_userdata/To Eternity and Beyond/progress.json"
 if grep -q "AUTOTEST: scaffold run complete" /tmp/t_vn.log || grep -q '"finished": true' "$PROG" 2>/dev/null; then
@@ -30,6 +31,22 @@ grep -i "SCRIPT ERROR" /tmp/t_vn.log | head -10
 grep -q "AUTOTEST: chapter 0 -> 1" /tmp/t_vn.log && echo "chapter transition OK" || { echo "chapter transition FAIL"; fail=1; }
 echo "--- vn log (хвост):"
 tail -6 /tmp/t_vn.log
+
+echo "== 3b. VN прогон №2 (на существующих данных) =="
+timeout 300 "$GODOT" --headless --path "$PROJ" res://scenes/visual_novel/vn_stage.tscn --quit-after 26000 > /tmp/t_vn2.log 2>&1
+grep -q "AUTOTEST: ending reached" /tmp/t_vn2.log && echo "run2: ending OK" || { echo "run2 FAIL"; grep -iE "SCRIPT ERROR" /tmp/t_vn2.log | head -4; fail=1; }
+
+echo "== 3c. сейвы: структура =="
+SAVES="$HOME/.local/share/godot/app_userdata/To Eternity and Beyond"
+python3 - "$SAVES" <<'PYEOF' || fail=1
+import json, os, sys
+base = sys.argv[1]
+auto = os.path.join(base, "saves", "save_auto.json")
+d = json.load(open(auto, encoding="utf-8"))
+for key in ["chapter", "flags", "fragments", "step_index", "timestamp"]:
+    assert key in d, f"save_auto missing {key}"
+print("save_auto.json OK: chapter", d["chapter"], "fragments", d["fragments"])
+PYEOF
 
 echo "== 4. шрифты =="
 "$GODOT" --headless --path "$PROJ" --script tests/font_check.gd 2>&1 | grep -i "FONT"
@@ -44,6 +61,14 @@ for sc in scenes/ui/settings_menu.tscn scenes/ui/credits.tscn scenes/ui/chapter_
 		echo "$sc OK"
 	fi
 done
+
+echo "== 6. EN soak (TB_LANG=en) =="
+TB_LANG=en timeout 60 "$GODOT" --headless --path "$PROJ" --quit-after 600 > /tmp/t_en.log 2>&1
+if grep -i "SCRIPT ERROR\|Parse Error" /tmp/t_en.log | grep -q .; then
+	echo "--- EN:"; grep -i "ERROR" /tmp/t_en.log | head -6; fail=1
+else
+	echo "EN boot OK"
+fi
 
 echo "== ИТОГ: $([ $fail -eq 0 ] && echo PASS || echo FAIL) =="
 exit $fail

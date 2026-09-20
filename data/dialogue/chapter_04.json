@@ -38,6 +38,19 @@
 		{
 			"type": "expr",
 			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Читать надо медленно. Они никуда не спешили все эти годы — не будем спешить и мы.",
+				"en": "We should read slowly. They didn't rush all these years — no reason for us to rush either."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
 			"expr": "thinking"
 		},
 		{
@@ -212,6 +225,27 @@
 			}
 		},
 		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Знаешь, что общего у всех этих писем? Все начинаются с «я не умею об этом говорить».",
+				"en": "You know what all these letters have in common? Every one starts with 'I don't know how to say this'."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "И все они об одном и том же человеке. Догадайся сама.",
+				"en": "And they're all about the same person. You can guess who."
+			}
+		},
+		{
 			"type": "jump",
 			"label": "merge_letters"
 		},
@@ -292,6 +326,27 @@
 			"text": {
 				"ru": "В четвёртом оно тоже почти вырвалось. Почти.",
 				"en": "In the fourth one it almost slipped out too. Almost."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "sad"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Планетарий закрывается — и я понял: не скажу сейчас — скажу никогда.",
+				"en": "The planetarium is closing, and I understood: if I don't say it now, I never will."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Стены, которые слушали моё молчание, переедут в шоурум шуб. Им будет неуютно.",
+				"en": "The walls that listened to my silence will move into a fur coat showroom. They'll feel out of place."
 			}
 		},
 		{

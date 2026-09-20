@@ -34,6 +34,19 @@
 			}
 		},
 		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Внутри пахнет пылью и чернилами. Старая бумага честнее новых людей.",
+				"en": "It smells of dust and ink inside. Old paper is more honest than new people."
+			}
+		},
+		{
 			"type": "sfx",
 			"id": "page"
 		},
@@ -161,6 +174,27 @@
 			}
 		},
 		{
+			"type": "expr",
+			"who": "author",
+			"expr": "sad"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Если это писал я — значит, в какой-то момент мне было настолько важно это сказать, что я зашифровал.",
+				"en": "If I wrote this — then at some point it mattered so much to say it that I encoded it."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "От кого прятался? Вопрос без ответа. Как почти всё важное.",
+				"en": "Hiding from whom? A question without an answer. Like almost everything that matters."
+			}
+		},
+		{
 			"type": "jump",
 			"label": "merge_cipher"
 		},
@@ -225,6 +259,35 @@
 			"text": {
 				"ru": "Вот и всё расследование.",
 				"en": "Well. That's the whole investigation."
+			}
+		},
+		{
+			"type": "line",
+			"who": "old_one",
+			"text": {
+				"ru": "Он приходил сюда ночами. Писал. Прятал. Утром делал вид, что ничего не было.",
+				"en": "He used to come here at night. Write. Hide things. In the morning he'd pretend nothing happened."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "surprised"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Ты всё это видел?",
+				"en": "You saw all that?"
+			}
+		},
+		{
+			"type": "line",
+			"who": "old_one",
+			"text": {
+				"ru": "Купол видит всё. Но не осуждаю. У меня тоже были письма. В девятьсот шестом.",
+				"en": "The dome sees everything. But I don't judge. I had letters too. Back in 1906."
 			}
 		},
 		{

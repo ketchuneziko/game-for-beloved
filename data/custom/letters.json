@@ -89,5 +89,16 @@
 			"en": "MIRA"
 		},
 		"letter_id": "letter_02"
+	},
+	"secret_letter": {
+		"id": "letter_secret",
+		"title": {
+			"ru": "Письмо без ящика",
+			"en": "The letter with no drawer"
+		},
+		"text": {
+			"ru": "«Если ты нашла это — значит, произнесла её имя там, где тихо. Правильно. Некоторые слова работают лучше всего в тишине. — твой автор»",
+			"en": "\"If you found this, you said her name somewhere quiet. Good. Some words work best in silence. — your author\""
+		}
 	}
 }

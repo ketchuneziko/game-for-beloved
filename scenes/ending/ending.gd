@@ -159,6 +159,9 @@ func _run_sequence() -> void:
 	var tw := create_tween()
 	tw.tween_property(_hint, "modulate:a", 0.5, 1.0)
 	await _wait(4.0)
+	if _headless:
+		print("AUTOTEST: ending reached")
+		get_tree().quit(0)
 
 
 func _unhandled_input(event: InputEvent) -> void:

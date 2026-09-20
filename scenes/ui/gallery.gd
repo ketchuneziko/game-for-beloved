@@ -240,11 +240,15 @@ func _build_letters() -> void:
 	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/custom/letters.json")) if FileAccess.file_exists("res://data/custom/letters.json") else null
 	if not (raw is Dictionary):
 		return
-	for l: Variant in (raw as Dictionary).get("ch4_letters", []):
+	var letters: Array = (raw as Dictionary).get("ch4_letters", [])
+	var secret_letter: Variant = (raw as Dictionary).get("secret_letter", null)
+	if secret_letter is Dictionary:
+		letters.append(secret_letter)
+	for l: Variant in letters:
 		if not (l is Dictionary):
 			continue
 		var id := str(l.get("id", ""))
-		var unlocked := GalleryManager.is_unlocked("letters", id)
+		var unlocked: bool = GalleryManager.is_unlocked("secrets", "menu_code") if id == "letter_secret" else GalleryManager.is_unlocked("letters", id)
 		var r := _row()
 		var col := VBoxContainer.new()
 		col.size_flags_horizontal = Control.SIZE_EXPAND_FILL

@@ -1,29 +1,186 @@
 {
 	"chapter": 6,
-	"title": { "ru": "CHAPTER 6 — THE LAST PIECE", "en": "CHAPTER 6 — THE LAST PIECE" },
-	"chapters": { "ru": "сообщение собирается", "en": "the message comes together" },
+	"title": {
+		"ru": "CHAPTER 6 — THE LAST PIECE",
+		"en": "CHAPTER 6 — THE LAST PIECE"
+	},
+	"chapters": {
+		"ru": "сообщение собирается",
+		"en": "the message comes together"
+	},
 	"steps": [
-		{ "type": "bg", "id": "bg_street_night", "transition": "fade", "duration": 1.6 },
-		{ "type": "music", "id": "chapter6", "fade": 2.0 },
-		{ "type": "line", "who": "author", "text": { "ru": "Улица. Воздух после дождя — как чистый лист.", "en": "The street. Post-rain air, like a clean sheet of paper." } },
-		{ "type": "line", "who": "author", "text": { "ru": "Старик хочет попрощаться. Он всю эту ночь что-то собирал. Терпеливее некоторых людей.", "en": "The Old One wants to say goodbye. He's been assembling something all night. More patient than some people I know." } },
-		{ "type": "line", "who": "old_one", "text": { "ru": "Восемь обрывков. Семь слов. Один вопрос. Я всё разложил на проекторе. Осталось — прочитать по порядку.", "en": "Eight scraps. Seven words. One question. I've laid it all out on the projector. All that's left is to read it in order." } },
-		{ "type": "line", "who": "author", "text": { "ru": "Он никогда не называет цифры просто так. Давай. Соберём.", "en": "He never gives numbers without a reason. Okay. Let's put it together." } },
-		{ "type": "puzzle", "id": "fragments_assembly" },
-		{ "type": "wait", "duration": 1.6 },
-		{ "type": "line", "who": "author", "text": { "ru": "«Всё это время я говорил тебе не про звёзды. Я говорил про тебя. И остался один вопрос.»", "en": "'All this time I was talking to you, not about the stars. I was talking about you. And one question remains.'" } },
-		{ "type": "wait", "duration": 1.4 },
-		{ "type": "expr", "who": "author", "expr": "embarrassed" },
-		{ "type": "line", "who": "author", "text": { "ru": "Я… кажется, я знаю, кто раскладывал все эти обрывки.", "en": "I… I think I know who's been scattering these scraps around." } },
-		{ "type": "line", "who": "old_one", "text": { "ru": "Проекторы не сплетничают. Но подсматривать — не запрещено.", "en": "Projectors don't gossip. But peeking isn't forbidden." } },
-		{ "type": "expr", "who": "author", "expr": "sad" },
-		{ "type": "line", "who": "author", "text": { "ru": "Знаешь, самое страшное было не писать письма в стол. Самое страшное — привыкнуть, что рядом хорошо.", "en": "You know what the scariest part was? Not writing letters for the drawer. The scariest part was getting used to how good it feels when you're around." } },
-		{ "type": "line", "who": "author", "text": { "ru": "И молчать. Потому что «хорошо рядом» — это не разговор. Это… адрес.", "en": "And staying silent. Because 'it feels good around you' isn't a conversation. It's… an address." } },
-		{ "type": "line", "who": "author", "text": { "ru": "В одном я уверен: если свет шёл к нам годами — он дошёл. Иди. Осталось немного.", "en": "One thing I'm sure of: if the light travelled for years, it has arrived. Come on. Not much further now." } },
-		{ "type": "bg", "id": "bg_rooftop_dawn", "transition": "dissolve", "duration": 2.2 },
-		{ "type": "music", "id": "final_piano_loop", "fade": 2.0 },
-		{ "type": "line", "who": "author", "text": { "ru": "Крыша. Отсюда звёзды настоящие. Без купола, без посредников.", "en": "The rooftop. The real stars from here. No dome, no middleman." } },
-		{ "type": "line", "who": "author", "text": { "ru": "Небо скоро посветлеет. И я не хочу встречать рассвет с недосказанным.", "en": "The sky will lighten soon. And I don't want to greet the dawn with things left unsaid." } },
-		{ "type": "chapter_end", "next": 7 }
+		{
+			"type": "bg",
+			"id": "bg_street_night",
+			"transition": "fade",
+			"duration": 1.6
+		},
+		{
+			"type": "music",
+			"id": "chapter6",
+			"fade": 2.0
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Улица. Воздух после дождя — как чистый лист.",
+				"en": "The street. Post-rain air, like a clean sheet of paper."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Лужи отражают вывески. Город сегодня нарядный — как будто тоже знал, что это последний вечер.",
+				"en": "The puddles reflect the shop signs. The city looks dressed up tonight — as if it knew too that this was the last evening."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Старик хочет попрощаться. Он всю эту ночь что-то собирал. Терпеливее некоторых людей.",
+				"en": "The Old One wants to say goodbye. He's been assembling something all night. More patient than some people I know."
+			}
+		},
+		{
+			"type": "line",
+			"who": "old_one",
+			"text": {
+				"ru": "Восемь обрывков. Семь слов. Один вопрос. Я всё разложил на проекторе. Осталось — прочитать по порядку.",
+				"en": "Eight scraps. Seven words. One question. I've laid it all out on the projector. All that's left is to read it in order."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Он никогда не называет цифры просто так. Давай. Соберём.",
+				"en": "He never gives numbers without a reason. Okay. Let's put it together."
+			}
+		},
+		{
+			"type": "puzzle",
+			"id": "fragments_assembly"
+		},
+		{
+			"type": "wait",
+			"duration": 1.6
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "«Всё это время я говорил тебе не про звёзды. Я говорил про тебя. И остался один вопрос.»",
+				"en": "'All this time I was talking to you, not about the stars. I was talking about you. And one question remains.'"
+			}
+		},
+		{
+			"type": "wait",
+			"duration": 1.4
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "embarrassed"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Я… кажется, я знаю, кто раскладывал все эти обрывки.",
+				"en": "I… I think I know who's been scattering these scraps around."
+			}
+		},
+		{
+			"type": "line",
+			"who": "old_one",
+			"text": {
+				"ru": "Проекторы не сплетничают. Но подсматривать — не запрещено.",
+				"en": "Projectors don't gossip. But peeking isn't forbidden."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "sad"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Знаешь, самое страшное было не писать письма в стол. Самое страшное — привыкнуть, что рядом хорошо.",
+				"en": "You know what the scariest part was? Not writing letters for the drawer. The scariest part was getting used to how good it feels when you're around."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "И молчать. Потому что «хорошо рядом» — это не разговор. Это… адрес.",
+				"en": "And staying silent. Because 'it feels good around you' isn't a conversation. It's… an address."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Я переставлял эти слова годами. «Ты мне нравишься» — слишком просто. «Ты важна» — слишком мало.",
+				"en": "I've been rearranging these words for years. 'I like you' — too simple. 'You matter' — too little."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "А потом оказалось: всё сообщение влезает в одну фразу. Нужно было только собрать.",
+				"en": "And then it turned out the whole message fits in one line. It just needed to be put together."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "В одном я уверен: если свет шёл к нам годами — он дошёл. Иди. Осталось немного.",
+				"en": "One thing I'm sure of: if the light travelled for years, it has arrived. Come on. Not much further now."
+			}
+		},
+		{
+			"type": "bg",
+			"id": "bg_rooftop_dawn",
+			"transition": "dissolve",
+			"duration": 2.2
+		},
+		{
+			"type": "music",
+			"id": "chapter6",
+			"fade": 2.0
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Крыша. Отсюда звёзды настоящие. Без купола, без посредников.",
+				"en": "The rooftop. The real stars from here. No dome, no middleman."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Небо скоро посветлеет. И я не хочу встречать рассвет с недосказанным.",
+				"en": "The sky will lighten soon. And I don't want to greet the dawn with things left unsaid."
+			}
+		},
+		{
+			"type": "chapter_end",
+			"next": 7
+		}
 	]
 }

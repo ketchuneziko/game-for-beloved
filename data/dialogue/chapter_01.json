@@ -211,6 +211,40 @@
 			}
 		},
 		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Проектор у нас капризный. Может посреди лунного моря возить и выключиться. Как кот.",
+				"en": "Our projector is moody. It can cut out mid-sea-of-tranquility, just like a cat."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Я с ним договариваюсь. Всерьёз. У нас уговор: он работает — я не сдаю его на металл.",
+				"en": "I negotiate with it. Seriously. Our deal: it keeps working, I don't sell it for scrap."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Ты сейчас подумала: «он шутит или нет?» Правильный ответ: я уже не знаю.",
+				"en": "You're wondering: was that a joke? Honest answer: I don't know anymore."
+			}
+		},
+		{
 			"type": "line",
 			"who": "author",
 			"text": {
@@ -393,6 +427,27 @@
 			}
 		},
 		{
+			"type": "expr",
+			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Здесь каждое кресло помнит сотни вечеров. Кто-то приходил, чтобы целоваться в темноте.",
+				"en": "Every seat here remembers hundreds of evenings. Some people came to kiss in the dark."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "А кто-то — чтобы понять, что орбиты расходятся. Купол честный: он всем показывает одно и то же небо.",
+				"en": "And some came to realize their orbits were drifting apart. The dome is honest: it shows everyone the same sky."
+			}
+		},
+		{
 			"type": "line",
 			"who": "author",
 			"text": {
@@ -447,6 +502,19 @@
 			"text": {
 				"ru": "Про них давно забыли. А они всё летят.",
 				"en": "Everyone has forgotten those stars. The light keeps flying anyway."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Про некоторые звёзды пишут: их уже нет. А свет — идёт. Мне всегда хотелось быть таким светом.",
+				"en": "About some stars they write: they're already gone. The light keeps coming anyway. I always wanted to be that kind of light."
 			}
 		},
 		{

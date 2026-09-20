@@ -128,6 +128,14 @@
 			}
 		},
 		{
+			"type": "line",
+			"who": "voice",
+			"text": {
+				"ru": "Не привыкай. Такая тишина здесь по расписанию — как и всё остальное.",
+				"en": "Don't get used to it. This kind of quiet is on a schedule here — like everything else."
+			}
+		},
+		{
 			"type": "wait",
 			"duration": 1.0
 		},
