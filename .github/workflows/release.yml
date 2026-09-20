@@ -57,12 +57,26 @@ jobs:
         run: ~/godot-bin/godot --headless --path . --import 2>&1 | tee import.log || true
       - name: Export Windows (.exe, single file)
         run: |
-          set -o pipefail
-          ~/godot-bin/godot --headless --path . --export-release "Windows Desktop" "exports/ToEternityAndBeyond.exe" 2>&1 | tee export-win.log || { tail -25 export-win.log >> "$GITHUB_STEP_SUMMARY"; grep -iE "error|failed|fatal" export-win.log | head -8 | while IFS= read -r l; do echo "::error::win-export: $l"; done; exit 1; }
+          set +e
+          ~/godot-bin/godot --headless --path . --export-release "Windows Desktop" "exports/ToEternityAndBeyond.exe" 2>&1 | tee export-win.log
+          rc=${PIPESTATUS[0]}
+          echo "GODOT_EXIT=$rc"
+          if [ "$rc" -ne 0 ]; then
+            cat export-win.log >> "$GITHUB_STEP_SUMMARY"
+            tail -40 export-win.log | sed 's/\r//' | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::WIN %.900s\n' "$l"; done
+            exit "$rc"
+          fi
       - name: Export macOS (.app, universal, ad-hoc)
         run: |
-          set -o pipefail
-          ~/godot-bin/godot --headless --path . --export-release "macOS" "exports/ToEternityAndBeyond.app" 2>&1 | tee export-mac.log || { tail -25 export-mac.log >> "$GITHUB_STEP_SUMMARY"; grep -iE "error|failed|fatal" export-mac.log | head -8 | while IFS= read -r l; do echo "::error::mac-export: $l"; done; exit 1; }
+          set +e
+          ~/godot-bin/godot --headless --path . --export-release "macOS" "exports/ToEternityAndBeyond.app" 2>&1 | tee export-mac.log
+          rc=${PIPESTATUS[0]}
+          echo "GODOT_EXIT=$rc"
+          if [ "$rc" -ne 0 ]; then
+            cat export-mac.log >> "$GITHUB_STEP_SUMMARY"
+            tail -40 export-mac.log | sed 's/\r//' | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::MAC %.900s\n' "$l"; done
+            exit "$rc"
+          fi
       - name: Smoke test macOS build (boot to menu)
         run: |
           # Headless-запуск собранного .app: движок должен стартовать без ошибок.
@@ -107,8 +121,19 @@ jobs:
           mkdir -p ~/.local/share/godot/export_templates
           unzip -o -q templates.tpz -d /tmp/tpl
           cp /tmp/tpl/templates/* ~/.local/share/godot/export_templates/
+      - name: Import project resources (required before headless export in 4.3)
+        run: godot --headless --path . --import 2>&1 | tee import.log || true
       - name: Export Linux
-        run: godot --headless --path . --export-release "Linux" "exports/ToEternityAndBeyond.x86_64"
+        run: |
+          set +e
+          godot --headless --path . --export-release "Linux" "exports/ToEternityAndBeyond.x86_64" 2>&1 | tee export-linux.log
+          rc=${PIPESTATUS[0]}
+          echo "GODOT_EXIT=$rc"
+          if [ "$rc" -ne 0 ]; then
+            cat export-linux.log >> "$GITHUB_STEP_SUMMARY"
+            tail -40 export-linux.log | sed 's/\r//' | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::%.900s\n' "$l"; done
+            exit "$rc"
+          fi
       - name: Smoke test (boot + menu reach)
         run: |
           chmod +x exports/ToEternityAndBeyond.x86_64
