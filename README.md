@@ -131,6 +131,8 @@ bash scripts/build/build_mac.sh release   # соберёт macOS .app + Windows 
   Gatekeeper в файле **«КАК ОТКРЫТЬ.txt»** (кладётся рядом и уезжает Марии в zip).
 - Windows `.exe` — одиночный файл, собирается с Mac без доп. инструментов.
 - Android — пресет готов, требует Android SDK (по желанию, см. docs/BUILD.md §5).
+- **Или вообще без своего Mac:** Actions → release-builds → Run workflow —
+  GitHub соберёт всё сам (см. docs/BUILD.md).
 
 ## Финал (без спойлеров в коде)
 
