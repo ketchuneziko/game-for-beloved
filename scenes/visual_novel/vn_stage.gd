@@ -39,6 +39,7 @@ var _auto_mode := false
 var _skip_mode := false
 var _ui_hidden := false
 var _headless := false
+var _first_line_shown := false
 var _awaiting_click_gate := 0.0   # защита от двойного клика после choice
 
 # --- слои ---
@@ -363,7 +364,7 @@ func _run_steps() -> void:
 			"puzzle":
 				_run_puzzle(str(step.get("id", "")))
 			"minigame":
-				_note.text = "· мини-игра «%s» — появится в Фазе 7" % step.get("id", "")
+				_run_minigame(str(step.get("id", "")))
 			"wait":
 				if _headless or _skip_mode:
 					pass  # в skip/headless не ждём
@@ -400,16 +401,44 @@ func _run_steps() -> void:
 func _run_puzzle(id: String) -> void:
 	match id:
 		"cipher_catalog":
-			if GameManager.has_flag("puzzle_cipher_done"):
-				return
-			var CipherPuzzle: GDScript = load("res://scripts/puzzles/cipher_puzzle.gd")
-			var pz: Control = CipherPuzzle.new()
-			_ui_root.add_child(pz)
-			await pz.solved
-			GameManager.set_flag("puzzle_cipher_done")
-			AchievementManager.unlock("puzzle_solved")
+			await _run_overlay("res://scripts/puzzles/cipher_puzzle.gd", "puzzle_cipher_done", true)
+		"tutorial_switches":
+			await _run_overlay("res://scripts/puzzles/switches_puzzle.gd", "puzzle_tutorial_done", true)
+		"chronology":
+			await _run_overlay("res://scripts/puzzles/chronology_puzzle.gd", "puzzle_chrono_done", true)
+		"hidden_name":
+			await _run_overlay("res://scripts/puzzles/hidden_name_puzzle.gd", "puzzle_name_done", true)
+		"fragments_assembly":
+			await _run_overlay("res://scripts/puzzles/fragments_puzzle.gd", "puzzle_fragments_done", false)
 		_:
-			_note.text = "· загадка «%s» — появится в Фазе 7" % id
+			_note.text = "· загадка «%s» — появится позже" % id
+
+
+func _run_minigame(id: String) -> void:
+	match id:
+		"memory_match":
+			await _run_overlay("res://scripts/puzzles/memory_match.gd", "", false)
+		"photo_puzzle":
+			await _run_overlay("res://scripts/puzzles/photo_puzzle.gd", "", false)
+		"melody_repeat":
+			await _run_overlay("res://scripts/puzzles/melody_repeat.gd", "", false)
+		_:
+			_note.text = "· мини-игра «%s» — появится позже" % id
+
+
+## Универсальный запуск оверлея: ждём solved, ставим флаг, опционально
+## отдаём достижение «первая загадка» (идемпотентно).
+func _run_overlay(path: String, flag: String, counts_as_puzzle: bool) -> void:
+	if flag != "" and GameManager.has_flag(flag):
+		return
+	var ScriptClass: GDScript = load(path)
+	var overlay: Control = ScriptClass.new()
+	_ui_root.add_child(overlay)
+	await overlay.solved
+	if flag != "":
+		GameManager.set_flag(flag)
+	if counts_as_puzzle:
+		AchievementManager.unlock("puzzle_solved")
 
 
 # ============================================================
@@ -439,6 +468,9 @@ func _begin_line(step: Dictionary) -> void:
 	_text.text = text
 	_text.visible_characters = 0
 	SaveManager.mark_seen("%d:%d" % [DialogueManager.current_chapter, _index])
+	if not _first_line_shown:
+		_first_line_shown = true
+		AchievementManager.unlock("first_step")
 	_history.add_entry(display_name, Color(str(ch.get("color", "#ffb9d5")) if not ch.is_empty() else "#ffb9d5"), text)
 	if SettingsManager.text_speed_value() <= 0.0 or _skip_mode or _headless:
 		_type_pos = float(_line_total)

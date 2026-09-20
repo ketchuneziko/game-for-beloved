@@ -1,102 +1,539 @@
 {
 	"chapter": 1,
-	"title": { "ru": "CHAPTER 1 — THE BEGINNING", "en": "CHAPTER 1 — THE BEGINNING" },
-	"chapters": { "ru": "он начинает рассказ", "en": "he starts the story" },
+	"title": {
+		"ru": "CHAPTER 1 — THE BEGINNING",
+		"en": "CHAPTER 1 — THE BEGINNING"
+	},
+	"chapters": {
+		"ru": "он начинает рассказ",
+		"en": "he starts the story"
+	},
 	"steps": [
-		{ "type": "bg", "id": "bg_planetarium_night" },
-		{ "type": "music", "id": "chapter1" },
-		{ "type": "show", "who": "author", "expr": "neutral" },
-		{ "type": "line", "who": "author", "text": { "ru": "Ты пришла. Я почти не надеялся.", "en": "You came. I almost didn't hope you would." } },
-		{ "type": "line", "who": "author", "text": { "ru": "Хотя нет. Надеялся. Просто не хотел признаваться в этом даже себе.", "en": "No — I did. I just didn't want to admit it, even to myself." } },
-		{ "type": "line", "who": "author", "text": { "ru": "Привет. Я здесь работаю. Ну, как «работаю»…", "en": "Hi. I work here. Well, 'work' is a strong word…" } },
-		{ "type": "expr", "who": "author", "expr": "thinking" },
-		{ "type": "line", "who": "author", "text": { "ru": "Планетарию три года как нечем платить людям за работу. Я просто не ухожу.", "en": "For three years this place hasn't been able to pay anyone. I just never left." } },
-		{ "type": "line", "who": "author", "text": { "ru": "Кто-то должен крутить проектор. Иначе звёзды встанут не по расписанию, а по настроению электричества.", "en": "Someone has to run the projector. Otherwise the stars line up not by schedule, but by however the electricity feels." } },
-		{ "type": "expr", "who": "author", "expr": "neutral" },
-		{ "type": "line", "who": "author", "text": { "ru": "Знаешь, почему я позвал именно тебя?", "en": "You know why I asked you here, of all people?" } },
-		{ "type": "choice", "id": "ch1_how_it_started" },
-		{ "type": "if_flag", "flag": "ch1_remembered", "jump_if_true": "b_of_course" },
-		{ "type": "if_flag", "flag": "ch1_not_quite", "jump_if_true": "b_not_quite" },
-		{ "type": "jump", "label": "b_tell_me" },
-
-		{ "type": "label", "id": "b_of_course" },
-		{ "type": "expr", "who": "author", "expr": "surprised" },
-		{ "type": "line", "who": "author", "text": { "ru": "«Конечно»?.. Хорошо. Тогда проверим память.", "en": "'Of course'? Alright. Let's test that memory, then." } },
-		{ "type": "expr", "who": "author", "expr": "smiling" },
-		{ "type": "line", "who": "author", "text": { "ru": "Мы уже проходили этот вечер. Но мне нравится, как ты его слушаешь во второй раз.", "en": "We've already lived this evening once. But I like how you listen the second time around." } },
-		{ "type": "jump", "label": "merge_story" },
-
-		{ "type": "label", "id": "b_not_quite" },
-		{ "type": "expr", "who": "author", "expr": "smiling" },
-		{ "type": "line", "who": "author", "text": { "ru": "«Не совсем». Честный ответ. Люблю такие.", "en": "'Not exactly.' An honest answer. I like those." } },
-		{ "type": "line", "who": "author", "text": { "ru": "Тогда начнём с начала. Оно короткое, обещаю.", "en": "Then let's start at the beginning. It's short, I promise." } },
-		{ "type": "jump", "label": "merge_story" },
-
-		{ "type": "label", "id": "b_tell_me" },
-		{ "type": "expr", "who": "author", "expr": "happy" },
-		{ "type": "line", "who": "author", "text": { "ru": "«Расскажи мне». Прямо как в кино.", "en": "'Tell me.' Just like in the movies." } },
-		{ "type": "line", "who": "author", "text": { "ru": "Хорошо. Слушай.", "en": "Alright. Listen." } },
-		{ "type": "jump", "label": "merge_story" },
-
-		{ "type": "label", "id": "merge_story" },
-		{ "type": "expr", "who": "author", "expr": "thinking" },
-		{ "type": "line", "who": "author", "text": { "ru": "Из всех людей в этом городе ты единственная, кто не засыпает на лекциях про звёзды.", "en": "Out of everyone in this city, you're the only one who doesn't fall asleep during lectures about stars." } },
-		{ "type": "line", "who": "author", "text": { "ru": "Я проверял. Дважды.", "en": "I checked. Twice." } },
-		{ "type": "line", "who": "author", "text": { "ru": "Первый раз ты пришла с коллегами. Сидела в третьем ряду и переспрашивала про Сириус.", "en": "The first time you came with your coworkers. Third row, and you asked a follow-up question about Sirius." } },
-		{ "type": "expr", "who": "author", "expr": "smiling" },
-		{ "type": "line", "who": "author", "text": { "ru": "Никто никогда не переспрашивал про Сириус.", "en": "Nobody had ever asked a follow-up question about Sirius." } },
-		{ "type": "expr", "who": "author", "expr": "neutral" },
-		{ "type": "line", "who": "author", "text": { "ru": "А второй раз ты пришла одна. Тоже третий ряд.", "en": "The second time, you came alone. Also third row." } },
-		{ "type": "expr", "who": "author", "expr": "smiling" },
-		{ "type": "line", "who": "author", "text": { "ru": "Я тогда решил: если конец света и наступит — то хотя бы в хорошей компании.", "en": "I decided then: if the world does end, at least it ends in good company." } },
-		{ "type": "choice", "id": "ch1_topic" },
-		{ "type": "if_flag", "flag": "ch1_asked_girl", "jump_if_true": "b_girl" },
-		{ "type": "if_flag", "flag": "ch1_asked_closing", "jump_if_true": "b_closing" },
-		{ "type": "jump", "label": "b_silent" },
-
-		{ "type": "label", "id": "b_girl" },
-		{ "type": "expr", "who": "author", "expr": "embarrassed" },
-		{ "type": "line", "who": "author", "text": { "ru": "Э-э… Откуда знаю?", "en": "Uh… how do I know her?" } },
-		{ "type": "line", "who": "author", "text": { "ru": "Сложный вопрос. Короткий ответ: она смеялась над моими шутками.", "en": "Complicated question. Short answer: she laughed at my jokes." } },
-		{ "type": "expr", "who": "author", "expr": "smiling" },
-		{ "type": "line", "who": "author", "text": { "ru": "Даже над несмешными. Особенно над несмешными.", "en": "Even the unfunny ones. Especially the unfunny ones." } },
-		{ "type": "jump", "label": "merge_topic" },
-
-		{ "type": "label", "id": "b_closing" },
-		{ "type": "expr", "who": "author", "expr": "sad" },
-		{ "type": "line", "who": "author", "text": { "ru": "У планетария простая математика: билеты не окупают электричество.", "en": "The planetarium runs on simple math: tickets don't cover the electricity." } },
-		{ "type": "line", "who": "author", "text": { "ru": "Зато у него лучший купол в городе. Жаль, в отчётности графа «красота» не предусмотрена.", "en": "But it has the best dome in the city. Shame the reports don't have a 'beauty' column." } },
-		{ "type": "jump", "label": "merge_topic" },
-
-		{ "type": "label", "id": "b_silent" },
-		{ "type": "expr", "who": "author", "expr": "smiling" },
-		{ "type": "line", "who": "author", "text": { "ru": "Молчишь. Умно. Я тоже иногда молчу — красиво и с достоинством.", "en": "Saying nothing. Smart. Sometimes I stay silent too — beautifully, and with dignity." } },
-		{ "type": "line", "who": "author", "text": { "ru": "Ладно, расскажу сам. Тем более история хорошая.", "en": "Fine, I'll tell you myself. It's a good story anyway." } },
-		{ "type": "jump", "label": "merge_topic" },
-
-		{ "type": "label", "id": "merge_topic" },
-		{ "type": "expr", "who": "author", "expr": "neutral" },
-		{ "type": "line", "who": "author", "text": { "ru": "Ладно. Пора показать тебе главное. Встань туда, где свет.", "en": "Anyway. Time to show you the main thing. Step into the light." } },
-		{ "type": "puzzle", "id": "tutorial_switches" },
-		{ "type": "expr", "who": "author", "expr": "surprised" },
-		{ "type": "line", "who": "author", "text": { "ru": "Есть! Слышала щелчок? Он проснулся.", "en": "There! Hear that click? He's awake." } },
-		{ "type": "bg", "id": "bg_dome_stars", "transition": "dissolve", "duration": 1.6 },
-		{ "type": "music", "id": "memory", "fade": 1.5 },
-		{ "type": "expr", "who": "author", "expr": "neutral" },
-		{ "type": "line", "who": "author", "text": { "ru": "Свет, который ты видишь, покинул свои звёзды тысячи лет назад.", "en": "The light you're seeing left its stars thousands of years ago." } },
-		{ "type": "line", "who": "author", "text": { "ru": "Про них давно забыли. А они всё летят.", "en": "Everyone has forgotten those stars. The light keeps flying anyway." } },
-		{ "type": "expr", "who": "author", "expr": "thinking" },
-		{ "type": "line", "who": "author", "text": { "ru": "Мне всегда казалось это… правильным. Некоторые вещи доходят. Просто долго.", "en": "It always felt… right, to me. Some things do arrive. They just take long." } },
-		{ "type": "fragment", "id": 1 },
-		{ "type": "expr", "who": "author", "expr": "surprised" },
-		{ "type": "line", "who": "author", "text": { "ru": "Хм. Эта карточка… Не помню, чтобы она тут лежала.", "en": "Hm. This card… I don't remember it lying here." } },
-		{ "type": "expr", "who": "author", "expr": "thinking" },
-		{ "type": "line", "who": "author", "text": { "ru": "«Всё это время…» Оборвано. И почерк знакомый. Мой.", "en": "'All this time…' It cuts off. And the handwriting is familiar. Mine." } },
-		{ "type": "expr", "who": "author", "expr": "neutral" },
-		{ "type": "line", "who": "author", "text": { "ru": "Ладно. У меня для тебя есть кое-что побольше обгоревших карточек.", "en": "Anyway. I have something better for you than burnt cards." } },
-		{ "type": "line", "who": "author", "text": { "ru": "Помнишь, я говорил про архив? Коробка. Полная фотографий.", "en": "Remember the archive I mentioned? A box. Full of photographs." } },
-		{ "type": "expr", "who": "author", "expr": "smiling" },
-		{ "type": "line", "who": "author", "text": { "ru": "Показать?", "en": "Want to see?" } },
-		{ "type": "chapter_end", "next": 2 }
+		{
+			"type": "bg",
+			"id": "bg_planetarium_night"
+		},
+		{
+			"type": "music",
+			"id": "chapter1"
+		},
+		{
+			"type": "show",
+			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Ты пришла. Я почти не надеялся.",
+				"en": "You came. I almost didn't hope you would."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Хотя нет. Надеялся. Просто не хотел признаваться в этом даже себе.",
+				"en": "No — I did. I just didn't want to admit it, even to myself."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Привет. Я здесь работаю. Ну, как «работаю»…",
+				"en": "Hi. I work here. Well, 'work' is a strong word…"
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Планетарию три года как нечем платить людям за работу. Я просто не ухожу.",
+				"en": "For three years this place hasn't been able to pay anyone. I just never left."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Кто-то должен крутить проектор. Иначе звёзды встанут не по расписанию, а по настроению электричества.",
+				"en": "Someone has to run the projector. Otherwise the stars line up not by schedule, but by however the electricity feels."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Знаешь, почему я позвал именно тебя?",
+				"en": "You know why I asked you here, of all people?"
+			}
+		},
+		{
+			"type": "choice",
+			"id": "ch1_how_it_started"
+		},
+		{
+			"type": "if_flag",
+			"flag": "ch1_remembered",
+			"jump_if_true": "b_of_course"
+		},
+		{
+			"type": "if_flag",
+			"flag": "ch1_not_quite",
+			"jump_if_true": "b_not_quite"
+		},
+		{
+			"type": "jump",
+			"label": "b_tell_me"
+		},
+		{
+			"type": "label",
+			"id": "b_of_course"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "surprised"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "«Конечно»?.. Хорошо. Тогда проверим память.",
+				"en": "'Of course'? Alright. Let's test that memory, then."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Мы уже проходили этот вечер. Но мне нравится, как ты его слушаешь во второй раз.",
+				"en": "We've already lived this evening once. But I like how you listen the second time around."
+			}
+		},
+		{
+			"type": "jump",
+			"label": "merge_story"
+		},
+		{
+			"type": "label",
+			"id": "b_not_quite"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "«Не совсем». Честный ответ. Люблю такие.",
+				"en": "'Not exactly.' An honest answer. I like those."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Тогда начнём с начала. Оно короткое, обещаю.",
+				"en": "Then let's start at the beginning. It's short, I promise."
+			}
+		},
+		{
+			"type": "jump",
+			"label": "merge_story"
+		},
+		{
+			"type": "label",
+			"id": "b_tell_me"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "happy"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "«Расскажи мне». Прямо как в кино.",
+				"en": "'Tell me.' Just like in the movies."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Хорошо. Слушай.",
+				"en": "Alright. Listen."
+			}
+		},
+		{
+			"type": "jump",
+			"label": "merge_story"
+		},
+		{
+			"type": "label",
+			"id": "merge_story"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Из всех людей в этом городе ты единственная, кто не засыпает на лекциях про звёзды.",
+				"en": "Out of everyone in this city, you're the only one who doesn't fall asleep during lectures about stars."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Я проверял. Дважды.",
+				"en": "I checked. Twice."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Первый раз ты пришла с коллегами. Сидела в третьем ряду и переспрашивала про Сириус.",
+				"en": "The first time you came with your coworkers. Third row, and you asked a follow-up question about Sirius."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Никто никогда не переспрашивал про Сириус.",
+				"en": "Nobody had ever asked a follow-up question about Sirius."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "А второй раз ты пришла одна. Тоже третий ряд.",
+				"en": "The second time, you came alone. Also third row."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Я тогда решил: если конец света и наступит — то хотя бы в хорошей компании.",
+				"en": "I decided then: if the world does end, at least it ends in good company."
+			}
+		},
+		{
+			"type": "choice",
+			"id": "ch1_topic"
+		},
+		{
+			"type": "if_flag",
+			"flag": "ch1_asked_girl",
+			"jump_if_true": "b_girl"
+		},
+		{
+			"type": "if_flag",
+			"flag": "ch1_asked_closing",
+			"jump_if_true": "b_closing"
+		},
+		{
+			"type": "jump",
+			"label": "b_silent"
+		},
+		{
+			"type": "label",
+			"id": "b_girl"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "embarrassed"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Э-э… Откуда знаю?",
+				"en": "Uh… how do I know her?"
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Сложный вопрос. Короткий ответ: она смеялась над моими шутками.",
+				"en": "Complicated question. Short answer: she laughed at my jokes."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Даже над несмешными. Особенно над несмешными.",
+				"en": "Even the unfunny ones. Especially the unfunny ones."
+			}
+		},
+		{
+			"type": "jump",
+			"label": "merge_topic"
+		},
+		{
+			"type": "label",
+			"id": "b_closing"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "sad"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "У планетария простая математика: билеты не окупают электричество.",
+				"en": "The planetarium runs on simple math: tickets don't cover the electricity."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Зато у него лучший купол в городе. Жаль, в отчётности графа «красота» не предусмотрена.",
+				"en": "But it has the best dome in the city. Shame the reports don't have a 'beauty' column."
+			}
+		},
+		{
+			"type": "jump",
+			"label": "merge_topic"
+		},
+		{
+			"type": "label",
+			"id": "b_silent"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Молчишь. Умно. Я тоже иногда молчу — красиво и с достоинством.",
+				"en": "Saying nothing. Smart. Sometimes I stay silent too — beautifully, and with dignity."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Ладно, расскажу сам. Тем более история хорошая.",
+				"en": "Fine, I'll tell you myself. It's a good story anyway."
+			}
+		},
+		{
+			"type": "jump",
+			"label": "merge_topic"
+		},
+		{
+			"type": "label",
+			"id": "merge_topic"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Ладно. Пора показать тебе главное. Встань туда, где свет.",
+				"en": "Anyway. Time to show you the main thing. Step into the light."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Щиток слева от проектора. Три тумблера. Порядок помню наизусть: левый — центральный — правый. Как вальс.",
+				"en": "The switch panel, left of the projector. Three switches. I know the order by heart: left, center, right. Like a waltz."
+			}
+		},
+		{
+			"type": "puzzle",
+			"id": "tutorial_switches"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "surprised"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Есть! Слышала щелчок? Он проснулся.",
+				"en": "There! Hear that click? He's awake."
+			}
+		},
+		{
+			"type": "bg",
+			"id": "bg_dome_stars",
+			"transition": "dissolve",
+			"duration": 1.6
+		},
+		{
+			"type": "music",
+			"id": "memory",
+			"fade": 1.5
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Свет, который ты видишь, покинул свои звёзды тысячи лет назад.",
+				"en": "The light you're seeing left its stars thousands of years ago."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Про них давно забыли. А они всё летят.",
+				"en": "Everyone has forgotten those stars. The light keeps flying anyway."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Мне всегда казалось это… правильным. Некоторые вещи доходят. Просто долго.",
+				"en": "It always felt… right, to me. Some things do arrive. They just take long."
+			}
+		},
+		{
+			"type": "fragment",
+			"id": 1
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "surprised"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Хм. Эта карточка… Не помню, чтобы она тут лежала.",
+				"en": "Hm. This card… I don't remember it lying here."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "«Всё это время…» Оборвано. И почерк знакомый. Мой.",
+				"en": "'All this time…' It cuts off. And the handwriting is familiar. Mine."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Ладно. У меня для тебя есть кое-что побольше обгоревших карточек.",
+				"en": "Anyway. I have something better for you than burnt cards."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Помнишь, я говорил про архив? Коробка. Полная фотографий.",
+				"en": "Remember the archive I mentioned? A box. Full of photographs."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Показать?",
+				"en": "Want to see?"
+			}
+		},
+		{
+			"type": "chapter_end",
+			"next": 2
+		}
 	]
 }

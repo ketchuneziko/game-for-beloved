@@ -1,5 +1,5 @@
 {
-	"_readme": "ПИСЬМА И ТЕКСТЫ без кода. ch3_cipher — фраза расшифровки (Глава 3): шифр строится из неё автоматически. ch4_letters — письма, которые не отправили (Глава 4). final_message — 7 фрагментов (Главы 1–6), собираемых в Главе 6.",
+	"_readme": "ПИСЬМА И ТЕКСТЫ без кода. ch3_cipher — фраза расшифровки (Глава 3): шифр строится из неё автоматически. ch4_letters — письма, которые не отправили (Глава 4). final_message — 7 фрагментов (Главы 1–6), собираемых в Главе 6. hidden_name — слово, спрятанное в письме (Глава 4).",
 	"ch3_cipher": {
 		"phrase": {
 			"ru": "НЕКОТОРЫЙ СВЕТ ИДЁТ К НАМ ГОДАМИ. НО ОН ВСЁ РАВНО ДОХОДИТ.",
@@ -10,7 +10,10 @@
 	"ch4_letters": [
 		{
 			"id": "letter_01",
-			"title": { "ru": "Письмо №1", "en": "Letter No. 1" },
+			"title": {
+				"ru": "Письмо №1",
+				"en": "Letter No. 1"
+			},
 			"text": {
 				"ru": "«Я начал это письмо четыре раза. Все четыре раза выходило слишком пафосно. Вот пятая попытка. Юбилейная.»",
 				"en": "\"I started this letter four times. All four times it came out too pompous. Here is the fifth attempt. The anniversary one.\""
@@ -18,7 +21,10 @@
 		},
 		{
 			"id": "letter_02",
-			"title": { "ru": "Письмо №2", "en": "Letter No. 2" },
+			"title": {
+				"ru": "Письмо №2",
+				"en": "Letter No. 2"
+			},
 			"text": {
 				"ru": "«Бывает день, когда всё нормально. А потом я вспоминаю, как кто-то смеётся, и день становится лучше. Это, наверное, как-то называется. Лень гуглить.»",
 				"en": "\"Some days everything is fine. Then I remember the way someone laughs, and the day gets better. It probably has a name. Too lazy to look it up.\""
@@ -26,7 +32,10 @@
 		},
 		{
 			"id": "letter_03",
-			"title": { "ru": "Письмо №3", "en": "Letter No. 3" },
+			"title": {
+				"ru": "Письмо №3",
+				"en": "Letter No. 3"
+			},
 			"text": {
 				"ru": "«Я не боюсь темноты. Я боюсь привычки: когда хорошо рядом с человеком — а сказать ему это уже некогда.»",
 				"en": "\"I am not afraid of the dark. I am afraid of habit: when being near someone feels good — and there is no time left to tell them.\""
@@ -34,7 +43,10 @@
 		},
 		{
 			"id": "letter_04",
-			"title": { "ru": "Письмо №4", "en": "Letter No. 4" },
+			"title": {
+				"ru": "Письмо №4",
+				"en": "Letter No. 4"
+			},
 			"text": {
 				"ru": "«Хочется, чтобы некоторые вечера не заканчивались. И чтобы некоторые люди не были „кем-то“.»",
 				"en": "\"I want some evenings to never end. And for some people to stop being 'someone'.\""
@@ -42,12 +54,40 @@
 		}
 	],
 	"final_message": [
-		{ "ru": "ВСЁ ЭТО ВРЕМЯ", "en": "ALL THIS TIME" },
-		{ "ru": "Я ГОВОРИЛ ТЕБЕ", "en": "I WAS TALKING TO YOU" },
-		{ "ru": "НЕ ПРО ЗВЁЗДЫ.", "en": "NOT ABOUT THE STARS." },
-		{ "ru": "Я ГОВОРИЛ", "en": "I WAS TALKING" },
-		{ "ru": "ПРО ТЕБЯ.", "en": "ABOUT YOU." },
-		{ "ru": "И", "en": "AND" },
-		{ "ru": "ОСТАЛСЯ ОДИН ВОПРОС.", "en": "ONE QUESTION REMAINS." }
-	]
+		{
+			"ru": "ВСЁ ЭТО ВРЕМЯ",
+			"en": "ALL THIS TIME"
+		},
+		{
+			"ru": "Я ГОВОРИЛ ТЕБЕ",
+			"en": "I WAS TALKING TO YOU"
+		},
+		{
+			"ru": "НЕ ПРО ЗВЁЗДЫ.",
+			"en": "NOT ABOUT THE STARS."
+		},
+		{
+			"ru": "Я ГОВОРИЛ",
+			"en": "I WAS TALKING"
+		},
+		{
+			"ru": "ПРО ТЕБЯ.",
+			"en": "ABOUT YOU."
+		},
+		{
+			"ru": "И",
+			"en": "AND"
+		},
+		{
+			"ru": "ОСТАЛСЯ ОДИН ВОПРОС.",
+			"en": "ONE QUESTION REMAINS."
+		}
+	],
+	"hidden_name": {
+		"word": {
+			"ru": "МИРА",
+			"en": "MIRA"
+		},
+		"letter_id": "letter_02"
+	}
 }
