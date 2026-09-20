@@ -213,7 +213,7 @@ func _on_action(action: String) -> void:
 			else:
 				GameManager.change_scene_faded(GameManager.SCENE_VN, 0.45, 0.45)
 		"chapters":
-			_flash("Выбор глав появится в Фазе 5")
+			GameManager.change_scene_faded("res://scenes/ui/chapter_select.tscn")
 		"gallery":
 			_flash("Галерея откроется в Фазе 9")
 		"achievements":

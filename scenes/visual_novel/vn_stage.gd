@@ -62,6 +62,7 @@ var _choices_box: VBoxContainer
 var _toast: Control
 var _history: Control
 var _pause_overlay: Control
+var _save_overlay: Control
 var _quick_buttons: Array[Button] = []
 var _btn_auto: Button
 var _btn_skip: Button
@@ -489,6 +490,7 @@ func _on_chapter_ended(step: Dictionary = {}) -> void:
 	if next >= 0 and DialogueManager.chapter_exists(next):
 		if _headless:
 			print("AUTOTEST: chapter %d -> %d" % [GameManager.current_chapter, next])
+		SaveManager.unlock_chapter(next)
 		GameManager.goto_chapter(next)
 		return
 	if _headless:
@@ -627,6 +629,16 @@ func _quick_load() -> void:
 		GameManager.goto_chapter(GameManager.current_chapter, GameManager.current_label, GameManager.dialogue_step_index)
 	else:
 		_toast.show_toast(LocalizationManager.t("vn.no_quick_save", "быстрого сохранения нет"), 1.6)
+
+
+func _open_save_overlay(mode: String) -> void:
+	if _save_overlay != null and is_instance_valid(_save_overlay):
+		return
+	var SaveLoadOverlay: GDScript = load("res://scripts/ui/save_load_overlay.gd")
+	_save_overlay = SaveLoadOverlay.new()
+	_save_overlay.mode = mode
+	_ui_root.add_child(_save_overlay)
+	_save_overlay.closed.connect(func() -> void: _save_overlay = null)
 
 
 func _open_pause() -> void:

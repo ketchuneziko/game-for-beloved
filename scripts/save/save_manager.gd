@@ -68,6 +68,29 @@ func is_seen(line_id: String) -> bool:
 	return progress.get("seen_lines", []).has(line_id)
 
 
+## Самая высокая открытая глава (CHAPTER SELECT): max(завершённая+1, ручное открытие).
+func unlocked_chapter() -> int:
+	return int(progress.get("chapters_unlocked", 0))
+
+
+## Открыть главу в списке (вызывается на chapter_end и из chapter select).
+func unlock_chapter(n: int) -> void:
+	if int(progress.get("chapters_unlocked", 0)) >= n:
+		return
+	mark_progress("chapters_unlocked", n)
+
+
+## Прочитано строк (для будущих экранов статистики).
+func seen_count() -> int:
+	var seen: Array = progress.get("seen_lines", [])
+	return seen.size()
+
+
+## Финал был достигнут (для меню/галереи).
+func finish_game() -> void:
+	mark_progress("finished", true)
+
+
 # ---------- слоты ----------
 
 func _path(id: String) -> String:

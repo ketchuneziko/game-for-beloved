@@ -39,5 +39,21 @@
 	"vn.chapter": "CHAPTER %d",
 	"vn.click_to_continue": "click to continue",
 	"vn.quick_saved": "SAVED",
-	"vn.no_quick_save": "no quick save"
+	"vn.no_quick_save": "no quick save",
+	"pause.title": "PAUSED",
+	"pause.continue": "CONTINUE",
+	"pause.save": "SAVE",
+	"pause.load": "LOAD",
+	"pause.menu": "MAIN MENU",
+	"saveload.save": "SAVE",
+	"saveload.load": "LOAD",
+	"saveload.slot": "SLOT %d",
+	"saveload.autosave": "AUTOSAVE",
+	"saveload.quick": "QUICK SLOT (F5/F9)",
+	"saveload.empty": "empty",
+	"saveload.write": "WRITE",
+	"saveload.read": "LOAD",
+	"saveload.delete": "delete",
+	"saveload.played": "played:",
+	"saveload.hint": "Quick save — F5 / ⌘S, quick load — F9 / ⌘L. Exiting to menu (Esc) autosaves."
 }

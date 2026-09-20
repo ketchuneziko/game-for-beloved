@@ -12,6 +12,9 @@ const SCENE_VN := "res://scenes/visual_novel/vn_stage.tscn"
 const SCENE_SETTINGS := "res://scenes/ui/settings_menu.tscn"
 const SCENE_CREDITS := "res://scenes/ui/credits.tscn"
 const FRAGMENTS_TOTAL := 7
+## «Мир меню» после финальной главы (GDD §1.10): глава 8 = возврат в меню,
+## уже как продолжение истории (рассветный фон, «ЕЩЁ РАЗ ♥»).
+const MENU_CHAPTER := 8
 
 var current_chapter := -1
 var current_label := ""
@@ -72,10 +75,11 @@ func goto_chapter(chapter: int, label: String = "", step_index: int = 0, faded: 
 	current_label = label
 	dialogue_step_index = step_index
 	pending = {"chapter": chapter}
+	var scene := SCENE_VN if chapter < MENU_CHAPTER else SCENE_MENU
 	if faded:
-		change_scene_faded(SCENE_VN)
+		change_scene_faded(scene)
 	else:
-		change_scene(SCENE_VN)
+		change_scene(scene)
 
 
 func goto_menu() -> void:

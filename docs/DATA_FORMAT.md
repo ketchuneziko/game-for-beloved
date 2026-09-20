@@ -70,6 +70,14 @@ godot --headless --path . --script tests/validate_data.gd
 { "type": "label", "id": "merge" }
 ```
 
+### Список глав для CHAPTER SELECT
+
+Чтобы глава появилась в экране «ГЛАВЫ» с датой (Фаза 5), добавь в корень файла главы ключ `chapters`:
+
+```json
+"chapters": { "ru": "15.09.2023, вечер", "en": "Sep 15, 2023, evening" }
+```
+
 > Смена таблички имени (ГОЛОС → ОН → АВТОР → настоящее имя) и тексты финала берутся
 > из `data/custom/about.json` — правится там.
 
