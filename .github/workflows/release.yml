@@ -65,29 +65,19 @@ jobs:
         run: |
           set +e
           mkdir -p exports
-          script -q /dev/null ~/godot-bin/godot --headless --verbose --log-file "$PWD/godot-export.log" --path "$PWD" --export-release "macOS" "$PWD/exports/ToEternityAndBeyond.app" 2>&1 | tee export-mac.log &
-          TP=$!
-          sleep 1
-          GP=$(pgrep -f "export-release" | head -1)
-          echo "GODOT_PID=$GP"
-          ( while [ -n "$GP" ] && kill -0 "$GP" 2>/dev/null; do echo "$(date +%T) rss_kb=$(ps -o rss= -p "$GP" 2>/dev/null | tr -d ' ')"; sleep 2; done ) > mem.log &
-          MP=$!
-          wait $TP; rc=${PIPESTATUS[0]}
-          kill $MP 2>/dev/null
-          echo "PIPE_RC=$rc"
-          tail -6 mem.log || true
-          echo "::error::DONE pipe_rc=$rc godot_pid=$GP"
-          if [ "$rc" -ne 0 ]; then
-            tail -4 mem.log 2>/dev/null | while IFS= read -r l; do printf '::error::MEMRSS %.900s\n' "$l"; done
-            echo "::error::MACLOG bytes=$(wc -c < export-mac.log 2>/dev/null || echo NA) glog=$(wc -c < godot-export.log 2>/dev/null || echo NA)"
-            tail -20 export-mac.log 2>/dev/null | sed 's/\r//' | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::M %.900s\n' "$l"; done
-            tail -30 godot-export.log 2>/dev/null | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::G %.900s\n' "$l"; done
-            ls -lt ~/Library/Logs/DiagnosticReports 2>/dev/null | head -5 | while IFS= read -r l; do printf '::error::IPS %.900s\n' "$l"; done
-            for f in $(ls -t ~/Library/Logs/DiagnosticReports/*.ips 2>/dev/null | head -2); do
-              head -c 500 "$f" | tr '\n' '~' | while IFS= read -r l; do printf '::error::IPSHD %.900s\n' "$l"; done
-            done
-            exit 1
-          fi
+          ~/godot-bin/godot --headless --verbose --log-file "$PWD/godot-export.log" --path "$PWD" --export-release "macOS" "$PWD/exports/ToEternityAndBeyond.app"
+          rc=$?
+          echo "RC=$rc"
+          [ "$rc" -ne 0 ] && exit 1 || true
+      - name: Dump godot self-log + macOS crash reports
+        if: always()
+        run: |
+          echo "::error::DIAG glog_bytes=$(wc -c < godot-export.log 2>/dev/null || echo NA)"
+          tail -30 godot-export.log 2>/dev/null | grep -v '^[[:space:]]*$' | tail -10 | while IFS= read -r l; do printf '::error::G %.900s\n' "$l"; done || true
+          ls -lt ~/Library/Logs/DiagnosticReports 2>/dev/null | head -6 | while IFS= read -r l; do printf '::error::IPS %.900s\n' "$l"; done || true
+          for f in $(ls -t ~/Library/Logs/DiagnosticReports/*.ips 2>/dev/null | head -2); do
+            head -c 500 "$f" | tr '\n' '~' | while IFS= read -r l; do printf '::error::IPSHD %.900s\n' "$l"; done
+          done || true
       - name: Failure diagnostics (macOS)
         if: failure()
         run: |
