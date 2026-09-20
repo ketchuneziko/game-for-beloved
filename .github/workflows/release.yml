@@ -103,7 +103,7 @@ jobs:
       - name: Package Linux + Windows zips
         run: |
           cd exports
-          cp "../КАК ОТКРЫТЬ.txt" ./КАК ОТКРЫТЬ.txt
+          cp "../КАК ОТКРЫТЬ.txt" "./КАК ОТКРЫТЬ.txt"
           zip -q ToEternityAndBeyond-Windows.zip ToEternityAndBeyond.exe "КАК ОТКРЫТЬ.txt"
           zip -q ToEternityAndBeyond-Linux.zip ToEternityAndBeyond.x86_64 "КАК ОТКРЫТЬ.txt"
           ls -la
@@ -174,7 +174,7 @@ jobs:
         run: |
           cd exports
           zip -r -q -y ToEternityAndBeyond-macOS.zip ToEternityAndBeyond.app
-          cp "../КАК ОТКРЫТЬ.txt" ./КАК ОТКРЫТЬ.txt
+          cp "../КАК ОТКРЫТЬ.txt" "./КАК ОТКРЫТЬ.txt"
           zip -q -u ToEternityAndBeyond-macOS.zip "КАК ОТКРЫТЬ.txt"
           ls -la
       - uses: actions/upload-artifact@v4
