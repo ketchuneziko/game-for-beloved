@@ -118,9 +118,14 @@ assets/fonts/JetBrainsMono-Regular.ttf — шрифты (подхватятся 
 5. **P.S.** — после титров подожди на чёрном экране 10 секунд.
 6. Счётчик секретов — в Галерее.
 
-**Текущий релиз: [v1.0.0](https://github.com/ketchuneziko/game-for-beloved/releases/tag/v1.0.0)** — тег на полном прохождении всех 12 фаз.
+**Готовые сборки: [Release v1.0.16](https://github.com/ketchuneziko/game-for-beloved/releases/tag/v1.0.16)** —
+macOS (.app, universal) 54.7 MB · Windows (.exe) 33.6 MB · Linux 27.8 MB.
+В каждом архиве лежит «КАК ОТКРЫТЬ.txt» для Марии. Бинарники собираются
+автоматически GitHub Actions при пуше тега `v*` (workflow `release-builds`):
+валидация данных → Linux + Windows (ubuntu) → macOS .app (macos-15-intel,
+boot-smoke на раннере) → прикрепление к релизу.
 
-## Сборка релиза (на твоём Mac)
+## Локальная сборка (на твоём Mac, если нужен свежий бинарь без тега)
 
 ```bash
 # разово: поставь Godot 4.3 + export templates (см. docs/BUILD.md, 5 минут)
