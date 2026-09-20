@@ -2,15 +2,29 @@ name: release-builds
 
 # PHASE 12: облачная сборка релизов.
 # - По тегу v* ИЛИ вручную (Actions → release-builds → Run workflow).
-# - macOS-раннер собирает .app (universal, ad-hoc подпись) и Windows .exe
-#   (Godot официально экспортирует Windows из macOS).
-# - Ubuntu-раннер собирает Linux-бинарь и делает smoke-тест: экспорт должен
-#   запуститься в headless и дойти до главного меню.
+# - ubuntu-latest: валидация данных; Linux-бинарь + boot-тест;
+#   Windows .exe (кросс-экспорт, официально поддерживается Godot).
+# - macOS-раннер: .app (universal, ad-hoc подпись).
+#
+# ВАЖНО (уроки CI-отладки v1.0.1–v1.0.13):
+# 1. Godot 4.3 headless-экспорт требует предварительный `--import`
+#    (без .godot/ кэша экспорт падает).
+# 2. Экспорт-шаблоны из .tpz кладутся В ПОДКАТАЛОГ версии
+#    export_templates/4.3.stable/ (иначе "No export template found").
+# 3. Godot не создаёт родительский каталог export-пути → mkdir -p exports.
+# 4. Скопированный из Godot.app бинарь после cp получает невалидную подпись:
+#    taskgated убивает процесс с "Code Signature Invalid" при export-режиме
+#    (import проходит). Лечится ad-hoc переподписью: codesign --force -s -.
+# 5. Логи завершённых прогонов из песочницы недоступны (results-receiver
+#    заблокирован) — диагностика через ::error:: аннотации (checks API).
 
 on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 env:
   GODOT_VERSION: 4.3-stable
@@ -30,58 +44,8 @@ jobs:
       - name: Data validation
         run: godot --headless --path . --script tests/validate_data.gd
 
-  export:
-    name: macOS + Windows builds
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Godot (macOS)
-        run: |
-          curl -sL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION/-stable/}-stable_macos.universal.zip"
-          unzip -o -q godot.zip
-          xattr -dr com.apple.quarantine Godot.app || true
-          mkdir -p ~/godot-bin
-          cp Godot.app/Contents/MacOS/Godot ~/godot-bin/godot
-          chmod +x ~/godot-bin/godot
-      - name: Install export templates
-        run: |
-          curl -sL -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION/-stable/}-stable_export_templates.tpz"
-          mkdir -p ~/Library/Application\ Support/Godot/export_templates
-          unzip -o -q templates.tpz -d /tmp/tpl
-          cp /tmp/tpl/templates/* ~/Library/Application\ Support/Godot/export_templates/
-      - name: Export macOS (.app, universal, ad-hoc)
-        run: ~/godot-bin/godot --headless --path . --export-release "macOS" "exports/ToEternityAndBeyond.app"
-      - name: Export Windows (.exe, single file)
-        run: ~/godot-bin/godot --headless --path . --export-release "Windows Desktop" "exports/ToEternityAndBeyond.exe"
-      - name: Smoke test macOS build (boot to menu)
-        run: |
-          # Headless-запуск собранного .app: движок должен стартовать без ошибок.
-          exports/ToEternityAndBeyond.app/Contents/MacOS/ToEternityAndBeyond --headless --quit-after 300 2>&1 | tee boot.log
-          if grep -qiE "SCRIPT ERROR|Parse Error" boot.log; then echo "BUILD BOOT FAILED"; exit 1; fi
-      - name: Package
-        run: |
-          cd exports
-          zip -r -q -y ToEternityAndBeyond-macOS.zip ToEternityAndBeyond.app
-          cp "../КАК ОТКРЫТЬ.txt" ./КАК ОТКРЫТЬ.txt
-          zip -q -u ToEternityAndBeyond-macOS.zip "КАК ОТКРЫТЬ.txt"
-          rm -rf ToEternityAndBeyond.app
-          zip -q ToEternityAndBeyond-Windows.zip ToEternityAndBeyond.exe "КАК ОТКРЫТЬ.txt"
-          rm ToEternityAndBeyond.exe
-          ls -la
-      - uses: actions/upload-artifact@v4
-        with:
-          name: builds-macos-windows
-          path: exports/*.zip
-          if-no-files-found: error
-      - name: Attach to release (on tag)
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: exports/*.zip
-          fail_on_unmatched_files: true
-
   linux-demo:
-    name: Linux build + boot test
+    name: Linux build + Windows exe + boot test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -94,11 +58,29 @@ jobs:
       - name: Install export templates
         run: |
           curl -sL -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION/-stable/}-stable_export_templates.tpz"
-          mkdir -p ~/.local/share/godot/export_templates
+          TPL_DIR="$HOME/.local/share/godot/export_templates/4.3.stable"
+          mkdir -p "$TPL_DIR"
           unzip -o -q templates.tpz -d /tmp/tpl
-          cp /tmp/tpl/templates/* ~/.local/share/godot/export_templates/
+          if [ -d /tmp/tpl/templates/4.3.stable ]; then
+            cp -r /tmp/tpl/templates/4.3.stable/. "$TPL_DIR/"
+          else
+            cp -r /tmp/tpl/templates/. "$TPL_DIR/"
+          fi
+          ls "$TPL_DIR" | head -12
+      - name: Import project resources (required before headless export in 4.3)
+        run: godot --headless --path . --import 2>&1 | tee import.log || true
       - name: Export Linux
-        run: godot --headless --path . --export-release "Linux" "exports/ToEternityAndBeyond.x86_64"
+        run: |
+          set +e
+          mkdir -p exports
+          godot --headless --path . --export-release "Linux" "exports/ToEternityAndBeyond.x86_64" 2>&1 | tee export-linux.log
+          rc=${PIPESTATUS[0]}
+          echo "GODOT_EXIT=$rc"
+          if [ "$rc" -ne 0 ]; then
+            cat export-linux.log >> "$GITHUB_STEP_SUMMARY"
+            tail -40 export-linux.log | sed 's/\r//' | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::%.900s\n' "$l"; done
+            exit "$rc"
+          fi
       - name: Smoke test (boot + menu reach)
         run: |
           chmod +x exports/ToEternityAndBeyond.x86_64
@@ -107,8 +89,102 @@ jobs:
             echo "--- BOOT FAILED:"; grep -iE "ERROR" boot.log | head -10; exit 1
           fi
           echo "boot OK ($(wc -l < boot.log) log lines)"
+      - name: Export Windows (.exe, single file with embedded PCK)
+        run: |
+          set +e
+          godot --headless --path . --export-release "Windows Desktop" "exports/ToEternityAndBeyond.exe" 2>&1 | tee export-win.log
+          rc=${PIPESTATUS[0]}
+          echo "GODOT_EXIT=$rc"
+          if [ "$rc" -ne 0 ]; then
+            cat export-win.log >> "$GITHUB_STEP_SUMMARY"
+            tail -40 export-win.log | sed 's/\r//' | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::WIN %.900s\n' "$l"; done
+            exit "$rc"
+          fi
+      - name: Package Linux + Windows zips
+        run: |
+          cd exports
+          cp "../КАК ОТКРЫТЬ.txt" "./КАК ОТКРЫТЬ.txt"
+          zip -q ToEternityAndBeyond-Windows.zip ToEternityAndBeyond.exe "КАК ОТКРЫТЬ.txt"
+          zip -q ToEternityAndBeyond-Linux.zip ToEternityAndBeyond.x86_64 "КАК ОТКРЫТЬ.txt"
+          ls -la
       - uses: actions/upload-artifact@v4
         with:
-          name: build-linux
-          path: exports/ToEternityAndBeyond.x86_64
+          name: builds-linux-windows
+          path: |
+            exports/ToEternityAndBeyond-Windows.zip
+            exports/ToEternityAndBeyond-Linux.zip
           if-no-files-found: error
+      - name: Attach to release (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            exports/ToEternityAndBeyond-Windows.zip
+            exports/ToEternityAndBeyond-Linux.zip
+          fail_on_unmatched_files: true
+
+  export:
+    name: macOS build
+    needs: linux-demo
+    runs-on: macos-15-intel
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot (macOS)
+        run: |
+          curl -sL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION/-stable/}-stable_macos.universal.zip"
+          unzip -o -q godot.zip
+          xattr -dr com.apple.quarantine Godot.app || true
+          mkdir -p ~/godot-bin
+          cp Godot.app/Contents/MacOS/Godot ~/godot-bin/godot
+          chmod +x ~/godot-bin/godot
+          # Ключевой фикс: после cp подпись бинаря невалидна для taskgated,
+          # что убивает процесс при export-режиме ("Code Signature Invalid").
+          codesign --force --sign - ~/godot-bin/godot
+      - name: Install export templates
+        run: |
+          curl -sL -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION/-stable/}-stable_export_templates.tpz"
+          TPL_DIR="$HOME/Library/Application Support/Godot/export_templates/4.3.stable"
+          mkdir -p "$TPL_DIR"
+          unzip -o -q templates.tpz -d /tmp/tpl
+          if [ -d /tmp/tpl/templates/4.3.stable ]; then
+            cp -R /tmp/tpl/templates/4.3.stable/. "$TPL_DIR/"
+          else
+            cp -R /tmp/tpl/templates/. "$TPL_DIR/"
+          fi
+          ls "$TPL_DIR" | head -12
+      - name: Import project resources (required before headless export in 4.3)
+        run: ~/godot-bin/godot --headless --path . --import 2>&1 | tee import.log || true
+      - name: Export macOS (.app, universal, ad-hoc)
+        run: |
+          set +e
+          mkdir -p exports
+          ~/godot-bin/godot --headless --path . --export-release "macOS" "exports/ToEternityAndBeyond.app" 2>&1 | tee export-mac.log
+          rc=${PIPESTATUS[0]}
+          echo "GODOT_EXIT=$rc"
+          if [ "$rc" -ne 0 ]; then
+            cat export-mac.log >> "$GITHUB_STEP_SUMMARY"
+            tail -40 export-mac.log | sed 's/\r//' | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::MAC %.900s\n' "$l"; done
+            exit "$rc"
+          fi
+      - name: Smoke test macOS build (boot to menu)
+        run: |
+          exports/ToEternityAndBeyond.app/Contents/MacOS/ToEternityAndBeyond --headless --quit-after 300 2>&1 | tee boot.log
+          if grep -qiE "SCRIPT ERROR|Parse Error" boot.log; then echo "BUILD BOOT FAILED"; exit 1; fi
+      - name: Package macOS zip
+        run: |
+          cd exports
+          zip -r -q -y ToEternityAndBeyond-macOS.zip ToEternityAndBeyond.app
+          cp "../КАК ОТКРЫТЬ.txt" "./КАК ОТКРЫТЬ.txt"
+          zip -q -u ToEternityAndBeyond-macOS.zip "КАК ОТКРЫТЬ.txt"
+          ls -la
+      - uses: actions/upload-artifact@v4
+        with:
+          name: builds-macos
+          path: exports/ToEternityAndBeyond-macOS.zip
+          if-no-files-found: error
+      - name: Attach to release (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: exports/ToEternityAndBeyond-macOS.zip
+          fail_on_unmatched_files: true
