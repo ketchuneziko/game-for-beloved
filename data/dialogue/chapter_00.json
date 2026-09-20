@@ -1,0 +1,24 @@
+{
+	"chapter": 0,
+	"title": { "ru": "PROLOGUE — THE MESSAGE", "en": "PROLOGUE — THE MESSAGE" },
+	"_readme": "Черновик пролога (Фаза 2). Полная версия с точными паузами и переходами — Фаза 6.",
+	"steps": [
+		{ "type": "bg", "id": "black" },
+		{ "type": "music", "id": "prologue" },
+		{ "type": "wait", "duration": 1.2 },
+		{ "type": "line", "who": "voice", "text": { "ru": "Привет, Мария.", "en": "Hi, Maria." }, "pause_after": 0.9 },
+		{ "type": "line", "who": "voice", "text": { "ru": "Если ты это читаешь, значит, ты всё-таки запустила её.", "en": "If you are reading this, you actually launched it." }, "pause_after": 0.9 },
+		{ "type": "line", "who": "voice", "text": { "ru": "Я мог просто сказать тебе всё лично.", "en": "I could have just told you all this in person." }, "pause_after": 0.9 },
+		{ "type": "line", "who": "voice", "text": { "ru": "Но это было бы слишком просто.", "en": "But that would be too easy." }, "pause_after": 1.1 },
+		{
+			"type": "title_card",
+			"text": { "ru": "TO ETERNITY AND BEYOND", "en": "TO ETERNITY AND BEYOND" },
+			"sub": { "ru": "игра, сделанная для Марии", "en": "a game made for Maria" }
+		},
+		{ "type": "line", "who": "voice", "text": { "ru": "Давай договорим на берегу: в этой игре нет правил. Просто иди вперёд. И иногда оглядывайся.", "en": "Ground rule: this game has no rules. Just keep going. And sometimes look back." } },
+		{ "type": "bg", "id": "bg_planetarium_night" },
+		{ "type": "line", "who": "voice", "text": { "ru": "Добро пожаловать в самый старый планетарий города. Сегодня его последняя ночь.", "en": "Welcome to the oldest planetarium in the city. Tonight is its last night." } },
+		{ "type": "line", "who": "voice", "text": { "ru": "Посиди тихо минутку. Слышишь? Он ещё дышит.", "en": "Sit quietly for a moment. Hear that? It is still breathing." } },
+		{ "type": "chapter_end", "next": 1 }
+	]
+}

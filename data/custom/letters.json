@@ -1,0 +1,42 @@
+{
+	"_readme": "ПИСЬМА И ТЕКСТЫ, которые редактируются без кода. ch3_cipher — фраза расшифровки (Глава 3); ch4_letters — письма, которые не отправили (Глава 4); final_message — сообщение из 7 фрагментов (Главы 1–6), собирается в Главе 6.",
+	"ch3_cipher": {
+		"phrase": {
+			"ru": "НЕКОТОРЫЙ СВЕТ ИДЁТ К НАМ ГОДАМИ. НО ОН ВСЁ РАВНО ДОХОДИТ.",
+			"en": "SOME LIGHT TRAVELS TO US FOR YEARS. IT ARRIVES ANYWAY."
+		},
+		"hint_date": "—"
+	},
+	"ch4_letters": [
+		{
+			"id": "letter_01",
+			"title": { "ru": "Письмо №1", "en": "Letter No. 1" },
+			"text": {
+				"ru": "«Я начал это письмо четыре раза. Все четыре раза выходило слишком пафосно. Вот пятая попытка. Юбилейная.»",
+				"en": "\"I started this letter four times. All four times it came out too pompous. Here is the fifth attempt. The anniversary one.\""
+			}
+		},
+		{
+			"id": "letter_02",
+			"title": { "ru": "Письмо №2", "en": "Letter No. 2" },
+			"text": {
+				"ru": "«Бывает день, когда всё нормально. А потом я вспоминаю, как кто-то смеётся, и день становится лучше. Это, наверное, как-то называется. Лень гуглить.»",
+				"en": "\"Some days everything is fine. Then I remember the way someone laughs, and the day gets better. It probably has a name. Too lazy to look it up.\""
+			}
+		},
+		{
+			"id": "letter_03",
+			"title": { "ru": "Письмо №3", "en": "Letter No. 3" },
+			"text": {
+				"ru": "«Я не боюсь темноты. Я боюсь привычки: когда хорошо рядом с человеком — а сказать ему это уже некогда.»",
+				"en": "\"I am not afraid of the dark. I am afraid of habit: when being near someone feels good — and there is no time left to tell them.\""
+			}
+		}
+	],
+	"final_message": [
+		{ "ru": "ВСЁ ЭТО ВРЕМЯ Я ГОВОРИЛ ТЕБЕ", "en": "ALL THIS TIME I WAS TALKING TO YOU" },
+		{ "ru": "НЕ ПРО ЗВЁЗДЫ.", "en": "NOT ABOUT THE STARS." },
+		{ "ru": "Я ГОВОРИЛ ПРО ТЕБЯ.", "en": "I WAS TALKING ABOUT YOU." },
+		{ "ru": "И ОСТАЛСЯ ОДИН ВОПРОС.", "en": "AND ONE QUESTION REMAINS." }
+	]
+}

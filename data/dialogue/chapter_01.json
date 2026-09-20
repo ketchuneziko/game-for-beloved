@@ -1,0 +1,22 @@
+{
+	"chapter": 1,
+	"title": { "ru": "CHAPTER 1 — THE BEGINNING", "en": "CHAPTER 1 — THE BEGINNING" },
+	"_readme": "Демо-срез главы 1 (Фаза 2): показывает выборы, смены выражений и первый фрагмент сообщения. Полная глава — Фаза 6.",
+	"steps": [
+		{ "type": "bg", "id": "bg_planetarium_night" },
+		{ "type": "music", "id": "chapter1" },
+		{ "type": "show", "who": "author", "expr": "neutral" },
+		{ "type": "line", "who": "author", "text": { "ru": "Сегодня можно всё: последний вечер прощает любое любопытство.", "en": "Tonight anything goes: the last evening forgives any curiosity." } },
+		{ "type": "choice", "id": "ch1_how_it_started" },
+		{ "type": "expr", "who": "author", "expr": "thinking" },
+		{ "type": "line", "who": "author", "text": { "ru": "Расскажу. Но по порядку — у нас с тобой целая ночь.", "en": "I will tell you. In order — we have the whole night ahead of us." } },
+		{ "type": "line", "who": "author", "text": { "ru": "Из всех людей в этом городе ты единственная, кто не засыпает на лекциях про звёзды. Я проверял. Дважды.", "en": "Out of everyone in this city, you are the only one who does not fall asleep during lectures about stars. I checked. Twice." } },
+		{ "type": "choice", "id": "ch1_topic" },
+		{ "type": "line", "who": "author", "text": { "ru": "Про всё понемногу. Обещаю: к рассвету ты узнаешь главное.", "en": "A little of everything. I promise: by dawn you will know what matters." } },
+		{ "type": "fragment", "id": 1 },
+		{ "type": "expr", "who": "author", "expr": "surprised" },
+		{ "type": "line", "who": "author", "text": { "ru": "Хм. Эта карточка… Не помню, чтобы она тут лежала.", "en": "Hm. This card… I do not remember it lying here." } },
+		{ "type": "label", "id": "archive_start" },
+		{ "type": "chapter_end", "next": -1 }
+	]
+}

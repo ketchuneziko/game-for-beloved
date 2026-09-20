@@ -1,0 +1,9 @@
+{
+	"_readme": "ПЕСНЯ (Глава 5). 1) Положи трек в assets/music/song.ogg. 2) Заполни lines: time — секунды от начала трека (float), text — строка оригинала, translation — русский перевод. Синхронизация идёт строго по позиции аудио, без таймеров. Шаблон строк ниже — пример формата из ТЗ.",
+	"track": "res://assets/music/song.ogg",
+	"title": { "ru": "Наша песня", "en": "Our Song" },
+	"lines": [
+		{ "time": 0.0, "text": "…", "translation": "…" },
+		{ "time": 4.2, "text": "…", "translation": "…" }
+	]
+}

@@ -1,0 +1,15 @@
+{
+	"menu.subtitle": "A GAME MADE FOR MARIA",
+	"menu.play": "PLAY",
+	"menu.continue": "CONTINUE",
+	"menu.chapters": "CHAPTER SELECT",
+	"menu.gallery": "GALLERY",
+	"menu.achievements": "ACHIEVEMENTS",
+	"menu.settings": "SETTINGS",
+	"menu.credits": "CREDITS",
+	"menu.exit": "EXIT",
+	"vn.chapter": "CHAPTER %d",
+	"vn.click_to_continue": "click to continue",
+	"vn.quick_saved": "SAVED",
+	"vn.no_quick_save": "no quick save"
+}

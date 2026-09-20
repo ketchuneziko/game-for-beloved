@@ -1,0 +1,22 @@
+{
+	"_readme": "Таблички имён и цвета персонажей. plate_hidden:true — плашка не показывается. Спрайты и expressions добавляются в Фазе 4.",
+	"characters": {
+		"voice": {
+			"name": { "ru": "", "en": "" },
+			"color": "#ffb9d5",
+			"plate_hidden": true
+		},
+		"author": {
+			"name": { "ru": "ОН", "en": "HE" },
+			"color": "#ff8fbd"
+		},
+		"mira": {
+			"name": { "ru": "МИРА", "en": "MIRA" },
+			"color": "#ffb9d5"
+		},
+		"old_one": {
+			"name": { "ru": "СТАРИК", "en": "THE OLD ONE" },
+			"color": "#b9a8ff"
+		}
+	}
+}

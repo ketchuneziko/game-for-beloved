@@ -1,0 +1,28 @@
+{
+	"_readme": "Тексты и последствия выборов. Тип последствий: set_flags (список флагов), unlock_secret (секрет в галерею). Ветвление сцен — через if_flag/jump в главах (см. docs/DATA_FORMAT.md).",
+	"choices": {
+		"ch1_how_it_started": {
+			"prompt": { "ru": "Ты помнишь, как всё началось?", "en": "Do you remember how it all started?" },
+			"options": [
+				{ "id": "of_course", "text": { "ru": "Конечно", "en": "Of course I do" }, "set_flags": ["ch1_remembered"] },
+				{ "id": "not_quite", "text": { "ru": "Не совсем", "en": "Not exactly" }, "set_flags": ["ch1_not_quite"] },
+				{ "id": "tell_me", "text": { "ru": "Расскажи мне", "en": "Tell me" }, "set_flags": ["ch1_asked_story"] }
+			]
+		},
+		"ch1_topic": {
+			"prompt": { "ru": "О чём спросить?", "en": "What to ask about?" },
+			"options": [
+				{ "id": "ask_about_girl", "text": { "ru": "Откуда ты знаешь эту девчонку?", "en": "How do you know that girl?" }, "set_flags": ["ch1_asked_girl"] },
+				{ "id": "ask_why_closing", "text": { "ru": "Почему планетарий закрывают?", "en": "Why is the planetarium closing?" }, "set_flags": ["ch1_asked_closing"] },
+				{ "id": "stay_silent", "text": { "ru": "Промолчать", "en": "Say nothing" }, "set_flags": ["ch1_stayed_silent"] }
+			]
+		},
+		"ch3_read_aloud": {
+			"prompt": { "ru": "Прочитать фразу…", "en": "Read the phrase…" },
+			"options": [
+				{ "id": "aloud", "text": { "ru": "Вслух", "en": "Out loud" }, "set_flags": ["ch3_read_aloud"] },
+				{ "id": "silently", "text": { "ru": "Про себя", "en": "Silently" }, "set_flags": ["ch3_read_silently"] }
+			]
+		}
+	}
+}

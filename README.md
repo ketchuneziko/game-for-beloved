@@ -1,1 +1,123 @@
-# game-for-beloved
+# TO ETERNITY AND BEYOND
+*A game made for Maria.*
+
+Короткая личная романтическая визуальная новелла на **Godot 4.x**.
+1–2 часа истории, которая постепенно из «загадочной игры» превращается в признание.
+
+> Game Design Document: **[docs/GDD.md](docs/GDD.md)** — сюжет, главы, выборы, загадки, секреты, весь план.
+
+---
+
+## Статус
+
+| Фаза | Что | Статус |
+|---|---|---|
+| 1 | Game Design Document | ✅ `docs/GDD.md` |
+| **2** | **Архитектура Godot: проект, 8 менеджеров, схемы данных, каркас сцен** | **✅ текущая** |
+| 3 | Главное меню (живое) | ⬜ |
+| 4 | VN-движок: спрайты, выражения, переходы, auto/skip/history | ⬜ каркас уже работает |
+| 5 | Save/Load экраны (слоты) | ⬜ логика сейвов уже работает |
+| 6 | Главы 0–4 (полный сценарий) | ⬜ |
+| 7 | Загадки и мини-игры | ⬜ |
+| 8 | Музыка и сцена песни | ⬜ |
+| 9 | Галерея и достижения (UI) | ⬜ логика уже работает |
+| 10 | Главы 5–7, финал, титры | ⬜ |
+| 11 | Полное тестирование | ⬜ |
+| 12 | Сборка релизов (macOS / Windows / Android) | ⬜ |
+
+---
+
+## Быстрый старт (macOS)
+
+1. Скачай **Godot 4.3+** (стандартная версия, не .NET): <https://godotengine.org/download>
+2. Открой Godot → **Import** → выбери папку этого проекта (файл `project.godot`).
+3. Нажми **F5** (Run Project).
+
+Или из терминала:
+
+```bash
+/Applications/Godot.app/Contents/MacOS/Godot --path .
+```
+
+Проверка целостности данных (сценарии/выборы/ачивки/локали):
+
+```bash
+/Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script tests/validate_data.gd
+```
+
+## Управление (уже работает)
+
+| Действие | Клавиши |
+|---|---|
+| Дальше / дописать строку | клик, Space, Enter |
+| Quick Save | F5 или **⌘S** |
+| Quick Load | F9 или **⌘L** |
+| Пауза/выход в меню | Esc |
+
+---
+
+## Как редактировать историю (без кода)
+
+Вся история — **JSON**, никаких сценариев внутри скриптов:
+
+| Файл | Что это |
+|---|---|
+| `data/dialogue/chapter_XX.json` | Сценарий главы: реплики, фоны, музыка, выборы, фрагменты |
+| `data/choices/choices.json` | Тексты вариантов выборов и их последствия |
+| `data/characters.json` | Таблички имён и цвета персонажей |
+| `data/memories/memories.json` | Фотографии-воспоминания (даты, подписи) |
+| `data/achievements/achievements.json` | Достижения |
+| `data/locales/ru.json` / `en.json` | Строки интерфейса |
+| **`data/custom/about.json`** | ★ Имена, финальный вопрос, посвящение |
+| **`data/custom/song.json`** | ★ Твоя песня: трек + таймкоды + перевод |
+| **`data/custom/letters.json`** | ★ Письма, расшифровка, финальное сообщение |
+
+Полный справочник формата: **[docs/DATA_FORMAT.md](docs/DATA_FORMAT.md)**.
+
+**Личные ассеты просто кладутся по финальным путям** — код не трогается:
+
+```
+assets/photos/photo_01.jpg …   — настоящие фотографии
+assets/music/song.ogg          — ваша песня (Глава 5)
+assets/music/chapter1.ogg …    — фоновая музыка
+assets/sounds/click.ogg …      — звуки
+assets/fonts/JetBrainsMono-Regular.ttf — шрифты (подхватятся сами)
+```
+
+Пока файлов нет, игра работает с плейсхолдерами (в логе — мягкие предупреждения, не ошибки).
+
+---
+
+## Архитектура (Фаза 2)
+
+**8 автолоадов** (порядок важен — см. `project.godot`):
+
+```
+LocalizationManager → SettingsManager → AudioManager → SaveManager
+→ AchievementManager → GalleryManager → DialogueManager → GameManager
+```
+
+- **GameManager** — флоу сцен, состояние прохождения, фрагменты сообщения, флаги выборов.
+- **DialogueManager** — загрузка JSON-глав, поток шагов, справочники персонажей/выборов.
+- **SaveManager** — 5 слотов + autosave + quicksave, PNG-превью, прогресс между запусками.
+- **SettingsManager** — звук/текст/дисплей/язык → `user://settings.cfg`.
+- **AudioManager** — кроссфейд музыки (fade out → change → fade in), эмбиент, пул SFX, плеер песни.
+- **AchievementManager / GalleryManager** — разблокировки (хранятся в `user://progress.json`).
+- **LocalizationManager** — `t(key)` для строк UI + двуязычные поля `{"ru","en"}`.
+
+Сцены: `scenes/ui/boot.tscn` (старт) → `scenes/main_menu` → `scenes/visual_novel/vn_stage.tscn`.
+VN-сцена уже играет JSON-главы конца в конец (реплики с эффектом печати, выборы,
+автоматические шаги, фрагменты, автосейвы) — Фаза 4 нарастит презентацию, не трогая формат данных.
+
+**Пользовательские пути:** всё в `user://` (saves, settings, progress), ассеты — только `res://`. Windows-специфики нет.
+
+---
+
+## Разработка
+
+```bash
+# валидация данных (быстрая проверка после правок JSON)
+godot --headless --path . --script tests/validate_data.gd
+```
+
+*Made with love — для самого важного игрока.*

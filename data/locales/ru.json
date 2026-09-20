@@ -1,0 +1,15 @@
+{
+	"menu.subtitle": "A GAME MADE FOR MARIA",
+	"menu.play": "ИГРАТЬ",
+	"menu.continue": "ПРОДОЛЖИТЬ",
+	"menu.chapters": "ГЛАВЫ",
+	"menu.gallery": "ГАЛЕРЕЯ",
+	"menu.achievements": "ДОСТИЖЕНИЯ",
+	"menu.settings": "НАСТРОЙКИ",
+	"menu.credits": "ТИТРЫ",
+	"menu.exit": "ВЫХОД",
+	"vn.chapter": "ГЛАВА %d",
+	"vn.click_to_continue": "клик — дальше",
+	"vn.quick_saved": "СОХРАНЕНО",
+	"vn.no_quick_save": "быстрого сохранения нет"
+}
