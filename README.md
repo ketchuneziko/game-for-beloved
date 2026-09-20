@@ -118,6 +118,8 @@ assets/fonts/JetBrainsMono-Regular.ttf — шрифты (подхватятся 
 5. **P.S.** — после титров подожди на чёрном экране 10 секунд.
 6. Счётчик секретов — в Галерее.
 
+**Текущий релиз: [v1.0.0](https://github.com/ketchuneziko/game-for-beloved/releases/tag/v1.0.0)** — тег на полном прохождении всех 12 фаз.
+
 ## Сборка релиза (на твоём Mac)
 
 ```bash
