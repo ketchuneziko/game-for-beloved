@@ -1,9 +1,57 @@
 {
-	"_readme": "ПЕСНЯ (Глава 5). 1) Положи трек в assets/music/song.ogg. 2) Заполни lines: time — секунды от начала трека (float), text — строка оригинала, translation — русский перевод. Синхронизация идёт строго по позиции аудио, без таймеров. Шаблон строк ниже — пример формата из ТЗ.",
-	"track": "res://assets/music/song.ogg",
-	"title": { "ru": "Наша песня", "en": "Our Song" },
+	"_readme": "ПЕСНЯ (Глава 5). ЗАМЕНИ НА СВОЮ: 1) положи трек в assets/music/ и укажи путь в track (.ogg или .wav); 2) впиши строки оригинала в text и русский перевод в translation; 3) time — секунды от начала трека (по возрастанию). Синхронизация — по позиции аудио, без таймеров. Сейчас стоит плейсхолдер-песня (tools/make_placeholder_song.py).",
+	"track": "res://assets/music/song.wav",
+	"title": { "ru": "песня, которую я приберёг", "en": "the song I kept for later" },
 	"lines": [
-		{ "time": 0.0, "text": "…", "translation": "…" },
-		{ "time": 4.2, "text": "…", "translation": "…" }
+		{
+			"time": 11.43,
+			"text": "Some things travel slow,",
+			"translation": { "ru": "Некоторые вещи идут медленно,", "en": "Some things travel slow," }
+		},
+		{
+			"time": 17.14,
+			"text": "but they always arrive.",
+			"translation": { "ru": "но они всё равно доходят.", "en": "but they always arrive." }
+		},
+		{
+			"time": 22.86,
+			"text": "I kept a light for you",
+			"translation": { "ru": "Я держал для тебя свет", "en": "I kept a light for you" }
+		},
+		{
+			"time": 28.57,
+			"text": "through every clouded night.",
+			"translation": { "ru": "сквозь каждую пасмурную ночь.", "en": "through every clouded night." }
+		},
+		{
+			"time": 34.29,
+			"text": "If the dark gets long,",
+			"translation": { "ru": "Если тьма затянется,", "en": "If the dark gets long," }
+		},
+		{
+			"time": 40.0,
+			"text": "count the lamps still on.",
+			"translation": { "ru": "считай фонари, что ещё горят.", "en": "count the lamps still on." }
+		},
+		{
+			"time": 45.71,
+			"text": "One of them is mine —",
+			"translation": { "ru": "Один из них — мой, —", "en": "One of them is mine —" }
+		},
+		{
+			"time": 51.43,
+			"text": "it learned to wait with you.",
+			"translation": { "ru": "он научился ждать вместе с тобой.", "en": "it learned to wait with you." }
+		},
+		{
+			"time": 57.14,
+			"text": "Hold it when I cannot speak;",
+			"translation": { "ru": "Держи его, когда я не могу сказать, —", "en": "Hold it when I cannot speak;" }
+		},
+		{
+			"time": 62.86,
+			"text": "it says the rest for me.",
+			"translation": { "ru": "он договорит за меня.", "en": "it says the rest for me." }
+		}
 	]
 }

@@ -2,56 +2,295 @@
 	"_readme": "Тексты и последствия выборов. Последствия: set_flags (список флагов), unlock_secret (секрет в галерею). Ветвление сцен — через if_flag/jump в главах (см. docs/DATA_FORMAT.md).",
 	"choices": {
 		"ch1_how_it_started": {
-			"prompt": { "ru": "Ты помнишь, как всё началось?", "en": "Do you remember how it all started?" },
+			"prompt": {
+				"ru": "Ты помнишь, как всё началось?",
+				"en": "Do you remember how it all started?"
+			},
 			"options": [
-				{ "id": "of_course", "text": { "ru": "Конечно", "en": "Of course I do" }, "set_flags": ["ch1_remembered"] },
-				{ "id": "not_quite", "text": { "ru": "Не совсем", "en": "Not exactly" }, "set_flags": ["ch1_not_quite"] },
-				{ "id": "tell_me", "text": { "ru": "Расскажи мне", "en": "Tell me" }, "set_flags": ["ch1_asked_story"] }
+				{
+					"id": "of_course",
+					"text": {
+						"ru": "Конечно",
+						"en": "Of course I do"
+					},
+					"set_flags": [
+						"ch1_remembered"
+					]
+				},
+				{
+					"id": "not_quite",
+					"text": {
+						"ru": "Не совсем",
+						"en": "Not exactly"
+					},
+					"set_flags": [
+						"ch1_not_quite"
+					]
+				},
+				{
+					"id": "tell_me",
+					"text": {
+						"ru": "Расскажи мне",
+						"en": "Tell me"
+					},
+					"set_flags": [
+						"ch1_asked_story"
+					]
+				}
 			]
 		},
 		"ch1_topic": {
-			"prompt": { "ru": "О чём спросить?", "en": "What to ask about?" },
+			"prompt": {
+				"ru": "О чём спросить?",
+				"en": "What to ask about?"
+			},
 			"options": [
-				{ "id": "ask_about_girl", "text": { "ru": "Откуда ты знаешь эту девчонку?", "en": "How do you know that girl?" }, "set_flags": ["ch1_asked_girl"] },
-				{ "id": "ask_why_closing", "text": { "ru": "Почему планетарий закрывают?", "en": "Why is the planetarium closing?" }, "set_flags": ["ch1_asked_closing"] },
-				{ "id": "stay_silent", "text": { "ru": "Промолчать", "en": "Say nothing" }, "set_flags": ["ch1_stayed_silent"] }
+				{
+					"id": "ask_about_girl",
+					"text": {
+						"ru": "Откуда ты знаешь эту девчонку?",
+						"en": "How do you know that girl?"
+					},
+					"set_flags": [
+						"ch1_asked_girl"
+					]
+				},
+				{
+					"id": "ask_why_closing",
+					"text": {
+						"ru": "Почему планетарий закрывают?",
+						"en": "Why is the planetarium closing?"
+					},
+					"set_flags": [
+						"ch1_asked_closing"
+					]
+				},
+				{
+					"id": "stay_silent",
+					"text": {
+						"ru": "Промолчать",
+						"en": "Say nothing"
+					},
+					"set_flags": [
+						"ch1_stayed_silent"
+					]
+				}
 			]
 		},
 		"ch2_first_memory": {
-			"prompt": { "ru": "С какой фотографии начать?", "en": "Which photo should we start with?" },
+			"prompt": {
+				"ru": "С какой фотографии начать?",
+				"en": "Which photo should we start with?"
+			},
 			"options": [
-				{ "id": "pick_tea", "text": { "ru": "Кружка с двумя ложками сахара", "en": "The mug with two spoons of sugar" }, "set_flags": ["ch2_pick_tea"] },
-				{ "id": "pick_bench", "text": { "ru": "Скамейка под дождём", "en": "The bench in the rain" }, "set_flags": ["ch2_pick_bench"] },
-				{ "id": "pick_lecture", "text": { "ru": "Лекция, которой не было", "en": "The lecture that never happened" }, "set_flags": ["ch2_pick_lecture"] }
+				{
+					"id": "pick_tea",
+					"text": {
+						"ru": "Кружка с двумя ложками сахара",
+						"en": "The mug with two spoons of sugar"
+					},
+					"set_flags": [
+						"ch2_pick_tea"
+					]
+				},
+				{
+					"id": "pick_bench",
+					"text": {
+						"ru": "Скамейка под дождём",
+						"en": "The bench in the rain"
+					},
+					"set_flags": [
+						"ch2_pick_bench"
+					]
+				},
+				{
+					"id": "pick_lecture",
+					"text": {
+						"ru": "Лекция, которой не было",
+						"en": "The lecture that never happened"
+					},
+					"set_flags": [
+						"ch2_pick_lecture"
+					]
+				}
 			]
 		},
 		"ch2_stranger_photo": {
-			"prompt": { "ru": "Чужая фотография в коробке…", "en": "A stranger's photo in the box…" },
+			"prompt": {
+				"ru": "Чужая фотография в коробке…",
+				"en": "A stranger's photo in the box…"
+			},
 			"options": [
-				{ "id": "ask_whose", "text": { "ru": "Спросить, чьё это фото", "en": "Ask whose photo it is" }, "set_flags": ["ch2_asked_photo"] },
-				{ "id": "keep_quiet", "text": { "ru": "Промолчать", "en": "Say nothing" }, "set_flags": ["ch2_kept_silent"] }
+				{
+					"id": "ask_whose",
+					"text": {
+						"ru": "Спросить, чьё это фото",
+						"en": "Ask whose photo it is"
+					},
+					"set_flags": [
+						"ch2_asked_photo"
+					]
+				},
+				{
+					"id": "keep_quiet",
+					"text": {
+						"ru": "Промолчать",
+						"en": "Say nothing"
+					},
+					"set_flags": [
+						"ch2_kept_silent"
+					]
+				}
 			]
 		},
 		"ch3_read_aloud": {
-			"prompt": { "ru": "Фраза собралась. Прочитать её…", "en": "The phrase came together. Read it…" },
+			"prompt": {
+				"ru": "Фраза собралась. Прочитать её…",
+				"en": "The phrase came together. Read it…"
+			},
 			"options": [
-				{ "id": "aloud", "text": { "ru": "Вслух", "en": "Out loud" }, "set_flags": ["ch3_read_aloud"] },
-				{ "id": "silently", "text": { "ru": "Про себя", "en": "Silently" }, "set_flags": ["ch3_read_silently"] }
+				{
+					"id": "aloud",
+					"text": {
+						"ru": "Вслух",
+						"en": "Out loud"
+					},
+					"set_flags": [
+						"ch3_read_aloud"
+					]
+				},
+				{
+					"id": "silently",
+					"text": {
+						"ru": "Про себя",
+						"en": "Silently"
+					},
+					"set_flags": [
+						"ch3_read_silently"
+					]
+				}
 			]
 		},
 		"ch3_ask_old": {
-			"prompt": { "ru": "Спросить купол о письме?", "en": "Ask the dome about the letter?" },
+			"prompt": {
+				"ru": "Спросить купол о письме?",
+				"en": "Ask the dome about the letter?"
+			},
 			"options": [
-				{ "id": "ask", "text": { "ru": "Спросить", "en": "Ask" }, "set_flags": ["ch3_asked_old"] },
-				{ "id": "dont", "text": { "ru": "Не спрашивать", "en": "Don't ask" }, "set_flags": ["ch3_didnt_ask"] }
+				{
+					"id": "ask",
+					"text": {
+						"ru": "Спросить",
+						"en": "Ask"
+					},
+					"set_flags": [
+						"ch3_asked_old"
+					]
+				},
+				{
+					"id": "dont",
+					"text": {
+						"ru": "Не спрашивать",
+						"en": "Don't ask"
+					},
+					"set_flags": [
+						"ch3_didnt_ask"
+					]
+				}
 			]
 		},
 		"ch4_listen": {
-			"prompt": { "ru": "Он читает письмо. Как реагировать?", "en": "He is reading a letter. How do you react?" },
+			"prompt": {
+				"ru": "Он читает письмо. Как реагировать?",
+				"en": "He is reading a letter. How do you react?"
+			},
 			"options": [
-				{ "id": "silent", "text": { "ru": "Слушать молча", "en": "Listen quietly" }, "set_flags": ["ch4_listened_silent"] },
-				{ "id": "joke", "text": { "ru": "Пошутить, чтобы разрядить", "en": "Crack a joke to lighten it" }, "set_flags": ["ch4_joked"] },
-				{ "id": "why", "text": { "ru": "Спросить, почему он их не отправлял", "en": "Ask why he never sent them" }, "set_flags": ["ch4_asked_why"] }
+				{
+					"id": "silent",
+					"text": {
+						"ru": "Слушать молча",
+						"en": "Listen quietly"
+					},
+					"set_flags": [
+						"ch4_listened_silent"
+					]
+				},
+				{
+					"id": "joke",
+					"text": {
+						"ru": "Пошутить, чтобы разрядить",
+						"en": "Crack a joke to lighten it"
+					},
+					"set_flags": [
+						"ch4_joked"
+					]
+				},
+				{
+					"id": "why",
+					"text": {
+						"ru": "Спросить, почему он их не отправлял",
+						"en": "Ask why he never sent them"
+					},
+					"set_flags": [
+						"ch4_asked_why"
+					]
+				}
+			]
+		},
+		"ch5_watch": {
+			"prompt": {
+				"ru": "Песня начнётся сейчас. Как слушать?",
+				"en": "The song is about to start. How do you want to listen?"
+			},
+			"options": [
+				{
+					"id": "dome",
+					"text": {
+						"ru": "Смотреть на купол",
+						"en": "Watch the dome"
+					},
+					"set_flags": [
+						"ch5_watched_dome"
+					]
+				},
+				{
+					"id": "eyes",
+					"text": {
+						"ru": "Закрыть глаза",
+						"en": "Close your eyes"
+					},
+					"set_flags": [
+						"ch5_eyes_closed"
+					]
+				}
+			]
+		},
+		"ch5_react": {
+			"prompt": {
+				"ru": "Песня закончилась…",
+				"en": "The song has ended…"
+			},
+			"options": [
+				{
+					"id": "familiar",
+					"text": {
+						"ru": "Сказать, что песня знакома",
+						"en": "Say the song feels familiar"
+					},
+					"set_flags": [
+						"ch5_said_familiar"
+					]
+				},
+				{
+					"id": "quiet",
+					"text": {
+						"ru": "Промолчать",
+						"en": "Stay quiet"
+					},
+					"set_flags": [
+						"ch5_kept_quiet"
+					]
+				}
 			]
 		}
 	}

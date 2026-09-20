@@ -365,6 +365,9 @@ func _run_steps() -> void:
 				_run_puzzle(str(step.get("id", "")))
 			"minigame":
 				_run_minigame(str(step.get("id", "")))
+			"song":
+				AudioManager.stop_music(1.5)
+				await _run_song()
 			"wait":
 				if _headless or _skip_mode:
 					pass  # в skip/headless не ждём
@@ -394,6 +397,14 @@ func _run_steps() -> void:
 			_:
 				_note.text = "· неизвестный шаг '%s' — пропущен" % t
 		_index += 1
+
+
+## Сцена песни: ждём завершения (естественного или через пропуск).
+func _run_song() -> void:
+	var SongScene: GDScript = load("res://scripts/ui/song_scene.gd")
+	var song: Control = SongScene.new()
+	_ui_root.add_child(song)
+	await song.finished
 
 
 ## Запуск загадки по id. Готовые загадки ждут решения (await),

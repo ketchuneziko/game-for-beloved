@@ -55,5 +55,7 @@
 	"saveload.read": "LOAD",
 	"saveload.delete": "delete",
 	"saveload.played": "played:",
-	"saveload.hint": "Quick save — F5 / ⌘S, quick load — F9 / ⌘L. Exiting to menu (Esc) autosaves."
+	"saveload.hint": "Quick save — F5 / ⌘S, quick load — F9 / ⌘L. Exiting to menu (Esc) autosaves.",
+	"song.skip": "skip ▸▸",
+	"song.missing": "(Your song plays here. Add the track and lyrics in data/custom/song.json — Chapter 5 is waiting.)"
 }
