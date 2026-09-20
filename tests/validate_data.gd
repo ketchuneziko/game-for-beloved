@@ -12,7 +12,7 @@ const KNOWN_STEP_TYPES := [
 	"line", "choice", "bg", "music", "sfx", "show", "hide", "expr",
 	"transition", "wait", "fragment", "achievement",
 	"unlock_photo", "unlock_memory", "unlock_letter", "unlock_secret",
-	"puzzle", "minigame", "label", "jump", "if_flag", "chapter_end", "title_card",
+	"puzzle", "minigame", "label", "jump", "if_flag", "chapter_end", "title_card", "set_flag",
 ]
 const KNOWN_BG := [
 	"black", "bg_planetarium_night", "bg_dome_stars", "bg_rain_window",
@@ -233,6 +233,12 @@ func _check_chapters(choice_ids: Dictionary, ach_ids: Dictionary, char_ids: Dict
 				"achievement":
 					if not ach_ids.has(str(step.get("id", ""))):
 						_err(f, "шаг %d: неизвестное достижение '%s'" % [i, step.get("id", "")])
+				"set_flag":
+					if str(step.get("flag", "")) == "":
+						_err(f, "шаг %d: set_flag без flag" % i)
+				"puzzle", "minigame":
+					if str(step.get("id", "")) == "":
+						_err(f, "шаг %d: %s без id" % [i, t])
 				"jump":
 					if not labels.has(str(step.get("label", ""))):
 						_err(f, "шаг %d: jump на несуществующую метку '%s'" % [i, step.get("label", "")])

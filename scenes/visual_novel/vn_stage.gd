@@ -360,8 +360,10 @@ func _run_steps() -> void:
 				GalleryManager.unlock("letters", str(step.get("id", "")))
 			"unlock_secret":
 				GalleryManager.unlock("secrets", str(step.get("id", "")))
-			"puzzle", "minigame":
-				_note.text = "· %s «%s» — появится в Фазе 7" % [t, step.get("id", "")]
+			"puzzle":
+				_run_puzzle(str(step.get("id", "")))
+			"minigame":
+				_note.text = "· мини-игра «%s» — появится в Фазе 7" % step.get("id", "")
 			"wait":
 				if _headless or _skip_mode:
 					pass  # в skip/headless не ждём
@@ -370,6 +372,8 @@ func _run_steps() -> void:
 			"label":
 				DialogueManager.current_label = str(step.get("id", ""))
 				GameManager.current_label = str(step.get("id", ""))
+			"set_flag":
+				GameManager.set_flag(str(step.get("flag", "")), step.get("value", true))
 			"jump":
 				var li := DialogueManager.seek_label(str(step.get("label", "")))
 				if li >= 0:
@@ -389,6 +393,23 @@ func _run_steps() -> void:
 			_:
 				_note.text = "· неизвестный шаг '%s' — пропущен" % t
 		_index += 1
+
+
+## Запуск загадки по id. Готовые загадки ждут решения (await),
+## остальные — помечаются как «Фаза 7» и не блокируют главу.
+func _run_puzzle(id: String) -> void:
+	match id:
+		"cipher_catalog":
+			if GameManager.has_flag("puzzle_cipher_done"):
+				return
+			var CipherPuzzle: GDScript = load("res://scripts/puzzles/cipher_puzzle.gd")
+			var pz: Control = CipherPuzzle.new()
+			_ui_root.add_child(pz)
+			await pz.solved
+			GameManager.set_flag("puzzle_cipher_done")
+			AchievementManager.unlock("puzzle_solved")
+		_:
+			_note.text = "· загадка «%s» — появится в Фазе 7" % id
 
 
 # ============================================================
@@ -419,7 +440,7 @@ func _begin_line(step: Dictionary) -> void:
 	_text.visible_characters = 0
 	SaveManager.mark_seen("%d:%d" % [DialogueManager.current_chapter, _index])
 	_history.add_entry(display_name, Color(str(ch.get("color", "#ffb9d5")) if not ch.is_empty() else "#ffb9d5"), text)
-	if SettingsManager.text_speed_value() <= 0.0 or _skip_mode:
+	if SettingsManager.text_speed_value() <= 0.0 or _skip_mode or _headless:
 		_type_pos = float(_line_total)
 		_text.visible_characters = _line_total
 		_finish_typing()
@@ -718,6 +739,10 @@ func _set_arrow(on: bool) -> void:
 # ============================================================
 
 func _apply_bg_effects(bg_id: String) -> void:
+	if bg_id == "bg_rain_window":
+		AudioManager.play_ambience("rain")
+	else:
+		AudioManager.stop_ambience(0.8)
 	var want_rain := bg_id == "bg_rain_window" and SettingsManager.particles
 	if want_rain and _fx_rain == null:
 		_fx_rain = CPUParticles2D.new()

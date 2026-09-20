@@ -1,26 +1,26 @@
 {
-	"_readme": "ЛЕНТА ВОСПОМИНАНИЙ (Глава 2). Замени плейсхолдеры на свои: положи фото в assets/photos/ и заполни поля. caption — подпись «с оборота фотографии», scene — короткая сцена-воспоминание (4–8 реплик, добавим в Фазе 6).",
+	"_readme": "ЛЕНТА ВОСПОМИНАНИЙ (Глава 2). Замени плейсхолдеры на свои: положи фото в assets/photos/ и заполни поля. caption — подпись «с оборота фотографии», scene — метка сцены-воспоминания в data/dialogue/chapter_02.json.",
 	"memories": [
 		{
 			"id": "mem_01",
 			"photo": "res://assets/photos/photo_01.jpg",
-			"date": "—",
-			"caption": { "ru": "плейсхолдер: подпись с оборота первой фотографии", "en": "placeholder: caption on the back of the first photo" },
-			"scene": "mem_01"
+			"date": "вт., вторая половина дня",
+			"caption": { "ru": "две ложки. это система.", "en": "two spoons. it's a system." },
+			"scene": "mem_tea"
 		},
 		{
 			"id": "mem_02",
 			"photo": "res://assets/photos/photo_02.jpg",
-			"date": "—",
-			"caption": { "ru": "плейсхолдер: подпись с оборота второй фотографии", "en": "placeholder: caption on the back of the second photo" },
-			"scene": "mem_02"
+			"date": "пт., вечер, дождь",
+			"caption": { "ru": "сорок минут под навесом. я всё помню.", "en": "forty minutes under the awning. i remember it all." },
+			"scene": "mem_bench"
 		},
 		{
 			"id": "mem_03",
 			"photo": "res://assets/photos/photo_03.jpg",
-			"date": "—",
-			"caption": { "ru": "плейсхолдер: подпись с оборота третьей фотографии", "en": "placeholder: caption on the back of the third photo" },
-			"scene": "mem_03"
+			"date": "сб., закрытая дверь",
+			"caption": { "ru": "лекция для одного слушателя. аплодисменты честные.", "en": "a lecture for an audience of one. honest applause." },
+			"scene": "mem_lecture"
 		}
 	]
 }

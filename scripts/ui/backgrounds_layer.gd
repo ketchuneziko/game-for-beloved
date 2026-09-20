@@ -2,11 +2,12 @@ extends Control
 ## Слой фонов (GDD §9.4): смена фонов с переходами fade / dissolve /
 ## slide / blur / white_flash (белая и «мягкая» — по настройке доступности).
 ## Живёт под персонажами; на смене — tween'ы, ничего не рвёт кадр.
-
-const UITheme := preload("res://scripts/ui/theme_builder.gd")
+## Цветная заглушка (когда файла фона нет) хранится явно в _placeholder,
+## чтобы не путаться с транзитными вспышками.
 
 var _current: Control
 var _incoming: Control
+var _placeholder: Control
 var _current_id := ""
 var _busy := false
 
@@ -37,6 +38,7 @@ func set_background(id: String, kind: String = "fade", duration: float = 1.1) ->
 	if id == _current_id:
 		return
 	_current_id = id
+	_placeholder = null
 	var tex := _load_texture(id)
 	if tex == null:
 		# Файла нет (плейсхолдер-фаза) — глухой цвет, чтобы сцена не «дыралась».
@@ -44,6 +46,8 @@ func set_background(id: String, kind: String = "fade", duration: float = 1.1) ->
 		c.color = Color("#181226")
 		c.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_placeholder = c
+		add_child(c)
 		_swap_to(c, kind, duration)
 		return
 	(_incoming as TextureRect).texture = tex
@@ -63,7 +67,6 @@ func _swap_to(node: Control, kind: String, duration: float) -> void:
 	if _busy:
 		# Предыдущий переход не успел — мгновенно завершаем его.
 		_finish_pending()
-	var _ignored := _busy
 	_busy = true
 	var soft: bool = SettingsManager.soft_flashes
 	var d := maxf(duration, 0.05)
@@ -81,7 +84,8 @@ func _swap_to(node: Control, kind: String, duration: float) -> void:
 			var tw2 := create_tween()
 			tw2.set_parallel(true)
 			tw2.tween_property(node, "position:x", 0.0, d).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-			tw2.tween_property(_current, "position:x", -w * 0.35, d).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+			if _current != null and is_instance_valid(_current):
+				tw2.tween_property(_current, "position:x", -w * 0.35, d).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 			tw2.chain().tween_callback(_finish_pending)
 		"blur":
 			# Мягкое «расфокусное» появление: рост яркости+масштаб вместо
@@ -108,38 +112,34 @@ func _swap_to(node: Control, kind: String, duration: float) -> void:
 			tw4.tween_property(flash, "modulate:a", 0.0, d * 0.65)
 			tw4.tween_callback(func() -> void:
 				flash.queue_free()
-				_finish_pending()
+				# Новый фон уже «продвинут» выше — просто открываем слою дорогу.
+				_busy = false
 			)
 			return
 		_:
 			# fade — по умолчанию.
 			node.modulate.a = 0.0
 			var tw5 := create_tween()
-			tw5.tween_property(node, "modulate.a", 1.0, d)
+			tw5.tween_property(node, "modulate:a", 1.0, d)
 			tw5.tween_callback(_finish_pending)
 
 
 ## Сделать node текущим фоном, убрать прежний, сбросить трансформации.
 func _promote(node: Control) -> void:
-	if _current != null and _current != node:
+	if _current != null and is_instance_valid(_current) and _current != node:
 		_current.queue_free()
 	_current = node
 	_incoming = _make_rect()
-	_current.position = Vector2.ZERO
-	_current.scale = Vector2.ONE
+	if is_instance_valid(_current):
+		_current.position = Vector2.ZERO
+		_current.scale = Vector2.ONE
 
 
+## Завершить переход: продвинуть заглушку (если это она), отпустить слой.
 func _finish_pending() -> void:
-	if _incoming != null and _incoming.texture != null:
-		_promote(_incoming)
-	else:
-		# Случай цветной заглушки: node уже в дереве.
-		for c in get_children():
-			if c != _current and c is ColorRect:
-				if _current != null:
-					_current.queue_free()
-				_current = c
-				break
+	if _placeholder != null and is_instance_valid(_placeholder):
+		_promote(_placeholder)
+		_placeholder = null
 	_busy = false
 
 
@@ -151,10 +151,11 @@ func to_black(duration: float = 0.8) -> void:
 	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	c.modulate.a = 0.0
 	add_child(c)
+	_placeholder = null
 	var tw := create_tween()
-	tw.tween_property(c, "modulate.a", 1.0, maxf(duration, 0.05))
+	tw.tween_property(c, "modulate:a", 1.0, maxf(duration, 0.05))
 	tw.tween_callback(func() -> void:
-		if _current != null:
+		if _current != null and is_instance_valid(_current):
 			_current.queue_free()
 		_current = c
 		_incoming = _make_rect()
