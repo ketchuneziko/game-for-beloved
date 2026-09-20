@@ -61,32 +61,16 @@ jobs:
           ls "$TPL_DIR" | head -12
       - name: Import project resources (required before headless export in 4.3)
         run: ~/godot-bin/godot --headless --path . --import 2>&1 | tee import.log || true
-      - name: Export Windows (.exe, single file)
-        run: |
-          set +e
-          mkdir -p exports
-          ~/godot-bin/godot --headless --verbose --path . --export-release "Windows Desktop" "exports/ToEternityAndBeyond.exe" > export-win.log 2>&1 &
-          GP=$!
-          ( while kill -0 $GP 2>/dev/null; do echo "$(date +%T) rss_kb=$(ps -o rss= -p $GP 2>/dev/null | tr -d ' ')"; sleep 3; done ) > mem.log &
-          MP=$!
-          wait $GP; rc=$?
-          kill $MP 2>/dev/null
-          echo "GODOT_EXIT=$rc"
-          tail -6 mem.log || true
-          if [ "$rc" -ne 0 ]; then
-            cat export-win.log >> "$GITHUB_STEP_SUMMARY"
-            tail -40 export-win.log | sed 's/\r//' | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::WIN %.900s\n' "$l"; done
-            exit "$rc"
-          fi
       - name: Export macOS (.app, universal, ad-hoc)
         run: |
           set +e
           mkdir -p exports
-          ~/godot-bin/godot --headless --path . --export-release "macOS" "exports/ToEternityAndBeyond.app" 2>&1 | tee export-mac.log
-          rc=${PIPESTATUS[0]}
+          script -q export-mac.log ~/godot-bin/godot --headless --path . --export-release "macOS" "exports/ToEternityAndBeyond.app"
+          rc=$?
           echo "GODOT_EXIT=$rc"
+          tail -12 export-mac.log || true
           if [ "$rc" -ne 0 ]; then
-            cat export-mac.log >> "$GITHUB_STEP_SUMMARY"
+            cat export-mac.log >> "$GITHUB_STEP_SUMMARY" 2>/dev/null
             tail -40 export-mac.log | sed 's/\r//' | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::MAC %.900s\n' "$l"; done
             exit "$rc"
           fi
@@ -102,20 +86,17 @@ jobs:
           # Headless-запуск собранного .app: движок должен стартовать без ошибок.
           exports/ToEternityAndBeyond.app/Contents/MacOS/ToEternityAndBeyond --headless --quit-after 300 2>&1 | tee boot.log
           if grep -qiE "SCRIPT ERROR|Parse Error" boot.log; then echo "BUILD BOOT FAILED"; exit 1; fi
-      - name: Package
+      - name: Package macOS zip
         run: |
           cd exports
           zip -r -q -y ToEternityAndBeyond-macOS.zip ToEternityAndBeyond.app
           cp "../КАК ОТКРЫТЬ.txt" ./КАК ОТКРЫТЬ.txt
           zip -q -u ToEternityAndBeyond-macOS.zip "КАК ОТКРЫТЬ.txt"
-          rm -rf ToEternityAndBeyond.app
-          zip -q ToEternityAndBeyond-Windows.zip ToEternityAndBeyond.exe "КАК ОТКРЫТЬ.txt"
-          rm ToEternityAndBeyond.exe
           ls -la
       - uses: actions/upload-artifact@v4
         with:
-          name: builds-macos-windows
-          path: exports/*.zip
+          name: builds-macos
+          path: exports/ToEternityAndBeyond-macOS.zip
           if-no-files-found: error
       - name: Attach to release (on tag)
         if: startsWith(github.ref, 'refs/tags/')
@@ -169,8 +150,36 @@ jobs:
             echo "--- BOOT FAILED:"; grep -iE "ERROR" boot.log | head -10; exit 1
           fi
           echo "boot OK ($(wc -l < boot.log) log lines)"
+      - name: Export Windows (.exe) - cross from Linux
+        run: |
+          set +e
+          godot --headless --path . --export-release "Windows Desktop" "exports/ToEternityAndBeyond.exe" 2>&1 | tee export-win.log
+          rc=${PIPESTATUS[0]}
+          echo "GODOT_EXIT=$rc"
+          if [ "$rc" -ne 0 ]; then
+            cat export-win.log >> "$GITHUB_STEP_SUMMARY"
+            tail -40 export-win.log | sed 's/\r//' | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::WIN %.900s\n' "$l"; done
+            exit "$rc"
+          fi
+      - name: Package Windows zip
+        run: |
+          cd exports
+          cp "../КАК ОТКРЫТЬ.txt" ./КАК ОТКРЫТЬ.txt
+          zip -q ToEternityAndBeyond-Windows.zip ToEternityAndBeyond.exe "КАК ОТКРЫТЬ.txt"
+          ls -la
       - uses: actions/upload-artifact@v4
         with:
           name: build-linux
           path: exports/ToEternityAndBeyond.x86_64
           if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-windows
+          path: exports/ToEternityAndBeyond-Windows.zip
+          if-no-files-found: error
+      - name: Attach to release (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: exports/ToEternityAndBeyond-Windows.zip
+          fail_on_unmatched_files: true
