@@ -50,15 +50,21 @@ jobs:
       - name: Install export templates
         run: |
           curl -sL -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION/-stable/}-stable_export_templates.tpz"
-          mkdir -p ~/Library/Application\ Support/Godot/export_templates
+          TPL_DIR="$HOME/Library/Application Support/Godot/export_templates/4.3.stable"
+          mkdir -p "$TPL_DIR"
           unzip -o -q templates.tpz -d /tmp/tpl
-          cp /tmp/tpl/templates/* ~/Library/Application\ Support/Godot/export_templates/
+          if [ -d /tmp/tpl/templates/4.3.stable ]; then
+            cp -R /tmp/tpl/templates/4.3.stable/. "$TPL_DIR/"
+          else
+            cp -R /tmp/tpl/templates/. "$TPL_DIR/"
+          fi
+          ls "$TPL_DIR" | head -12
       - name: Import project resources (required before headless export in 4.3)
         run: ~/godot-bin/godot --headless --path . --import 2>&1 | tee import.log || true
       - name: Export Windows (.exe, single file)
         run: |
           set +e
-          ~/godot-bin/godot --headless --path . --export-release "Windows Desktop" "exports/ToEternityAndBeyond.exe" 2>&1 | tee export-win.log
+          ~/godot-bin/godot --headless --verbose --path . --export-release "Windows Desktop" "exports/ToEternityAndBeyond.exe" 2>&1 | tee export-win.log
           rc=${PIPESTATUS[0]}
           echo "GODOT_EXIT=$rc"
           if [ "$rc" -ne 0 ]; then
@@ -118,9 +124,15 @@ jobs:
       - name: Install export templates
         run: |
           curl -sL -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION/-stable/}-stable_export_templates.tpz"
-          mkdir -p ~/.local/share/godot/export_templates
+          TPL_DIR="$HOME/.local/share/godot/export_templates/4.3.stable"
+          mkdir -p "$TPL_DIR"
           unzip -o -q templates.tpz -d /tmp/tpl
-          cp /tmp/tpl/templates/* ~/.local/share/godot/export_templates/
+          if [ -d /tmp/tpl/templates/4.3.stable ]; then
+            cp -r /tmp/tpl/templates/4.3.stable/. "$TPL_DIR/"
+          else
+            cp -r /tmp/tpl/templates/. "$TPL_DIR/"
+          fi
+          ls "$TPL_DIR" | head -12
       - name: Import project resources (required before headless export in 4.3)
         run: godot --headless --path . --import 2>&1 | tee import.log || true
       - name: Export Linux
