@@ -22,6 +22,7 @@ func _make_rect() -> TextureRect:
 	var r := TextureRect.new()
 	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	r.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	r.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	r.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	r.modulate.a = 0.0

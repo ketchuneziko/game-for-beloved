@@ -18,11 +18,6 @@
 			"id": "chapter2"
 		},
 		{
-			"type": "show",
-			"who": "author",
-			"expr": "happy"
-		},
-		{
 			"type": "line",
 			"who": "author",
 			"text": {
@@ -93,15 +88,9 @@
 		},
 		{
 			"type": "show",
-			"who": "author",
-			"expr": "neutral",
-			"at": "left"
-		},
-		{
-			"type": "show",
 			"who": "mira",
 			"expr": "happy",
-			"at": "right"
+			"at": "center"
 		},
 		{
 			"type": "line",
@@ -213,15 +202,9 @@
 		},
 		{
 			"type": "show",
-			"who": "author",
-			"expr": "neutral",
-			"at": "left"
-		},
-		{
-			"type": "show",
 			"who": "mira",
 			"expr": "sad",
-			"at": "right"
+			"at": "center"
 		},
 		{
 			"type": "line",
@@ -351,15 +334,9 @@
 		},
 		{
 			"type": "show",
-			"who": "author",
-			"expr": "embarrassed",
-			"at": "left"
-		},
-		{
-			"type": "show",
 			"who": "mira",
 			"expr": "neutral",
-			"at": "right"
+			"at": "center"
 		},
 		{
 			"type": "line",
@@ -475,12 +452,6 @@
 		{
 			"type": "music",
 			"id": "chapter2"
-		},
-		{
-			"type": "show",
-			"who": "author",
-			"expr": "neutral",
-			"at": "center"
 		},
 		{
 			"type": "if_flag",

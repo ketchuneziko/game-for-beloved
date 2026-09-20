@@ -39,6 +39,7 @@ func _load_texture() -> Texture2D:
 	for p in [
 		"res://assets/photos/puzzle_photo.jpg",
 		"res://assets/photos/puzzle_photo.png",
+		"res://assets/backgrounds/bg_dome_stars.png",
 		"res://assets/backgrounds/bg_dome_stars.jpg",
 	]:
 		if ResourceLoader.exists(p):

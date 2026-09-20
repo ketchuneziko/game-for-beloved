@@ -20,11 +20,6 @@
 			"fade": 2.0
 		},
 		{
-			"type": "show",
-			"who": "author",
-			"expr": "neutral"
-		},
-		{
 			"type": "line",
 			"who": "author",
 			"text": {

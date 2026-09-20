@@ -48,6 +48,7 @@ func _build_ui() -> void:
 			break
 	_dome.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_dome.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	_dome.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_dome.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_dome.offset_left = -30.0
 	_dome.offset_right = 30.0

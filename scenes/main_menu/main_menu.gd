@@ -50,6 +50,7 @@ func _build_background() -> void:
 		bgr.texture = tex
 		bgr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		bgr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		bgr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		bgr.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		bgr.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		bgr.modulate = Color(0.62, 0.58, 0.72) if not _finished() else Color(0.85, 0.75, 0.75)

@@ -16,11 +16,6 @@
 			"duration": 1.6
 		},
 		{
-			"type": "show",
-			"who": "author",
-			"expr": "neutral"
-		},
-		{
 			"type": "line",
 			"who": "author",
 			"text": {
