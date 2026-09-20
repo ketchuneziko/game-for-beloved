@@ -39,6 +39,8 @@ var _auto_mode := false
 var _skip_mode := false
 var _ui_hidden := false
 var _headless := false
+var _question_answered := false
+signal _question_done
 var _first_line_shown := false
 var _awaiting_click_gate := 0.0   # защита от двойного клика после choice
 
@@ -81,6 +83,9 @@ func _ready() -> void:
 	var chapter := int(GameManager.pending.get("chapter", 0))
 	if chapter <= 0:
 		chapter = maxi(GameManager.current_chapter, 0)
+	# Отладка/тесты: запуск конкретной главы напрямую (VN_CHAPTER=3).
+	if _headless and OS.get_environment("VN_CHAPTER") != "":
+		chapter = int(OS.get_environment("VN_CHAPTER"))
 	GameManager.current_chapter = chapter  # сцена может быть запущена напрямую
 	if not DialogueManager.load_chapter(chapter):
 		_note.text = "Нет файла главы %d (data/dialogue). Формат — docs/DATA_FORMAT.md" % chapter
@@ -378,6 +383,12 @@ func _run_steps() -> void:
 				GameManager.current_label = str(step.get("id", ""))
 			"set_flag":
 				GameManager.set_flag(str(step.get("flag", "")), step.get("value", true))
+			"ui":
+				_set_minimal_ui(not bool(step.get("show", true)))
+			"constellation":
+				await _run_constellation(str(LocalizationManager.field(step.get("word", {}))))
+			"final_question":
+				await _run_final_question()
 			"jump":
 				var li := DialogueManager.seek_label(str(step.get("label", "")))
 				if li >= 0:
@@ -405,6 +416,81 @@ func _run_song() -> void:
 	var song: Control = SongScene.new()
 	_ui_root.add_child(song)
 	await song.finished
+
+
+## Минимальный режим (Глава 7): без быстрого меню и служебных подписей.
+func _set_minimal_ui(minimal: bool) -> void:
+	_note.visible = not minimal
+	if not _quick_buttons.is_empty():
+		_quick_buttons[0].get_parent().visible = not minimal
+
+
+## Созвездие имени: показываем и ждём.
+func _run_constellation(word_text: String) -> void:
+	var Constellation: GDScript = load("res://scripts/ui/constellation_overlay.gd")
+	var c: Control = Constellation.new()
+	c.word = word_text
+	_ui_root.add_child(c)
+	await c.done
+
+
+## Финальный вопрос (GDD «FINAL CHOICE»): обе кнопки — «да», без таймеров
+## и давления. Любая — positive ending. Блокирует цикл шагов до ответа.
+func _run_final_question() -> void:
+	_state = State.BUSY
+	_set_minimal_ui(true)
+	_panel.visible = false
+	_set_arrow(false)
+
+	var about := GameManager.custom_about()
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_ui_root.add_child(center)
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 26)
+	center.add_child(v)
+
+	var q := Label.new()
+	q.text = LocalizationManager.field(about.get("final_question", {"ru": "БУДЕШЬ МОЕЙ ДЕВУШКОЙ?"}))
+	q.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	q.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var display := UITheme.display_font()
+	if display != null:
+		q.add_theme_font_override("font", display)
+	q.add_theme_font_size_override("font_size", 30)
+	q.add_theme_color_override("font_color", UITheme.COL_ACCENT_SOFT)
+	v.add_child(q)
+
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 22)
+	v.add_child(row)
+
+	for pair: Array in [["❤  ", "yes_button"], ["💗  ", "yes_of_course_button"]]:
+		var b := Button.new()
+		b.text = str(pair[0]) + LocalizationManager.field(about.get(str(pair[1]), {"ru": "ДА"}))
+		b.custom_minimum_size = Vector2(280, 62)
+		b.pressed.connect(_on_final_answer.bind(center))
+		row.add_child(b)
+
+	if _headless:
+		var t := get_tree().create_timer(0.3)
+		t.timeout.connect(_on_final_answer.bind(center))
+	await _question_done
+
+
+func _on_final_answer(center: Control) -> void:
+	if _question_answered:
+		return
+	_question_answered = true
+	AudioManager.play_sfx("heart")
+	AchievementManager.unlock("the_end")
+	SaveManager.finish_game()
+	SaveManager.flush()
+	center.queue_free()
+	AudioManager.stop_music(2.0)
+	GameManager.change_scene_faded(GameManager.SCENE_ENDING, 1.4, 1.4)
+	_question_done.emit()
 
 
 ## Запуск загадки по id. Готовые загадки ждут решения (await),
@@ -479,6 +565,7 @@ func _begin_line(step: Dictionary) -> void:
 	_text.text = text
 	_text.visible_characters = 0
 	SaveManager.mark_seen("%d:%d" % [DialogueManager.current_chapter, _index])
+	_awaiting_click_gate = maxf(_awaiting_click_gate, float(step.get("pause_after", 0.0)))
 	if not _first_line_shown:
 		_first_line_shown = true
 		AchievementManager.unlock("first_step")
@@ -544,6 +631,8 @@ func _on_choice_selected(opt: Dictionary) -> void:
 # ============================================================
 
 func _on_chapter_ended(step: Dictionary = {}) -> void:
+	if _question_answered:
+		return  # сцена уже уходит в финал
 	_state = State.BUSY
 	SaveManager.flush()
 	SaveManager.autosave()

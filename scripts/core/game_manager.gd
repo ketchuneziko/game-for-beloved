@@ -11,6 +11,7 @@ const SCENE_MENU := "res://scenes/main_menu/main_menu.tscn"
 const SCENE_VN := "res://scenes/visual_novel/vn_stage.tscn"
 const SCENE_SETTINGS := "res://scenes/ui/settings_menu.tscn"
 const SCENE_CREDITS := "res://scenes/ui/credits.tscn"
+const SCENE_ENDING := "res://scenes/ending/ending.tscn"
 const SCENE_GALLERY := "res://scenes/ui/gallery.tscn"
 const SCENE_ACHIEVEMENTS := "res://scenes/ui/achievements.tscn"
 const FRAGMENTS_TOTAL := 7

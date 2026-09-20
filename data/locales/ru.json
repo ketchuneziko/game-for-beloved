@@ -67,5 +67,7 @@
 	"gallery.sealed": "запечатано",
 	"ach.title": "ДОСТИЖЕНИЯ",
 	"ach.hidden_hint": "скрытое достижение — раскроется, если искать",
-	"viewer.close_hint": "клик — закрыть"
+	"viewer.close_hint": "клик — закрыть",
+	"ending.continue_hint": "клик — дальше",
+	"ending.ps": "P.S. Это не конец. Это самая первая страница."
 }

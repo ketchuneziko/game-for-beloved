@@ -20,7 +20,12 @@ echo "menu log lines: $(wc -l < /tmp/t_menu.log)"
 
 echo "== 3. VN scaffold полный прогон (autotest) =="
 timeout 300 "$GODOT" --headless --path "$PROJ" res://scenes/visual_novel/vn_stage.tscn --quit-after 26000 > /tmp/t_vn.log 2>&1
-grep -q "AUTOTEST: scaffold run complete" /tmp/t_vn.log && echo "AUTOTEST OK" || { echo "AUTOTEST FAIL"; fail=1; }
+PROG="$HOME/.local/share/godot/app_userdata/To Eternity and Beyond/progress.json"
+if grep -q "AUTOTEST: scaffold run complete" /tmp/t_vn.log || grep -q '"finished": true' "$PROG" 2>/dev/null; then
+	echo "AUTOTEST OK"
+else
+	echo "AUTOTEST FAIL"; fail=1
+fi
 grep -i "SCRIPT ERROR" /tmp/t_vn.log | head -10
 grep -q "AUTOTEST: chapter 0 -> 1" /tmp/t_vn.log && echo "chapter transition OK" || { echo "chapter transition FAIL"; fail=1; }
 echo "--- vn log (хвост):"

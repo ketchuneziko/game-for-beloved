@@ -67,5 +67,7 @@
 	"gallery.sealed": "sealed",
 	"ach.title": "ACHIEVEMENTS",
 	"ach.hidden_hint": "hidden achievement — reveals if you look for it",
-	"viewer.close_hint": "click to close"
+	"viewer.close_hint": "click to close",
+	"ending.continue_hint": "click to continue",
+	"ending.ps": "P.S. This is not the end. This is the very first page."
 }

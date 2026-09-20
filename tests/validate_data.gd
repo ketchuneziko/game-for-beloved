@@ -12,7 +12,7 @@ const KNOWN_STEP_TYPES := [
 	"line", "choice", "bg", "music", "sfx", "show", "hide", "expr",
 	"transition", "wait", "fragment", "achievement",
 	"unlock_photo", "unlock_memory", "unlock_letter", "unlock_secret",
-	"puzzle", "minigame", "label", "jump", "if_flag", "chapter_end", "title_card", "set_flag", "song",
+	"puzzle", "minigame", "label", "jump", "if_flag", "chapter_end", "title_card", "set_flag", "song", "ui", "constellation", "final_question",
 ]
 const KNOWN_BG := [
 	"black", "bg_planetarium_night", "bg_dome_stars", "bg_rain_window",
