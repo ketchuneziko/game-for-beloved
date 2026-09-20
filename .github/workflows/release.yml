@@ -61,14 +61,42 @@ jobs:
           ls "$TPL_DIR" | head -12
       - name: Import project resources (required before headless export in 4.3)
         run: ~/godot-bin/godot --headless --path . --import 2>&1 | tee import.log || true
-      - name: Export macOS (.app, universal, ad-hoc)
+      - name: Probe A - export-release (expected silent kill)
         run: |
           set +e
           mkdir -p exports
-          ~/godot-bin/godot --headless --verbose --log-file "$PWD/godot-export.log" --path "$PWD" --export-release "macOS" "$PWD/exports/ToEternityAndBeyond.app"
-          rc=$?
-          echo "RC=$rc"
-          [ "$rc" -ne 0 ] && exit 1 || true
+          ~/godot-bin/godot --headless --path "$PWD" --export-release "macOS" "$PWD/exports/ToEternityAndBeyond.app"
+          echo "PROBE_RELEASE_RC=$?"
+          true
+      - name: Probe B - export-pack only (pck, no binary patching)
+        run: |
+          set +e
+          ~/godot-bin/godot --headless --path "$PWD" --export-pack "macOS" "$PWD/exports/ToEternityAndBeyond.pck"
+          echo "PROBE_PACK_RC=$?"
+          ls -la exports/ || true
+          true
+      - name: Assemble .app manually from template zip
+        run: |
+          set +e
+          TPL_ZIP="$HOME/Library/Application Support/Godot/export_templates/4.3.stable/macos.zip"
+          echo "::error::TPL exists=$(test -f "$TPL_ZIP" && echo yes || echo NO)"
+          rm -rf /tmp/appx && mkdir -p /tmp/appx
+          unzip -q -o "$TPL_ZIP" -d /tmp/appx || echo "::error::unzip template failed"
+          ls /tmp/appx || true
+          cp -R /tmp/appx/ToEternityAndBeyond.app "$PWD/exports/ToEternityAndBeyond.app" || echo "::error::copy app failed"
+          cp "$PWD/exports/ToEternityAndBeyond.pck" "$PWD/exports/ToEternityAndBeyond.app/Contents/Resources/ToEternityAndBeyond.pck" || echo "::error::copy pck failed"
+          codesign --force --deep -s - "$PWD/exports/ToEternityAndBeyond.app" || echo "::error::codesign rc=$?"
+          ls -la "$PWD/exports/ToEternityAndBeyond.app/Contents/Resources/" || true
+          true
+      - name: Dump godot self-log + macOS crash reports
+        if: always()
+        run: |
+          echo "::error::DIAG glog_bytes=$(wc -c < godot-export.log 2>/dev/null || echo NA)"
+          tail -30 godot-export.log 2>/dev/null | grep -v '^[[:space:]]*$' | tail -10 | while IFS= read -r l; do printf '::error::G %.900s\n' "$l"; done || true
+          ls -lt ~/Library/Logs/DiagnosticReports 2>/dev/null | head -6 | while IFS= read -r l; do printf '::error::IPS %.900s\n' "$l"; done || true
+          for f in $(ls -t ~/Library/Logs/DiagnosticReports/*.ips 2>/dev/null | head -2); do
+            head -c 500 "$f" | tr '\n' '~' | while IFS= read -r l; do printf '::error::IPSHD %.900s\n' "$l"; done
+          done || true
       - name: Dump godot self-log + macOS crash reports
         if: always()
         run: |
