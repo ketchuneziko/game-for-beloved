@@ -57,5 +57,15 @@
 	"saveload.played": "время:",
 	"saveload.hint": "Быстрый сейв — F5 / ⌘S, быстрый лоад — F9 / ⌘L. Выход в меню (Esc) делает автосейв.",
 	"song.skip": "пропустить ▸▸",
-	"song.missing": "(Здесь должна играть ваша песня. Положи трек и строки в data/custom/song.json — Глава 5 ждёт.)"
+	"song.missing": "(Здесь должна играть ваша песня. Положи трек и строки в data/custom/song.json — Глава 5 ждёт.)",
+	"gallery.title": "ГАЛЕРЕЯ",
+	"gallery.photos": "ФОТО",
+	"gallery.memories": "ВОСПОМИНАНИЯ",
+	"gallery.letters": "ПИСЬМА",
+	"gallery.secrets": "СЕКРЕТЫ",
+	"gallery.locked": "ещё не найдено",
+	"gallery.sealed": "запечатано",
+	"ach.title": "ДОСТИЖЕНИЯ",
+	"ach.hidden_hint": "скрытое достижение — раскроется, если искать",
+	"viewer.close_hint": "клик — закрыть"
 }

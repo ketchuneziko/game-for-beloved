@@ -31,7 +31,7 @@ echo "== 4. шрифты =="
 "$GODOT" --headless --path "$PROJ" --script tests/font_check.gd > /dev/null 2>&1 || fail=1
 
 echo "== 5. настройки, титры, главы (soak) =="
-for sc in scenes/ui/settings_menu.tscn scenes/ui/credits.tscn scenes/ui/chapter_select.tscn; do
+for sc in scenes/ui/settings_menu.tscn scenes/ui/credits.tscn scenes/ui/chapter_select.tscn scenes/ui/gallery.tscn scenes/ui/achievements.tscn; do
 	timeout 60 "$GODOT" --headless --path "$PROJ" "res://$sc" --quit-after 300 > /tmp/t_scene.log 2>&1
 	if grep -i "SCRIPT ERROR\|Parse Error" /tmp/t_scene.log | grep -q .; then
 		echo "--- $sc:"; grep -i "ERROR" /tmp/t_scene.log | head -6; fail=1

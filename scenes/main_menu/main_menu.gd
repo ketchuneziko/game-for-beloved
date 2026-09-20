@@ -216,9 +216,9 @@ func _on_action(action: String) -> void:
 		"chapters":
 			GameManager.change_scene_faded("res://scenes/ui/chapter_select.tscn")
 		"gallery":
-			_flash("Галерея откроется в Фазе 9")
+			GameManager.change_scene_faded(GameManager.SCENE_GALLERY)
 		"achievements":
-			_flash("Достижения появятся в Фазе 9")
+			GameManager.change_scene_faded(GameManager.SCENE_ACHIEVEMENTS)
 		"settings":
 			GameManager.change_scene_faded(GameManager.SCENE_SETTINGS)
 		"credits":
