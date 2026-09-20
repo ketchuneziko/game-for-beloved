@@ -61,58 +61,60 @@ jobs:
           ls "$TPL_DIR" | head -12
       - name: Import project resources (required before headless export in 4.3)
         run: ~/godot-bin/godot --headless --path . --import 2>&1 | tee import.log || true
-      - name: Probe A - export-release (expected silent kill)
+      - name: Probe A - export-release
         run: |
           set +e
           mkdir -p exports
           ~/godot-bin/godot --headless --path "$PWD" --export-release "macOS" "$PWD/exports/ToEternityAndBeyond.app"
-          echo "PROBE_RELEASE_RC=$?"
+          rc=$?
+          echo "::error::A_RC=$rc"
           true
-      - name: Probe B - export-pack only (pck, no binary patching)
+      - name: Probe B - export-pack (pck only)
         run: |
           set +e
           ~/godot-bin/godot --headless --path "$PWD" --export-pack "macOS" "$PWD/exports/ToEternityAndBeyond.pck"
-          echo "PROBE_PACK_RC=$?"
-          ls -la exports/ || true
+          rc=$?
+          echo "::error::B_RC=$rc pck=$(wc -c < "$PWD/exports/ToEternityAndBeyond.pck" 2>/dev/null || echo missing)"
           true
-      - name: Assemble .app manually from template zip
+      - name: Assemble .app from template zip
         run: |
           set +e
           TPL_ZIP="$HOME/Library/Application Support/Godot/export_templates/4.3.stable/macos.zip"
-          echo "::error::TPL exists=$(test -f "$TPL_ZIP" && echo yes || echo NO)"
+          unzip -l "$TPL_ZIP" 2>/dev/null | head -15 | while IFS= read -r l; do printf '::error::ZIP %s\n' "$l"; done || echo "::error::no template zip"
           rm -rf /tmp/appx && mkdir -p /tmp/appx
           unzip -q -o "$TPL_ZIP" -d /tmp/appx || echo "::error::unzip template failed"
-          ls /tmp/appx || true
-          cp -R /tmp/appx/ToEternityAndBeyond.app "$PWD/exports/ToEternityAndBeyond.app" || echo "::error::copy app failed"
-          cp "$PWD/exports/ToEternityAndBeyond.pck" "$PWD/exports/ToEternityAndBeyond.app/Contents/Resources/ToEternityAndBeyond.pck" || echo "::error::copy pck failed"
-          codesign --force --deep -s - "$PWD/exports/ToEternityAndBeyond.app" || echo "::error::codesign rc=$?"
-          ls -la "$PWD/exports/ToEternityAndBeyond.app/Contents/Resources/" || true
+          TOP=$(ls /tmp/appx | head -1)
+          echo "::error::TOP=$TOP"
+          if [ -d "/tmp/appx/$TOP" ]; then
+            cp -R "/tmp/appx/$TOP" "$PWD/exports/ToEternityAndBeyond.app" || echo "::error::copy app failed"
+            if [ -f "$PWD/exports/ToEternityAndBeyond.pck" ]; then
+              mkdir -p "$PWD/exports/ToEternityAndBeyond.app/Contents/Resources"
+              cp "$PWD/exports/ToEternityAndBeyond.pck" "$PWD/exports/ToEternityAndBeyond.app/Contents/Resources/ToEternityAndBeyond.pck" || echo "::error::copy pck failed"
+            fi
+            codesign --force --deep -s - "$PWD/exports/ToEternityAndBeyond.app" 2>&1 | head -3 || true
+            echo "::error::ASSEMBLED size=$(du -sk "$PWD/exports/ToEternityAndBeyond.app" 2>/dev/null | cut -f1)KB"
+          fi
           true
-      - name: Dump godot self-log + macOS crash reports
+      - name: Dump editor log + .ips crash reports
         if: always()
         run: |
-          echo "::error::DIAG glog_bytes=$(wc -c < godot-export.log 2>/dev/null || echo NA)"
-          tail -30 godot-export.log 2>/dev/null | grep -v '^[[:space:]]*$' | tail -10 | while IFS= read -r l; do printf '::error::G %.900s\n' "$l"; done || true
-          ls -lt ~/Library/Logs/DiagnosticReports 2>/dev/null | head -6 | while IFS= read -r l; do printf '::error::IPS %.900s\n' "$l"; done || true
+          echo "::error::DIAG glog=$(wc -c < godot-export.log 2>/dev/null || echo NA)"
+          EDLOG="$HOME/Library/Application Support/Godot/log/log.txt"
+          echo "::error::EDLOG bytes=$(wc -c < "$EDLOG" 2>/dev/null || echo NA)"
+          tail -40 "$EDLOG" 2>/dev/null | grep -v '^[[:space:]]*$' | tail -10 | while IFS= read -r l; do printf '::error::E %.900s\n' "$l"; done || true
           for f in $(ls -t ~/Library/Logs/DiagnosticReports/*.ips 2>/dev/null | head -2); do
-            head -c 500 "$f" | tr '\n' '~' | while IFS= read -r l; do printf '::error::IPSHD %.900s\n' "$l"; done
+            python3 -c "
+              import json
+              lines = open('$f', errors='replace').read().splitlines()
+              try:
+                  d = json.loads(lines[1])
+                  print('TERM:', json.dumps(d.get('termination', {}))[:350])
+                  print('EXC:', json.dumps(d.get('exception', {}))[:350])
+                  print('PATH:', str(d.get('procPath', ''))[:180])
+              except Exception as e:
+                  print('RAW:', (lines[1] if len(lines) > 1 else str(lines))[:600])
+            " 2>&1 | while IFS= read -r l; do printf '::error::IPS %s\n' "$l"; done
           done || true
-      - name: Dump godot self-log + macOS crash reports
-        if: always()
-        run: |
-          echo "::error::DIAG glog_bytes=$(wc -c < godot-export.log 2>/dev/null || echo NA)"
-          tail -30 godot-export.log 2>/dev/null | grep -v '^[[:space:]]*$' | tail -10 | while IFS= read -r l; do printf '::error::G %.900s\n' "$l"; done || true
-          ls -lt ~/Library/Logs/DiagnosticReports 2>/dev/null | head -6 | while IFS= read -r l; do printf '::error::IPS %.900s\n' "$l"; done || true
-          for f in $(ls -t ~/Library/Logs/DiagnosticReports/*.ips 2>/dev/null | head -2); do
-            head -c 500 "$f" | tr '\n' '~' | while IFS= read -r l; do printf '::error::IPSHD %.900s\n' "$l"; done
-          done || true
-      - name: Failure diagnostics (macOS)
-        if: failure()
-        run: |
-          ls -la export-win.log mem.log 2>/dev/null | while IFS= read -r l; do printf '::error::FILES %.900s\n' "$l"; done || true
-          head -c 600 export-win.log 2>/dev/null | tr '\n' '~' | while IFS= read -r l; do printf '::error::HEAD %.900s\n' "$l"; done || true
-          tail -c 600 export-win.log 2>/dev/null | tr '\n' '~' | while IFS= read -r l; do printf '::error::TAIL %.900s\n' "$l"; done || true
-          tail -4 mem.log 2>/dev/null | while IFS= read -r l; do printf '::error::MEMRSS %.900s\n' "$l"; done || true
       - name: Smoke test macOS build (boot to menu)
         run: |
           # Headless-запуск собранного .app: движок должен стартовать без ошибок.
