@@ -64,9 +64,15 @@ jobs:
       - name: Export Windows (.exe, single file)
         run: |
           set +e
-          ~/godot-bin/godot --headless --verbose --path . --export-release "Windows Desktop" "exports/ToEternityAndBeyond.exe" 2>&1 | tee export-win.log
-          rc=${PIPESTATUS[0]}
+          mkdir -p exports
+          ~/godot-bin/godot --headless --verbose --path . --export-release "Windows Desktop" "exports/ToEternityAndBeyond.exe" > export-win.log 2>&1 &
+          GP=$!
+          ( while kill -0 $GP 2>/dev/null; do echo "$(date +%T) rss_kb=$(ps -o rss= -p $GP 2>/dev/null | tr -d ' ')"; sleep 3; done ) > mem.log &
+          MP=$!
+          wait $GP; rc=$?
+          kill $MP 2>/dev/null
           echo "GODOT_EXIT=$rc"
+          tail -6 mem.log || true
           if [ "$rc" -ne 0 ]; then
             cat export-win.log >> "$GITHUB_STEP_SUMMARY"
             tail -40 export-win.log | sed 's/\r//' | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::WIN %.900s\n' "$l"; done
@@ -75,6 +81,7 @@ jobs:
       - name: Export macOS (.app, universal, ad-hoc)
         run: |
           set +e
+          mkdir -p exports
           ~/godot-bin/godot --headless --path . --export-release "macOS" "exports/ToEternityAndBeyond.app" 2>&1 | tee export-mac.log
           rc=${PIPESTATUS[0]}
           echo "GODOT_EXIT=$rc"
@@ -83,6 +90,22 @@ jobs:
             tail -40 export-mac.log | sed 's/\r//' | grep -v '^[[:space:]]*$' | tail -9 | while IFS= read -r l; do printf '::error::MAC %.900s\n' "$l"; done
             exit "$rc"
           fi
+      - name: Failure diagnostics (macOS)
+        if: failure()
+        run: |
+          {
+            echo "=== mem.log ==="; cat mem.log 2>/dev/null | tail -10
+            echo "=== DiagnosticReports ==="; ls -lt ~/Library/Logs/DiagnosticReports 2>/dev/null | head -8
+            for f in $(ls -t ~/Library/Logs/DiagnosticReports/*.ips 2>/dev/null | head -3); do
+              echo "--- $f"
+              grep -oE '"termination":{[^}]*}' "$f" | head -1
+              grep -oE '"exception":{[^}]*}' "$f" | head -1
+            done
+          } >> "$GITHUB_STEP_SUMMARY" 2>&1
+          tail -3 mem.log 2>/dev/null | while IFS= read -r l; do printf '::error::MEM %.900s\n' "$l"; done || true
+          for f in $(ls -t ~/Library/Logs/DiagnosticReports/*.ips 2>/dev/null | head -2); do
+            grep -oE '"(termination|exception)":{[^}]*}' "$f" | head -1 | while IFS= read -r l; do printf '::error::IPS %.900s\n' "$l"; done
+          done || true
       - name: Smoke test macOS build (boot to menu)
         run: |
           # Headless-запуск собранного .app: движок должен стартовать без ошибок.
@@ -138,6 +161,7 @@ jobs:
       - name: Export Linux
         run: |
           set +e
+          mkdir -p exports
           godot --headless --path . --export-release "Linux" "exports/ToEternityAndBeyond.x86_64" 2>&1 | tee export-linux.log
           rc=${PIPESTATUS[0]}
           echo "GODOT_EXIT=$rc"
