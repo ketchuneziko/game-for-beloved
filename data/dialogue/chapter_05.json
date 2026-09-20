@@ -1,0 +1,323 @@
+{
+	"chapter": 5,
+	"title": {
+		"ru": "CHAPTER 5 — THE SONG",
+		"en": "CHAPTER 5 — THE SONG"
+	},
+	"chapters": {
+		"ru": "песня, которую я приберёг",
+		"en": "the song I kept for later"
+	},
+	"steps": [
+		{
+			"type": "bg",
+			"id": "bg_dome_stars",
+			"transition": "dissolve",
+			"duration": 1.6
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Проигрыватель стоит в третьем ряду. Ему почти столько же лет, сколько куполу.",
+				"en": "The turntable sits in the third row. It's almost as old as the dome."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Одна пластинка. Одна. Я убирал её подальше три года.",
+				"en": "One record. One. I kept it out of reach for three years."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Для особого случая. Это звучало разумнее, чем признать: я просто ждал.",
+				"en": "For a special occasion. It sounded wiser than admitting: I was simply waiting."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "На обложке ничего особенного. Обычная пластинка. Так не бывает: «особенное» всегда выглядит обычно.",
+				"en": "Nothing special on the cover. An ordinary record. It's always like that: 'special' looks ordinary."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Ставь иглу. Медленно. Она этого не любит.",
+				"en": "Put the needle down. Slowly. She doesn't like it fast."
+			}
+		},
+		{
+			"type": "choice",
+			"id": "ch5_watch"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Готова? Тогда слушай.",
+				"en": "Ready? Then listen."
+			}
+		},
+		{
+			"type": "wait",
+			"duration": 0.8
+		},
+		{
+			"type": "song"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Вот. Теперь она — не «приберёг».",
+				"en": "There. Now it's not 'kept for later' anymore."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Теперь она — сыграна. Для тебя.",
+				"en": "Now it's played. For you."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Знаешь, почему я приберегал? Боялся, что в неправильный вечер она прозвучит неправильно.",
+				"en": "You know why I kept it waiting? I was afraid that on the wrong evening it would sound wrong."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Глупо. Песни не портятся от вечеров. Портятся от молчания.",
+				"en": "Silly. Songs don't spoil from evenings. They spoil from silence."
+			}
+		},
+		{
+			"type": "choice",
+			"id": "ch5_react"
+		},
+		{
+			"type": "if_flag",
+			"flag": "ch5_said_familiar",
+			"jump_if_true": "b_familiar"
+		},
+		{
+			"type": "jump",
+			"label": "b_quiet_react"
+		},
+		{
+			"type": "label",
+			"id": "b_familiar"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "surprised"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Знакома?..",
+				"en": "Familiar…?"
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Возможно, некоторые песни находят тебя раньше, чем ты находишь их.",
+				"en": "Maybe some songs find you before you find them."
+			}
+		},
+		{
+			"type": "jump",
+			"label": "merge_song"
+		},
+		{
+			"type": "label",
+			"id": "b_quiet_react"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Тишина после последнего аккорда — тоже часть песни. Кто-то умный сказал.",
+				"en": "The silence after the last chord is part of the song too. A wise someone said."
+			}
+		},
+		{
+			"type": "jump",
+			"label": "merge_song"
+		},
+		{
+			"type": "label",
+			"id": "merge_song"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "surprised"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Стоп. Она… заелась. Игла прыгает.",
+				"en": "Wait. It's skipping. The needle jumps."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Проигрыватель старый и упрямый. Его надо убедить. Нажимай клавиши — повтори мелодию, он признает её.",
+				"en": "The player is old and stubborn. It needs convincing. Tap the keys — repeat the melody, it will recognize its own."
+			}
+		},
+		{
+			"type": "minigame",
+			"id": "melody_repeat"
+		},
+		{
+			"type": "sfx",
+			"id": "puzzle_solved"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "happy"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Слышала щелчок? Она сдалась. Пластинки, как люди: главное — правильная нота в правильный момент.",
+				"en": "Hear that click? It gave in. Records are like people: it's all about the right note at the right moment."
+			}
+		},
+		{
+			"type": "fragment",
+			"id": 5
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "surprised"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Из-под проигрывателя… карточка. «ПРО ТЕБЯ».",
+				"en": "From under the turntable… a card. 'ABOUT YOU.'"
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Кто-то очень последовательно раскладывает подсказки по этому зданию. Начинает надоедать не знать, кто.",
+				"en": "Someone is very methodically scattering clues around this building. It's starting to get tiring, not knowing who."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Хотя нет. Пугает другое: это писал кто-то, кто знает меня лучше, чем я сам.",
+				"en": "No — what's scarier is that this was written by someone who knows me better than I do."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Проектор выключается сам. Впервые за вечер купол гаснет.",
+				"en": "The projector is switching off by itself. For the first time tonight, the dome goes dark."
+			}
+		},
+		{
+			"type": "bg",
+			"id": "black",
+			"transition": "fade",
+			"duration": 1.6
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Пошли. Покажу тебе звёзды без посредников.",
+				"en": "Come on. Let me show you the stars without the middleman."
+			}
+		},
+		{
+			"type": "chapter_end",
+			"next": 6
+		}
+	]
+}

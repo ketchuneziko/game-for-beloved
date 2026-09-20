@@ -1,0 +1,114 @@
+name: release-builds
+
+# PHASE 12: облачная сборка релизов.
+# - По тегу v* ИЛИ вручную (Actions → release-builds → Run workflow).
+# - macOS-раннер собирает .app (universal, ad-hoc подпись) и Windows .exe
+#   (Godot официально экспортирует Windows из macOS).
+# - Ubuntu-раннер собирает Linux-бинарь и делает smoke-тест: экспорт должен
+#   запуститься в headless и дойти до главного меню.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+env:
+  GODOT_VERSION: 4.3-stable
+
+jobs:
+  validate:
+    name: Validate data
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot (Linux editor)
+        run: |
+          curl -sL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION/-stable/}-stable_linux.x86_64.zip"
+          unzip -o -q godot.zip
+          chmod +x Godot_v${GODOT_VERSION/-stable/}-stable_linux.x86_64
+          sudo mv Godot_v${GODOT_VERSION/-stable/}-stable_linux.x86_64 /usr/local/bin/godot
+      - name: Data validation
+        run: godot --headless --path . --script tests/validate_data.gd
+
+  export:
+    name: macOS + Windows builds
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot (macOS)
+        run: |
+          curl -sL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION/-stable/}-stable_macos.universal.zip"
+          unzip -o -q godot.zip
+          xattr -dr com.apple.quarantine Godot.app || true
+          mkdir -p ~/godot-bin
+          cp Godot.app/Contents/MacOS/Godot ~/godot-bin/godot
+          chmod +x ~/godot-bin/godot
+      - name: Install export templates
+        run: |
+          curl -sL -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION/-stable/}-stable_export_templates.tpz"
+          mkdir -p ~/Library/Application\ Support/Godot/export_templates
+          unzip -o -q templates.tpz -d /tmp/tpl
+          cp /tmp/tpl/templates/* ~/Library/Application\ Support/Godot/export_templates/
+      - name: Export macOS (.app, universal, ad-hoc)
+        run: ~/godot-bin/godot --headless --path . --export-release "macOS" "exports/ToEternityAndBeyond.app"
+      - name: Export Windows (.exe, single file)
+        run: ~/godot-bin/godot --headless --path . --export-release "Windows Desktop" "exports/ToEternityAndBeyond.exe"
+      - name: Smoke test macOS build (boot to menu)
+        run: |
+          # Headless-запуск собранного .app: движок должен стартовать без ошибок.
+          exports/ToEternityAndBeyond.app/Contents/MacOS/ToEternityAndBeyond --headless --quit-after 300 2>&1 | tee boot.log
+          if grep -qiE "SCRIPT ERROR|Parse Error" boot.log; then echo "BUILD BOOT FAILED"; exit 1; fi
+      - name: Package
+        run: |
+          cd exports
+          zip -r -q -y ToEternityAndBeyond-macOS.zip ToEternityAndBeyond.app
+          cp "../КАК ОТКРЫТЬ.txt" ./КАК ОТКРЫТЬ.txt
+          zip -q -u ToEternityAndBeyond-macOS.zip "КАК ОТКРЫТЬ.txt"
+          rm -rf ToEternityAndBeyond.app
+          zip -q ToEternityAndBeyond-Windows.zip ToEternityAndBeyond.exe "КАК ОТКРЫТЬ.txt"
+          rm ToEternityAndBeyond.exe
+          ls -la
+      - uses: actions/upload-artifact@v4
+        with:
+          name: builds-macos-windows
+          path: exports/*.zip
+          if-no-files-found: error
+      - name: Attach to release (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: exports/*.zip
+          fail_on_unmatched_files: true
+
+  linux-demo:
+    name: Linux build + boot test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot (Linux editor)
+        run: |
+          curl -sL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION/-stable/}-stable_linux.x86_64.zip"
+          unzip -o -q godot.zip
+          chmod +x Godot_v${GODOT_VERSION/-stable/}-stable_linux.x86_64
+          sudo mv Godot_v${GODOT_VERSION/-stable/}-stable_linux.x86_64 /usr/local/bin/godot
+      - name: Install export templates
+        run: |
+          curl -sL -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION/-stable/}-stable_export_templates.tpz"
+          mkdir -p ~/.local/share/godot/export_templates
+          unzip -o -q templates.tpz -d /tmp/tpl
+          cp /tmp/tpl/templates/* ~/.local/share/godot/export_templates/
+      - name: Export Linux
+        run: godot --headless --path . --export-release "Linux" "exports/ToEternityAndBeyond.x86_64"
+      - name: Smoke test (boot + menu reach)
+        run: |
+          chmod +x exports/ToEternityAndBeyond.x86_64
+          timeout 60 exports/ToEternityAndBeyond.x86_64 --headless --quit-after 600 > boot.log 2>&1 || true
+          if grep -qiE "SCRIPT ERROR|Parse Error" boot.log; then
+            echo "--- BOOT FAILED:"; grep -iE "ERROR" boot.log | head -10; exit 1
+          fi
+          echo "boot OK ($(wc -l < boot.log) log lines)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-linux
+          path: exports/ToEternityAndBeyond.x86_64
+          if-no-files-found: error

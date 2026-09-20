@@ -1,0 +1,20 @@
+{
+	"chapter": 7,
+	"title": { "ru": "CHAPTER 7 — THE QUESTION", "en": "CHAPTER 7 — THE QUESTION" },
+	"chapters": { "ru": "рассвет", "en": "the dawn" },
+	"steps": [
+		{ "type": "bg", "id": "bg_rooftop_dawn", "transition": "fade", "duration": 2.0 },
+		{ "type": "music", "id": "final", "fade": 2.5 },
+		{ "type": "ui", "show": false },
+		{ "type": "line", "who": "voice", "text": { "ru": "Мы дошли до конца.", "en": "We've reached the end." }, "pause_after": 1.4 },
+		{ "type": "line", "who": "voice", "text": { "ru": "Но я сделал эту игру не ради игры.", "en": "But I didn't make this game for the game's sake." }, "pause_after": 1.4 },
+		{ "type": "line", "who": "voice", "text": { "ru": "Я сделал её, потому что есть кое-что, что мне было сложно сказать тебе обычными словами.", "en": "I made it because there's something I found hard to say in ordinary words." }, "pause_after": 1.6 },
+		{ "type": "constellation", "word": { "ru": "МАРИЯ", "en": "MARIA" } },
+		{ "type": "line", "who": "voice", "text": { "ru": "Мне хорошо рядом с тобой.", "en": "I feel good around you." }, "pause_after": 1.1 },
+		{ "type": "line", "who": "voice", "text": { "ru": "Мне нравится говорить с тобой.", "en": "I like talking with you." }, "pause_after": 1.1 },
+		{ "type": "line", "who": "voice", "text": { "ru": "Мне нравится проводить с тобой время.", "en": "I like spending time with you." }, "pause_after": 1.1 },
+		{ "type": "line", "who": "voice", "text": { "ru": "И я хочу, чтобы между нами было что-то большее.", "en": "And I want there to be something more between us." }, "pause_after": 1.8 },
+		{ "type": "wait", "duration": 1.2 },
+		{ "type": "final_question" }
+	]
+}

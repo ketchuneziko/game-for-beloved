@@ -1,0 +1,77 @@
+{
+	"_readme": "12 достижений (GDD §8.4 не путать: полный список — GDD). hidden:true — название скрыто до разблокировки.",
+	"achievements": [
+		{
+			"id": "first_step",
+			"hidden": false,
+			"name": { "ru": "FIRST STEP", "en": "FIRST STEP" },
+			"desc": { "ru": "Сделать первый шаг.", "en": "Take the first step." }
+		},
+		{
+			"id": "first_memory",
+			"hidden": false,
+			"name": { "ru": "FIRST MEMORY", "en": "FIRST MEMORY" },
+			"desc": { "ru": "Открыть первое воспоминание.", "en": "Open the first memory." }
+		},
+		{
+			"id": "puzzle_solved",
+			"hidden": false,
+			"name": { "ru": "PUZZLE SOLVED", "en": "PUZZLE SOLVED" },
+			"desc": { "ru": "Решить первую загадку.", "en": "Solve the first puzzle." }
+		},
+		{
+			"id": "all_fragments",
+			"hidden": false,
+			"name": { "ru": "THE WHOLE MESSAGE", "en": "THE WHOLE MESSAGE" },
+			"desc": { "ru": "Собрать все фрагменты сообщения.", "en": "Assemble the whole message." }
+		},
+		{
+			"id": "listener",
+			"hidden": false,
+			"name": { "ru": "LISTENER", "en": "LISTENER" },
+			"desc": { "ru": "Дослушать песню до конца.", "en": "Listen to the song to the very end." }
+		},
+		{
+			"id": "secret",
+			"hidden": false,
+			"name": { "ru": "SECRET", "en": "SECRET" },
+			"desc": { "ru": "Найти первый секрет.", "en": "Find the first secret." }
+		},
+		{
+			"id": "perfect_pairs",
+			"hidden": false,
+			"name": { "ru": "PERFECT PAIRS", "en": "PERFECT PAIRS" },
+			"desc": { "ru": "Пройти «пары» без подсказок.", "en": "Finish the memory match without hints." }
+		},
+		{
+			"id": "the_end",
+			"hidden": false,
+			"name": { "ru": "THE END?", "en": "THE END?" },
+			"desc": { "ru": "Дойти до самого главного вопроса.", "en": "Reach the one question that matters." }
+		},
+		{
+			"id": "patient_heart",
+			"hidden": true,
+			"name": { "ru": "PATIENT HEART", "en": "PATIENT HEART" },
+			"desc": { "ru": "Иногда лучше просто помолчать.", "en": "Sometimes it is better to simply stay silent." }
+		},
+		{
+			"id": "whisper",
+			"hidden": true,
+			"name": { "ru": "WHISPER", "en": "WHISPER" },
+			"desc": { "ru": "Произнеси её имя там, где никто не спрашивал.", "en": "Say her name where nobody asked." }
+		},
+		{
+			"id": "night_owl",
+			"hidden": true,
+			"name": { "ru": "NIGHT OWL", "en": "NIGHT OWL" },
+			"desc": { "ru": "Луна любит внимание.", "en": "The moon appreciates attention." }
+		},
+		{
+			"id": "once_more",
+			"hidden": true,
+			"name": { "ru": "ONCE MORE", "en": "ONCE MORE" },
+			"desc": { "ru": "Начать историю заново — уже вместе.", "en": "Start the story again — together this time." }
+		}
+	]
+}

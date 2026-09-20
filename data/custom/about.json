@@ -1,0 +1,22 @@
+{
+	"_readme": "★ ВСЁ ЛИЧНОЕ — ЭТОТ ФАЙЛ. Имена, вопрос, финальные строки, посвящение. Меняешь текст — код не трогаешь. Значения с {ru, en} — двуязычные.",
+	"her_name": { "ru": "Мария", "en": "Maria" },
+	"title": "TO ETERNITY AND BEYOND",
+	"subtitle": { "ru": "ИГРА, СДЕЛАННАЯ ДЛЯ МАРИИ", "en": "A GAME MADE FOR MARIA" },
+	"author_plate": { "ru": "ОН", "en": "HE" },
+	"author_final_plate": { "ru": "Я", "en": "ME" },
+	"secret_word": "MARIA",
+	"final_question": { "ru": "БУДЕШЬ МОЕЙ ДЕВУШКОЙ?", "en": "WILL YOU BE MY GIRLFRIEND?" },
+	"yes_button": { "ru": "ДА", "en": "YES" },
+	"yes_of_course_button": { "ru": "ДА, КОНЕЧНО", "en": "YES, OF COURSE" },
+	"ending_lines": [
+		{ "ru": "Я люблю тебя, Мария.", "en": "I love you, Maria." },
+		{ "ru": "Люблю до бесконечности.", "en": "I love you to infinity." },
+		{ "ru": "И бесконечность — не предел.", "en": "And infinity is not the limit." }
+	],
+	"official_line": { "ru": "THEN IT'S OFFICIAL.\nTHIS IS OUR BEGINNING.", "en": "THEN IT'S OFFICIAL.\nTHIS IS OUR BEGINNING." },
+	"dedication": {
+		"ru": "Сделано с любовью — для человека, который смеётся над несмешными шутками.",
+		"en": "Made with love — for the one who laughs at unfunny jokes."
+	}
+}

@@ -1,0 +1,424 @@
+{
+	"chapter": 4,
+	"title": {
+		"ru": "CHAPTER 4 — THINGS I NEVER SAID",
+		"en": "CHAPTER 4 — THINGS I NEVER SAID"
+	},
+	"chapters": {
+		"ru": "дождь и письма",
+		"en": "rain and letters"
+	},
+	"steps": [
+		{
+			"type": "bg",
+			"id": "bg_rain_window",
+			"transition": "slide"
+		},
+		{
+			"type": "music",
+			"id": "chapter4_piano",
+			"fade": 2.0
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Вот. Коробка, которую я показывал не всем.",
+				"en": "Here it is. The box I haven't shown to many people."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Письма, которые я не отправил. Коллекция, как видишь. Не начинай аплодировать.",
+				"en": "The letters I never sent. A collection, as you can see. Please hold your applause."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Читать надо медленно. Они никуда не спешили все эти годы — не будем спешить и мы.",
+				"en": "We should read slowly. They didn't rush all these years — no reason for us to rush either."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Я начал первое письмо четыре раза. Все четыре раза выходило слишком пафосно.",
+				"en": "I started the first letter four times. All four times it came out too pompous."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Вот пятая попытка. Юбилейная.",
+				"en": "Here's the fifth attempt. The anniversary one."
+			}
+		},
+		{
+			"type": "sfx",
+			"id": "page"
+		},
+		{
+			"type": "unlock_letter",
+			"id": "letter_01"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "«Я начал это письмо четыре раза. Все четыре раза выходило слишком пафосно. Вот пятая попытка. Юбилейная.»",
+				"en": "'I started this letter four times. All four times it came out too pompous. Here is the fifth attempt. The anniversary one.'"
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "embarrassed"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Читать вслух написанное в стол — отдельный вид спорта. Не повторяй дома.",
+				"en": "Reading drawer-letters out loud is its own kind of sport. Don't try this at home."
+			}
+		},
+		{
+			"type": "sfx",
+			"id": "page"
+		},
+		{
+			"type": "unlock_letter",
+			"id": "letter_02"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "«Бывает день, когда всё нормально. А потом я вспоминаю, как кто-то смеётся, и день становится лучше.»",
+				"en": "'Some days everything is fine. Then I remember the way someone laughs, and the day gets better.'"
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "«Это, наверное, как-то называется. Лень гуглить.»",
+				"en": "'It probably has a name. Too lazy to look it up.'"
+			}
+		},
+		{
+			"type": "puzzle",
+			"id": "hidden_name"
+		},
+		{
+			"type": "choice",
+			"id": "ch4_listen"
+		},
+		{
+			"type": "if_flag",
+			"flag": "ch4_joked",
+			"jump_if_true": "b_joke"
+		},
+		{
+			"type": "if_flag",
+			"flag": "ch4_asked_why",
+			"jump_if_true": "b_why"
+		},
+		{
+			"type": "jump",
+			"label": "b_quiet"
+		},
+		{
+			"type": "label",
+			"id": "b_quiet"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Молчишь. Спасибо. Некоторые вещи нужно выговорить целиком — иначе они так и остаются недописанными.",
+				"en": "You're quiet. Thank you. Some things need to be said all the way through — otherwise they stay half-written."
+			}
+		},
+		{
+			"type": "jump",
+			"label": "merge_letters"
+		},
+		{
+			"type": "label",
+			"id": "b_joke"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "happy"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Вот за это я тебя и… за это.",
+				"en": "This is exactly why I… exactly because of this."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "embarrassed"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Чуть не договорил. Дождь, лиши меня языка.",
+				"en": "Almost finished that sentence. The rain is stealing my words."
+			}
+		},
+		{
+			"type": "jump",
+			"label": "merge_letters"
+		},
+		{
+			"type": "label",
+			"id": "b_why"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "sad"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Потому что отправить — значит узнать ответ.",
+				"en": "Because sending one means learning the answer."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "А пока письмо в столе — в нём живёт лучший вариант.",
+				"en": "While a letter stays in the drawer, the best version of it is still alive."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Знаешь, что общего у всех этих писем? Все начинаются с «я не умею об этом говорить».",
+				"en": "You know what all these letters have in common? Every one starts with 'I don't know how to say this'."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "И все они об одном и том же человеке. Догадайся сама.",
+				"en": "And they're all about the same person. You can guess who."
+			}
+		},
+		{
+			"type": "jump",
+			"label": "merge_letters"
+		},
+		{
+			"type": "label",
+			"id": "merge_letters"
+		},
+		{
+			"type": "sfx",
+			"id": "page"
+		},
+		{
+			"type": "unlock_letter",
+			"id": "letter_03"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "«Я не боюсь темноты. Я боюсь привычки: когда хорошо рядом с человеком — а сказать ему это уже некогда.»",
+				"en": "'I am not afraid of the dark. I am afraid of habit: when being near someone feels good — and there is no time left to tell them.'"
+			}
+		},
+		{
+			"type": "wait",
+			"duration": 1.2
+		},
+		{
+			"type": "sfx",
+			"id": "page"
+		},
+		{
+			"type": "unlock_letter",
+			"id": "letter_04"
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "sad"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "«Хочется, чтобы некоторые вечера не заканчивались.»",
+				"en": "'I want some evenings to never end.'"
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "«И чтобы некоторые люди не были „кем-то“.»",
+				"en": "'And for some people to stop being someone.'"
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "В четвёртом письме я был честнее, чем планировал.",
+				"en": "In the fourth letter I was more honest than I planned to be."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "thinking"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "В четвёртом оно тоже почти вырвалось. Почти.",
+				"en": "In the fourth one it almost slipped out too. Almost."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "sad"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Планетарий закрывается — и я понял: не скажу сейчас — скажу никогда.",
+				"en": "The planetarium is closing, and I understood: if I don't say it now, I never will."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Стены, которые слушали моё молчание, переедут в шоурум шуб. Им будет неуютно.",
+				"en": "The walls that listened to my silence will move into a fur coat showroom. They'll feel out of place."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "«М…» — и всё. Как будто тогдашний я испугался на последней букве.",
+				"en": "'M…' — and that's it. Like my past self got scared right at the last letter."
+			}
+		},
+		{
+			"type": "fragment",
+			"id": 4
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "sad"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Самое честное я приберегу. Скажу не в письме.",
+				"en": "I'm saving the most honest part. It won't be in a letter."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Если честно — вслух у меня такие вещи не получаются. Только письменно. И то в стол.",
+				"en": "Honestly — out loud, I can't do this kind of thing. Only in writing. And even then, into a drawer."
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "neutral"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Дождь стихает. Слышишь, как аккуратно?",
+				"en": "The rain is easing up. Hear how gently it does it?"
+			}
+		},
+		{
+			"type": "expr",
+			"who": "author",
+			"expr": "smiling"
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Знаешь что? Есть одна песня. Я приберегал её слишком долго.",
+				"en": "You know what? There's this one song. I've been saving it for too long."
+			}
+		},
+		{
+			"type": "line",
+			"who": "author",
+			"text": {
+				"ru": "Для особого случая. Кажется, он настал.",
+				"en": "For a special occasion. I think it just arrived."
+			}
+		},
+		{
+			"type": "chapter_end",
+			"next": 5
+		}
+	]
+}

@@ -1,0 +1,11 @@
+# Godot 4+ specific ignores
+.godot/
+*.translation
+export.cfg
+
+# System
+.DS_Store
+
+# Release builds stay out of git (PHASE 12 keeps them in exports/)
+exports/
+*.dmg
