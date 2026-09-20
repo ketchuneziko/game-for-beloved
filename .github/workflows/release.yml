@@ -36,7 +36,7 @@ jobs:
 
   export:
     name: macOS + Windows builds
-    runs-on: macos-latest
+    runs-on: macos-15-intel
     steps:
       - uses: actions/checkout@v4
       - name: Install Godot (macOS)
@@ -93,19 +93,10 @@ jobs:
       - name: Failure diagnostics (macOS)
         if: failure()
         run: |
-          {
-            echo "=== mem.log ==="; cat mem.log 2>/dev/null | tail -10
-            echo "=== DiagnosticReports ==="; ls -lt ~/Library/Logs/DiagnosticReports 2>/dev/null | head -8
-            for f in $(ls -t ~/Library/Logs/DiagnosticReports/*.ips 2>/dev/null | head -3); do
-              echo "--- $f"
-              grep -oE '"termination":{[^}]*}' "$f" | head -1
-              grep -oE '"exception":{[^}]*}' "$f" | head -1
-            done
-          } >> "$GITHUB_STEP_SUMMARY" 2>&1
-          tail -3 mem.log 2>/dev/null | while IFS= read -r l; do printf '::error::MEM %.900s\n' "$l"; done || true
-          for f in $(ls -t ~/Library/Logs/DiagnosticReports/*.ips 2>/dev/null | head -2); do
-            grep -oE '"(termination|exception)":{[^}]*}' "$f" | head -1 | while IFS= read -r l; do printf '::error::IPS %.900s\n' "$l"; done
-          done || true
+          ls -la export-win.log mem.log 2>/dev/null | while IFS= read -r l; do printf '::error::FILES %.900s\n' "$l"; done || true
+          head -c 600 export-win.log 2>/dev/null | tr '\n' '~' | while IFS= read -r l; do printf '::error::HEAD %.900s\n' "$l"; done || true
+          tail -c 600 export-win.log 2>/dev/null | tr '\n' '~' | while IFS= read -r l; do printf '::error::TAIL %.900s\n' "$l"; done || true
+          tail -4 mem.log 2>/dev/null | while IFS= read -r l; do printf '::error::MEMRSS %.900s\n' "$l"; done || true
       - name: Smoke test macOS build (boot to menu)
         run: |
           # Headless-запуск собранного .app: движок должен стартовать без ошибок.
