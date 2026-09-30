@@ -1,4 +1,6 @@
-// Main Game Logic for "Print I Love You: For My Beloved"
+// Main Game Engine for "Print I Love You: For My Beloved"
+// 100% Pixel Art Aesthetic with Hand-Holding, Stargazing Star Catcher, and Heart Rhythm Sync
+
 import { soundEngine } from './audio.js';
 import { art, PALETTE } from './art.js';
 import { configManager } from './config.js';
@@ -6,8 +8,8 @@ import { configManager } from './config.js';
 export class GameEngine {
   constructor(desktopManager) {
     this.desktop = desktopManager;
+    window.game = this;
     this.state = 'boot'; // boot, intro_check, story_intro, test1, test2, test3, ending
-    this.container = document.getElementById('game-viewport');
     this.canvas = document.getElementById('game-canvas');
     this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
 
@@ -15,35 +17,34 @@ export class GameEngine {
     this.time = 0;
     this.animId = null;
 
-    // Test 1 state (Hand Holding)
+    // Test 1: Hand Holding
     this.test1 = {
-      playerHand: { x: 200, y: 380 },
-      girlHand: { x: 400, y: 220, targetX: 400, targetY: 220, vx: 0, vy: 0 },
+      playerHand: { x: 200, y: 350 },
+      girlHand: { x: 420, y: 220, targetX: 420, targetY: 220 },
       isHolding: false,
       warmth: 0,
       milestones: { 25: false, 50: false, 75: false, 100: false },
       obstacles: [],
       bonuses: [],
-      lastSpawn: 0,
-      holdingTime: 0
+      lastSpawn: 0
     };
 
-    // Test 2 state (Outfit Dress-up)
+    // Test 2: Stargazing Star Catcher (NEW romantic game!)
     this.test2 = {
-      round: 0, // 0: Home Cozy, 1: Romantic Walk, 2: Anniversary Date
-      selections: { top: null, bottom: null, accessory: null },
-      completedRounds: 0,
-      feedback: ''
+      catcher: { x: 320, y: 360, width: 64, height: 26 },
+      stars: [],
+      constellation: [],
+      starEnergy: 0,
+      lastSpawn: 0,
+      caughtWishes: []
     };
 
-    // Test 3 state (Heart Rhythm Sync)
+    // Test 3: Heart Rhythm Sync
     this.test3 = {
       beats: [],
       lastBeatTime: 0,
       syncScore: 0,
-      stage: 1, // 1: First Days, 2: Deepening, 3: In Unison
-      feedbackText: '',
-      feedbackAlpha: 0,
+      stage: 1,
       bpm: 72,
       hitsInRow: 0
     };
@@ -55,27 +56,39 @@ export class GameEngine {
     this.resizeCanvas();
     window.addEventListener('resize', () => this.resizeCanvas());
 
-    // Input listeners for Test 1 (Hand Holding)
+    // Mouse & Touch tracking for Test 1 (Hand Holding) and Test 2 (Star Catcher)
     if (this.canvas) {
       const handleMove = (e) => {
-        if (this.state !== 'test1') return;
         const rect = this.canvas.getBoundingClientRect();
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
         const scaleX = this.canvas.width / rect.width;
         const scaleY = this.canvas.height / rect.height;
 
-        this.test1.playerHand.x = (clientX - rect.left) * scaleX;
-        this.test1.playerHand.y = (clientY - rect.top) * scaleY;
+        const mx = (clientX - rect.left) * scaleX;
+        const my = (clientY - rect.top) * scaleY;
+
+        if (this.state === 'test1') {
+          this.test1.playerHand.x = mx;
+          this.test1.playerHand.y = my;
+        } else if (this.state === 'test2') {
+          this.test2.catcher.x = Math.max(40, Math.min(600, mx));
+        }
       };
 
       this.canvas.addEventListener('mousemove', handleMove);
       this.canvas.addEventListener('touchmove', handleMove, { passive: false });
     }
 
-    // Input listeners for Test 3 (Heart Rhythm)
+    // Keyboard controls for Star Catcher (Left/Right) & Rhythm (Space)
     window.addEventListener('keydown', (e) => {
-      if (this.state === 'test3' && (e.code === 'Space' || e.code === 'Enter')) {
+      if (this.state === 'test2') {
+        if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
+          this.test2.catcher.x = Math.max(40, this.test2.catcher.x - 24);
+        } else if (e.code === 'ArrowRight' || e.code === 'KeyD') {
+          this.test2.catcher.x = Math.min(600, this.test2.catcher.x + 24);
+        }
+      } else if (this.state === 'test3' && (e.code === 'Space' || e.code === 'Enter')) {
         e.preventDefault();
         this.triggerHeartHit();
       }
@@ -93,7 +106,7 @@ export class GameEngine {
       }, { passive: false });
     }
 
-    // Start render loop
+    // Start loop & boot
     this.startLoop();
     this.startBootSequence();
   }
@@ -102,6 +115,9 @@ export class GameEngine {
     if (!this.canvas) return;
     this.canvas.width = 640;
     this.canvas.height = 440;
+    if (this.ctx) {
+      this.ctx.imageSmoothingEnabled = false; // Pure crisp pixels!
+    }
   }
 
   startLoop() {
@@ -119,7 +135,7 @@ export class GameEngine {
     this.animId = requestAnimationFrame(frame);
   }
 
-  // --- BOOT & IDENTITY CHECK SEQUENCE ---
+  // --- BOOT SEQUENCE ---
   startBootSequence() {
     this.state = 'boot';
     const ui = document.getElementById('game-ui-overlay');
@@ -137,22 +153,23 @@ export class GameEngine {
     setTimeout(() => {
       document.getElementById('bline-1')?.classList.add('visible');
       soundEngine.playTypewriter();
-    }, 400);
+    }, 300);
     setTimeout(() => {
       document.getElementById('bline-2')?.classList.add('visible');
       soundEngine.playTypewriter();
-    }, 1000);
+    }, 800);
     setTimeout(() => {
       document.getElementById('bline-3')?.classList.add('visible');
       soundEngine.playTypewriter();
-    }, 1600);
+    }, 1300);
     setTimeout(() => {
       document.getElementById('bline-4')?.classList.add('visible');
       soundEngine.playTypewriter();
-      setTimeout(() => this.showIdentityCheck(), 1000);
-    }, 2200);
+      setTimeout(() => this.showIdentityCheck(), 800);
+    }, 1800);
   }
 
+  // --- IDENTITY CHECK ---
   showIdentityCheck() {
     this.state = 'intro_check';
     soundEngine.playMusic('desktop');
@@ -233,11 +250,11 @@ export class GameEngine {
             Привет, любимая ${herName}...<br><br>
             В одной известной игре парень пытался через тесты доказать свои чувства, потому что боялся и сомневался...<br>
             Но нам ничего не нужно доказывать — <strong>мы уже вместе</strong>.<br><br>
-            И всё же, я создал наши собственные Тесты Любви. Не для проверки, а чтобы напомнить, как сильно я ценю каждый наш миг.<br>
+            И всё же, я создал наши собственные романтические задания — чтобы напомнить, как сильно я ценю каждый наш миг.<br>
             Готова пройти их со мной?
           </div>
           <div class="dialogue-choices">
-            <button class="choice-btn primary" id="btn-start-tests">🌸 Давай начнём свидание!</button>
+            <button class="choice-btn primary" id="btn-start-tests">🌸 Начать наше приключение!</button>
           </div>
         </div>
       </div>
@@ -252,7 +269,7 @@ export class GameEngine {
   }
 
   // ==========================================
-  // TEST 1: HAND-HOLDING MINIGAME
+  // TEST 1: HAND-HOLDING
   // ==========================================
   startTest1() {
     this.state = 'test1';
@@ -264,7 +281,7 @@ export class GameEngine {
     this.test1.bonuses = [];
     this.test1.lastSpawn = this.time;
     this.test1.playerHand = { x: 200, y: 350 };
-    this.test1.girlHand = { x: 420, y: 220, targetX: 420, targetY: 220, vx: 0, vy: 0 };
+    this.test1.girlHand = { x: 420, y: 220, targetX: 420, targetY: 220 };
 
     const ui = document.getElementById('game-ui-overlay');
     if (!ui) return;
@@ -272,7 +289,7 @@ export class GameEngine {
     ui.innerHTML = `
       <div class="test-hud">
         <div class="test-header">
-          <span class="test-badge">ТЕСТ 1 ИЗ 3</span>
+          <span class="test-badge">ЗАДАНИЕ 1 ИЗ 3</span>
           <span class="test-title">Держание за руки</span>
         </div>
         <div class="warmth-bar-container">
@@ -283,7 +300,7 @@ export class GameEngine {
         </div>
       </div>
       <div class="test-hint" id="test1-hint">
-        🤝 Двигай мышкой / пальцем — протяни руку навстречу её ладошке и не отпускай!
+        🤝 Двигай мышкой / пальцем — протяни руку навстречу её ладошке и согрей!
       </div>
       <div class="milestone-bubble" id="milestone-bubble"></div>
     `;
@@ -291,9 +308,7 @@ export class GameEngine {
 
   updateTest1(dt) {
     const t1 = this.test1;
-    const herName = configManager.get('herName');
 
-    // Girl hand gentle wandering motion
     if (!t1.isHolding) {
       if (Math.random() < 0.02) {
         t1.girlHand.targetX = 180 + Math.random() * 320;
@@ -302,12 +317,10 @@ export class GameEngine {
       t1.girlHand.x += (t1.girlHand.targetX - t1.girlHand.x) * (dt * 2.5);
       t1.girlHand.y += (t1.girlHand.targetY - t1.girlHand.y) * (dt * 2.5);
     } else {
-      // Girl hand softly follows boyfriend hand with gentle lag
       t1.girlHand.x += (t1.playerHand.x + 12 - t1.girlHand.x) * (dt * 12);
       t1.girlHand.y += (t1.playerHand.y - 12 - t1.girlHand.y) * (dt * 12);
     }
 
-    // Distance check for holding
     const dist = Math.hypot(t1.playerHand.x - t1.girlHand.x, t1.playerHand.y - t1.girlHand.y);
     const wasHolding = t1.isHolding;
     t1.isHolding = dist < 50;
@@ -318,28 +331,23 @@ export class GameEngine {
       if (hint) hint.innerHTML = '❤️ Ладошки соединились! Держи крепко...';
     }
 
-    // Warmth accumulation while holding
     if (t1.isHolding) {
-      t1.warmth = Math.min(100, t1.warmth + dt * 14); // ~7 seconds to fill
-      // Floating warmth updates
+      t1.warmth = Math.min(100, t1.warmth + dt * 14);
       const fill = document.getElementById('warmth-fill');
       const text = document.getElementById('warmth-text');
       if (fill) fill.style.width = `${t1.warmth}%`;
       if (text) text.textContent = `${Math.floor(t1.warmth)}%`;
-
-      // Milestones check
       this.checkMilestones(t1.warmth);
     }
 
-    // Spawn obstacles and bonuses
+    // Spawn obstacles & treats
     if (this.time - t1.lastSpawn > 2.2) {
       t1.lastSpawn = this.time;
       if (Math.random() < 0.6) {
-        // Spawn obstacle (cold wind, work call, alarm)
         const obsTypes = [
-          { name: 'Холод', icon: '💨', radius: 24 },
-          { name: 'Звонок', icon: '📱', radius: 24 },
-          { name: 'Будильник', icon: '⏰', radius: 24 }
+          { name: 'Холод', icon: '💨', radius: 22 },
+          { name: 'Звонок', icon: '📱', radius: 22 },
+          { name: 'Будильник', icon: '⏰', radius: 22 }
         ];
         const pick = obsTypes[Math.floor(Math.random() * obsTypes.length)];
         t1.obstacles.push({
@@ -350,11 +358,10 @@ export class GameEngine {
           vx: (Math.random() < 0.5 ? 1 : -1) * (50 + Math.random() * 40)
         });
       } else {
-        // Spawn bonus (hot latte, croissant, kitty)
         const bonusTypes = [
-          { name: 'Латте +15%', icon: '☕', radius: 26, value: 15 },
-          { name: 'Круассан +15%', icon: '🥐', radius: 26, value: 15 },
-          { name: 'Котик +20%', icon: '🐱', radius: 28, value: 20 }
+          { name: 'Латте +15%', icon: '☕', radius: 24, value: 15 },
+          { name: 'Круассан +15%', icon: '🥐', radius: 24, value: 15 },
+          { name: 'Котик +20%', icon: '🐱', radius: 24, value: 20 }
         ];
         const pick = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
         t1.bonuses.push({
@@ -367,12 +374,10 @@ export class GameEngine {
       }
     }
 
-    // Update obstacles
+    // Move obstacles
     for (let i = t1.obstacles.length - 1; i >= 0; i--) {
       const obs = t1.obstacles[i];
       obs.x += obs.vx * dt;
-
-      // Collision with hands
       const dBoy = Math.hypot(obs.x - t1.playerHand.x, obs.y - t1.playerHand.y);
       const dGirl = Math.hypot(obs.x - t1.girlHand.x, obs.y - t1.girlHand.y);
 
@@ -384,46 +389,38 @@ export class GameEngine {
 
         const bubble = document.getElementById('milestone-bubble');
         if (bubble) {
-          bubble.innerHTML = `🥶 Брр! ${obs.name} помешал... Согрей её ладошки снова!`;
+          bubble.innerHTML = `🥶 Брр! ${obs.name} помешал... Согрей её ручки снова!`;
           bubble.classList.add('visible');
           setTimeout(() => bubble.classList.remove('visible'), 2000);
         }
         continue;
       }
-
-      if (obs.x < -60 || obs.x > 700) {
-        t1.obstacles.splice(i, 1);
-      }
+      if (obs.x < -60 || obs.x > 700) t1.obstacles.splice(i, 1);
     }
 
-    // Update bonuses
+    // Move bonuses
     for (let i = t1.bonuses.length - 1; i >= 0; i--) {
       const b = t1.bonuses[i];
       b.x += b.vx * dt;
-
       const dBoy = Math.hypot(b.x - t1.playerHand.x, b.y - t1.playerHand.y);
       const dGirl = Math.hypot(b.x - t1.girlHand.x, b.y - t1.girlHand.y);
 
-      if (dBoy < b.radius + 25 || dGirl < b.radius + 25) {
+      if (dBoy < b.radius + 22 || dGirl < b.radius + 22) {
         soundEngine.playSparkle();
         t1.warmth = Math.min(100, t1.warmth + b.value);
         t1.bonuses.splice(i, 1);
 
         const bubble = document.getElementById('milestone-bubble');
         if (bubble) {
-          bubble.innerHTML = `✨ Вкусняшка на свидании! ${b.name} согревает вас обоих!`;
+          bubble.innerHTML = `✨ ${b.name} согревает вас обоих!`;
           bubble.classList.add('visible');
           setTimeout(() => bubble.classList.remove('visible'), 2200);
         }
         continue;
       }
-
-      if (b.x < -60 || b.x > 700) {
-        t1.bonuses.splice(i, 1);
-      }
+      if (b.x < -60 || b.x > 700) t1.bonuses.splice(i, 1);
     }
 
-    // Win condition for Test 1
     if (t1.warmth >= 100 && !t1.milestones[100]) {
       t1.milestones[100] = true;
       this.completeTest1();
@@ -432,11 +429,9 @@ export class GameEngine {
 
   checkMilestones(warmth) {
     const t1 = this.test1;
-    const herName = configManager.get('herName');
     const bubble = document.getElementById('milestone-bubble');
-
     const thoughts = {
-      25: `Помнишь, как в самый первый раз я взял тебя за руку? Сердце колотилось как безумное...`,
+      25: `Помнишь, как в самый первый раз я взял тебя за руку? Сердце колотилось как бешеное...`,
       50: `Твоя ладошка так идеально помещается в моей. Словно они были созданы друг для друга.`,
       75: `Когда мы держимся за руки, любой мороз и любые тревоги отступают.`
     };
@@ -449,7 +444,7 @@ export class GameEngine {
         if (bubble) {
           bubble.innerHTML = `💭 <em>«${text}»</em>`;
           bubble.classList.add('visible');
-          setTimeout(() => bubble.classList.remove('visible'), 4000);
+          setTimeout(() => bubble.classList.remove('visible'), 3500);
         }
       }
     }
@@ -462,13 +457,13 @@ export class GameEngine {
 
     ui.innerHTML = `
       <div class="test-cleared-modal">
-        <div class="cleared-header">✨ ТЕСТ 1 ПРОЙДЕН С ОТЛИЧИЕМ! ✨</div>
+        <div class="cleared-header">✨ ЗАДАНИЕ 1 ВЫПОЛНЕНО! ✨</div>
         <div class="cleared-score">ТЕПЛО ЛАДОНЕЙ: 100%</div>
         <div class="cleared-verdict">
-          Вердикт: Ваши руки созданы друг для друга.<br>
-          «Мне никогда не хочется отпускать твою руку...»
+          Вердикт: Идеальное сцепление пальчиков.<br>
+          «Мне никогда не хочется отпускать твою ладонь...»
         </div>
-        <button class="choice-btn primary" id="btn-next-test2">👗 Переходим к Тесту 2: Гардероб свидания</button>
+        <button class="choice-btn primary" id="btn-next-test2">🌟 Задание 2: Звёздное свидание на крыше</button>
       </div>
     `;
 
@@ -479,232 +474,146 @@ export class GameEngine {
   }
 
   // ==========================================
-  // TEST 2: OUTFIT / DRESS-UP MINIGAME
+  // NEW TEST 2: STARGAZING - CATCHING FALLING STARS
   // ==========================================
   startTest2() {
     this.state = 'test2';
-    soundEngine.playMusic('dress');
-    this.test2.round = 0;
-    this.test2.completedRounds = 0;
-    this.test2.selections = { top: null, bottom: null, accessory: null };
-    this.renderTest2Round();
-  }
+    soundEngine.playMusic('dress'); // Cozy upbeat theme
+    this.test2 = {
+      catcher: { x: 320, y: 360, width: 64, height: 26 },
+      stars: [],
+      constellation: [],
+      starEnergy: 0,
+      lastSpawn: this.time,
+      caughtWishes: []
+    };
 
-  renderTest2Round() {
-    const herName = configManager.get('herName');
-    const round = this.test2.round;
     const ui = document.getElementById('game-ui-overlay');
     if (!ui) return;
-
-    const roundData = [
-      {
-        theme: 'Уютный вечер дома с фильмом и пиццей',
-        prompt: `Сегодня мы остаёмся дома! Хочу быть максимально уютной, мягкой и тискательной. Что мне надеть?`,
-        outfitKey: 'hoodie',
-        sec1: '1. Верхняя одежда:',
-        sec2: '2. Уют для ножек:',
-        sec3: '3. Вкусности и комфорт:',
-        tops: [
-          { id: 'hoodie', name: 'Оверсайз худи с кошачьими ушками', correct: true, icon: '🐱' },
-          { id: 'suit', name: 'Строгий офисный пиджак', correct: false, icon: '💼', comment: 'В пиджаке на диване? Ты хочешь обсудить квартальный отчёт? 😂' },
-          { id: 'scuba', name: 'Водолазный костюм', correct: false, icon: '🤿', comment: 'В этом будет жарковато есть пиццу, любимый! 🤣' }
-        ],
-        bottoms: [
-          { id: 'socks', name: 'Пушистые носочки с лапками', correct: true, icon: '🧦' },
-          { id: 'heels', name: 'Туфли на 12-см шпильках', correct: false, icon: '👠', comment: 'Шпильки в постель? Ноги же отвалятся! 😅' },
-          { id: 'flippers', name: 'Пляжные ласты', correct: false, icon: '🏊', comment: 'Я в них даже до кухни не дойду! 😆' }
-        ],
-        accessories: [
-          { id: 'cocoa', name: 'Мягкая повязка и кружка какао', correct: true, icon: '☕' },
-          { id: 'briefcase', name: 'Кожаный дипломат', correct: false, icon: '📂', comment: 'С дипломатом под плед? Смешно!' },
-          { id: 'helmet', name: 'Мотоциклетный шлем', correct: false, icon: '🪖', comment: 'Как я буду целовать тебя через шлем?' }
-        ]
-      },
-      {
-        theme: 'Романтическая вечерняя прогулка под фонарями',
-        prompt: `На улице горят фонари и прохладный ветерок. Хочу нежный, романтичный образ и тёплый шарф!`,
-        outfitKey: 'coat',
-        sec1: '1. Пальто / Верх:',
-        sec2: '2. Шарф и тепло:',
-        sec3: '3. Головной убор:',
-        tops: [
-          { id: 'coat', name: 'Нежное пальто пыльной розы', correct: true, icon: '🧥' },
-          { id: 'tracksuit', name: 'Спортивный костюм с лампасами', correct: false, icon: '🏃', comment: 'На свидание как на пробежку? Ну уж нет!' },
-          { id: 'sundress', name: 'Лёгкий летний сарафан', correct: false, icon: '👗', comment: 'Я же замёрзну за две минуты! Согревать устанешь!' }
-        ],
-        bottoms: [
-          { id: 'scarf', name: 'Мягкий вязаный шарф', correct: true, icon: '🧣' },
-          { id: 'fan_scarf', name: 'Футбольный шарф «Спартак»', correct: false, icon: '⚽', comment: 'Оле-оле? Мы вроде не на стадион идём 😜' },
-          { id: 'garland', name: 'Новогодняя гирлянда', correct: false, icon: '💡', comment: 'Светиться красиво, но провода мешают!' }
-        ],
-        accessories: [
-          { id: 'beret', name: 'Французский берет', correct: true, icon: '👒' },
-          { id: 'panama', name: 'Панамка с пальмами', correct: false, icon: '🏖️', comment: 'Осенью в панамке? Ты шутник!' },
-          { id: 'tiara', name: 'Тяжёлая корона', correct: false, icon: '👑', comment: 'Корона это мило, но шея устанет гулять!' }
-        ]
-      },
-      {
-        theme: 'Наш особенный праздничный вечер',
-        prompt: `Сегодня наш особенный вечер... Хочу надеть что-то невероятно красивое, чтобы ты смотрел только на меня!`,
-        outfitKey: 'dress',
-        sec1: '1. Праздничный наряд:',
-        sec2: '2. Нежные украшения:',
-        sec3: '3. Обувь для свидания:',
-        tops: [
-          { id: 'dress', name: 'Вечернее платье со звёздным отливом', correct: true, icon: '✨' },
-          { id: 'pajamas', name: 'Пижама в горошек', correct: false, icon: '💤', comment: 'Пижама любимая, но в ресторан в ней не пустят!' },
-          { id: 'raincoat', name: 'Брезентовый дождевик', correct: false, icon: '☔', comment: 'Я что, иду на рыбалку? 😂' }
-        ],
-        bottoms: [
-          { id: 'necklace', name: 'Тонкая подвеска с сердечком', correct: true, icon: '💎' },
-          { id: 'chain', name: 'Массивная рэперская цепь', correct: false, icon: '⛓️', comment: 'Йоу! Но под платье не очень подходит 😅' },
-          { id: 'calculator', name: 'Часы с калькулятором', correct: false, icon: '⌚', comment: 'Считать сумму счёта будем? Романтика!' }
-        ],
-        accessories: [
-          { id: 'heels', name: 'Изящные туфельки', correct: true, icon: '👠' },
-          { id: 'slippers', name: 'Домашние тапочки-зайчики', correct: false, icon: '🐰', comment: 'Зайчики милые, но к платью не очень!' },
-          { id: 'boots', name: 'Тяжёлые берцы', correct: false, icon: '🥾', comment: 'Берцы крутые, но платье порвут!' }
-        ]
-      }
-    ];
-
-    const current = roundData[round];
-    this.test2.currentRoundData = current;
-    this.test2.selections = { top: null, bottom: null, accessory: null };
 
     ui.innerHTML = `
       <div class="test-hud">
         <div class="test-header">
-          <span class="test-badge">ТЕСТ 2 ИЗ 3 • РАУНД ${round + 1}/3</span>
-          <span class="test-title">${current.theme}</span>
+          <span class="test-badge">ЗАДАНИЕ 2 ИЗ 3</span>
+          <span class="test-title">Ловец падающих звёзд</span>
+        </div>
+        <div class="warmth-bar-container">
+          <div class="warmth-label">Энергия созвездия любви: <strong id="star-text">0%</strong></div>
+          <div class="warmth-track">
+            <div class="warmth-fill" id="star-fill" style="width: 0%; background: linear-gradient(90deg, #ffd166, #ff6b8b)"></div>
+          </div>
         </div>
       </div>
-      <div class="dressing-room-layout">
-        <div class="girl-mirror-view" id="girl-mirror-view">
-          <div class="mirror-portrait-card">
-            <img src="assets/characters/girlfriend_pixel.png" class="mirror-sprite-img" alt="Примерочная">
-          </div>
-        </div>
-        <div class="wardrobe-panel">
-          <div class="girl-speech-bubble">
-            💬 «${current.prompt}»
-          </div>
-
-          <div class="wardrobe-section">
-            <div class="section-title">${current.sec1 || '1. Верхняя одежда:'}</div>
-            <div class="item-grid" id="grid-tops">
-              ${current.tops.map(t => `
-                <button class="wardrobe-btn" data-type="top" data-id="${t.id}">
-                  <span class="item-icon">${t.icon}</span>
-                  <span class="item-name">${t.name}</span>
-                </button>
-              `).join('')}
-            </div>
-          </div>
-
-          <div class="wardrobe-section">
-            <div class="section-title">${current.sec2 || '2. Детали / Тепло:'}</div>
-            <div class="item-grid" id="grid-bottoms">
-              ${current.bottoms.map(b => `
-                <button class="wardrobe-btn" data-type="bottom" data-id="${b.id}">
-                  <span class="item-icon">${b.icon}</span>
-                  <span class="item-name">${b.name}</span>
-                </button>
-              `).join('')}
-            </div>
-          </div>
-
-          <div class="wardrobe-section">
-            <div class="section-title">${current.sec3 || '3. Обувь и аксессуары:'}</div>
-            <div class="item-grid" id="grid-acc">
-              ${current.accessories.map(a => `
-                <button class="wardrobe-btn" data-type="accessory" data-id="${a.id}">
-                  <span class="item-icon">${a.icon}</span>
-                  <span class="item-name">${a.name}</span>
-                </button>
-              `).join('')}
-            </div>
-          </div>
-
-          <div class="tryout-feedback" id="tryout-feedback"></div>
-          <button class="choice-btn primary" id="btn-confirm-outfit" style="display:none">💖 Готово! Мне очень нравится!</button>
-        </div>
+      <div class="test-hint" id="test2-hint">
+        🌟 Двигай корзинку мышкой или стрелками [← / →] — лови падающие звёзды для любимой!
       </div>
+      <div class="wish-banner" id="wish-banner"></div>
     `;
-
-    // Hook wardrobe buttons
-    ui.querySelectorAll('.wardrobe-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        soundEngine.playSparkle();
-        const type = btn.getAttribute('data-type');
-        const id = btn.getAttribute('data-id');
-
-        // Toggle selected state in group
-        const group = btn.parentElement;
-        group.querySelectorAll('.wardrobe-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-
-        this.test2.selections[type] = id;
-        this.checkOutfitMatch(current);
-      });
-    });
-
-    document.getElementById('btn-confirm-outfit')?.addEventListener('click', () => {
-      soundEngine.playAchievement();
-      this.test2.round++;
-      if (this.test2.round < 3) {
-        this.renderTest2Round();
-      } else {
-        this.completeTest2();
-      }
-    });
   }
 
-  checkOutfitMatch(current) {
-    const sel = this.test2.selections;
-    const feedback = document.getElementById('tryout-feedback');
-    const confirmBtn = document.getElementById('btn-confirm-outfit');
-    if (!sel.top || !sel.bottom || !sel.accessory) return;
+  updateTest2(dt) {
+    const t2 = this.test2;
 
-    // Check correctness
-    const topItem = current.tops.find(t => t.id === sel.top);
-    const bottomItem = current.bottoms.find(b => b.id === sel.bottom);
-    const accItem = current.accessories.find(a => a.id === sel.accessory);
+    // Spawn falling stars
+    if (this.time - t2.lastSpawn > 1.2 && t2.starEnergy < 100) {
+      t2.lastSpawn = this.time;
 
-    const isAllCorrect = topItem?.correct && bottomItem?.correct && accItem?.correct;
+      const wishes = [
+        'Утренний кофе вместе',
+        'Твои тёплые объятия',
+        'Наши долгие разговоры',
+        'Смеяться до слёз',
+        'Путешествовать вдвоём',
+        'Ты моё солнышко',
+        'Люблю твою улыбку',
+        'Всегда быть рядом',
+        'Самая красивая'
+      ];
 
-    if (isAllCorrect) {
-      soundEngine.playSparkle();
-      if (feedback) {
-        feedback.className = 'tryout-feedback success';
-        feedback.innerHTML = `🌸 <strong>В точку!</strong> Ты знаешь мой вкус лучше, чем я сама! Выглядит потрясающе!`;
+      const starTypes = [
+        { color: PALETTE.goldLight, size: 14, value: 10, type: 'gold' },
+        { color: PALETTE.pinkMain, size: 16, value: 14, type: 'love' },
+        { color: PALETTE.mint, size: 15, value: 12, type: 'sweet' },
+        { color: '#FFD700', size: 18, value: 18, type: 'special' }
+      ];
+
+      const pick = starTypes[Math.floor(Math.random() * starTypes.length)];
+      const wishText = wishes[Math.floor(Math.random() * wishes.length)];
+
+      t2.stars.push({
+        id: Math.random(),
+        x: 40 + Math.random() * 560,
+        y: -20,
+        vy: 110 + Math.random() * 60,
+        vx: (Math.random() - 0.5) * 30,
+        wishText: wishText,
+        ...pick
+      });
+    }
+
+    // Move stars & check catch
+    for (let i = t2.stars.length - 1; i >= 0; i--) {
+      const s = t2.stars[i];
+      s.y += s.vy * dt;
+      s.x += s.vx * dt;
+
+      // Catcher collision
+      const inX = Math.abs(s.x - t2.catcher.x) < (t2.catcher.width / 2 + 10);
+      const inY = Math.abs(s.y - t2.catcher.y) < (t2.catcher.height / 2 + 10);
+
+      if (inX && inY) {
+        soundEngine.playSparkle();
+        t2.starEnergy = Math.min(100, t2.starEnergy + s.value);
+        t2.caughtWishes.push(s.wishText);
+
+        // Add to constellation vertices
+        t2.constellation.push({
+          x: s.x,
+          y: Math.max(50, Math.min(220, s.y - 120))
+        });
+
+        // Show floating wish banner
+        const banner = document.getElementById('wish-banner');
+        if (banner) {
+          banner.innerHTML = `🌟 <em>«${s.wishText}»</em>`;
+          banner.className = 'wish-banner visible';
+          setTimeout(() => { if (banner) banner.className = 'wish-banner'; }, 2200);
+        }
+
+        t2.stars.splice(i, 1);
+
+        // Update HUD
+        const fill = document.getElementById('star-fill');
+        const text = document.getElementById('star-text');
+        if (fill) fill.style.width = `${t2.starEnergy}%`;
+        if (text) text.textContent = `${Math.floor(t2.starEnergy)}%`;
+
+        if (t2.starEnergy >= 100) {
+          this.completeTest2();
+        }
+        continue;
       }
-      if (confirmBtn) confirmBtn.style.display = 'block';
-    } else {
-      // Find what's funny
-      const wrong = [topItem, bottomItem, accItem].find(x => x && !x.correct);
-      if (feedback) {
-        feedback.className = 'tryout-feedback warning';
-        feedback.innerHTML = `😄 «${wrong?.comment || 'Что-то тут не сходится, давай попробуем другое!'}»`;
+
+      if (s.y > 450) {
+        t2.stars.splice(i, 1);
       }
-      if (confirmBtn) confirmBtn.style.display = 'none';
     }
   }
 
   completeTest2() {
-    this.desktop.unlockAchievement('fashion_guru', 'Модный эксперт её сердца', 'Подобрать идеальные наряды для всех свиданий', '👗');
+    this.desktop.unlockAchievement('fashion_guru', 'Хранитель звёзд для неё', 'Поймать все звёзды и зажечь созвездие любви', '🌟');
     const ui = document.getElementById('game-ui-overlay');
     if (!ui) return;
 
     ui.innerHTML = `
       <div class="test-cleared-modal">
-        <div class="cleared-header">✨ ТЕСТ 2 ПРОЙДЕН С ОТЛИЧИЕМ! ✨</div>
-        <div class="cleared-score">ЗНАНИЕ ЕЁ СТИЛЯ: 100%</div>
+        <div class="cleared-header">✨ СОЗВЕЗДИЕ НАШЕЙ ЛЮБВИ ЗАЖЖЕНО! ✨</div>
+        <div class="cleared-score">ЗВЁЗДНАЯ ЭНЕРГИЯ: 100%</div>
         <div class="cleared-verdict">
-          Вердикт: Парень года!<br>
-          «Ты заставляешь меня чувствовать себя самой красивой девушкой на свете...»
+          Твоя девушка улыбается, глядя на звёздное небо:<br>
+          «Ты поймал для меня целое небо... Но моё главное желание уже сбылось — я рядом с тобой ❤️»
         </div>
-        <button class="choice-btn primary" id="btn-next-test3">💓 Переходим к финальному Тесту 3: Синхронизация сердец</button>
+        <button class="choice-btn primary" id="btn-next-test3">💓 Задание 3: Синхронизация сердец</button>
       </div>
     `;
 
@@ -715,7 +624,7 @@ export class GameEngine {
   }
 
   // ==========================================
-  // TEST 3: HEART RHYTHM / SYNC MINIGAME
+  // TEST 3: HEART RHYTHM SYNC
   // ==========================================
   startTest3() {
     this.state = 'test3';
@@ -727,14 +636,13 @@ export class GameEngine {
     this.test3.hitsInRow = 0;
     this.test3.bpm = 72;
 
-    const herName = configManager.get('herName');
     const ui = document.getElementById('game-ui-overlay');
     if (!ui) return;
 
     ui.innerHTML = `
       <div class="test-hud">
         <div class="test-header">
-          <span class="test-badge">ТЕСТ 3 ИЗ 3 • ФИНАЛ</span>
+          <span class="test-badge">ЗАДАНИЕ 3 ИЗ 3 • ФИНАЛ</span>
           <span class="test-title">Синхронизация сердец</span>
         </div>
         <div class="warmth-bar-container">
@@ -745,7 +653,7 @@ export class GameEngine {
         </div>
       </div>
       <div class="test-hint" id="test3-hint">
-        💓 Нажимай <strong>ПРОБЕЛ</strong> или <strong>КЛИКАЙ</strong>, когда сердечки сходятся в центре круга!
+        💓 Нажимай <strong>ПРОБЕЛ</strong> или <strong>КЛИКАЙ</strong>, когда сердечки сходятся в центре!
       </div>
       <div class="rhythm-feedback" id="rhythm-feedback"></div>
       <div class="narrative-stage-box" id="stage-box">
@@ -758,7 +666,6 @@ export class GameEngine {
     const t3 = this.test3;
     const beatInterval = 60 / t3.bpm;
 
-    // Spawn beats travelling inwards
     if (this.time - t3.lastBeatTime > beatInterval) {
       t3.lastBeatTime = this.time;
       t3.beats.push({
@@ -769,35 +676,28 @@ export class GameEngine {
       });
     }
 
-    // Move beats
     for (let i = t3.beats.length - 1; i >= 0; i--) {
       const b = t3.beats[i];
       b.leftX += b.speed * dt;
       b.rightX -= b.speed * dt;
 
-      // Auto miss if passed center without hit
       if (b.leftX > 370) {
         t3.beats.splice(i, 1);
         t3.hitsInRow = 0;
       }
     }
 
-    // Narrative stage progression
     const stageBox = document.getElementById('stage-box');
     if (t3.syncScore >= 35 && t3.stage === 1) {
       t3.stage = 2;
       t3.bpm = 85;
       soundEngine.playSparkle();
-      if (stageBox) {
-        stageBox.innerHTML = `«Каждый вечер с тобой... каждая твоя шутка... моё сердце привыкало к твоему теплу.»`;
-      }
+      if (stageBox) stageBox.innerHTML = `«Каждый вечер с тобой... каждая твоя шутка... моё сердце согревалось твоим теплом.»`;
     } else if (t3.syncScore >= 70 && t3.stage === 2) {
       t3.stage = 3;
       t3.bpm = 98;
       soundEngine.playSparkle();
-      if (stageBox) {
-        stageBox.innerHTML = `«И теперь... два сердца бьются в одном ритме. Навсегда.»`;
-      }
+      if (stageBox) stageBox.innerHTML = `«И теперь... два сердца бьются в одном ритме. Навсегда.»`;
     }
   }
 
@@ -806,7 +706,6 @@ export class GameEngine {
     const t3 = this.test3;
     const centerX = 320;
 
-    // Find closest beat to center
     let closest = null;
     let minDiff = 999;
     let closestIdx = -1;
@@ -823,7 +722,6 @@ export class GameEngine {
     const feedback = document.getElementById('rhythm-feedback');
 
     if (closest && minDiff < 45) {
-      // Hit!
       const isPerfect = minDiff < 18;
       soundEngine.playHit(isPerfect);
       t3.hitsInRow++;
@@ -831,7 +729,7 @@ export class GameEngine {
       t3.syncScore = Math.min(100, t3.syncScore + gain);
 
       if (feedback) {
-        feedback.textContent = isPerfect ? '💖 ИДЕАЛЬНО! В УНИСОН!' : '✨ ОТЛИЧНО!';
+        feedback.textContent = isPerfect ? '💖 В УНИСОН!' : '✨ ОТЛИЧНО!';
         feedback.className = `rhythm-feedback ${isPerfect ? 'perfect' : 'good'}`;
         feedback.style.opacity = '1';
         setTimeout(() => { if (feedback) feedback.style.opacity = '0'; }, 500);
@@ -839,7 +737,6 @@ export class GameEngine {
 
       t3.beats.splice(closestIdx, 1);
 
-      // Update UI
       const fill = document.getElementById('sync-fill');
       const text = document.getElementById('sync-text');
       if (fill) fill.style.width = `${t3.syncScore}%`;
@@ -849,7 +746,6 @@ export class GameEngine {
         this.completeTest3();
       }
     } else {
-      // Miss click
       soundEngine.playColdShiver();
       t3.hitsInRow = 0;
       if (feedback) {
@@ -871,7 +767,7 @@ export class GameEngine {
         <div class="cleared-header">✨ СИНХРОНИЗАЦИЯ 100%: ПОЛНАЯ ГАРМОНИЯ! ✨</div>
         <div class="cleared-score">ДВА СЕРДЦА = ОДИН РИТМ</div>
         <div class="cleared-verdict">
-          Все 3 теста успешно пройдены.<br>
+          Все 3 задания успешно пройдены.<br>
           Запуск протокола финального признания...
         </div>
         <button class="choice-btn primary" id="btn-go-finale">💌 Открыть главное сообщение</button>
@@ -900,9 +796,9 @@ export class GameEngine {
         <div class="finale-terminal-header">
           <div class="term-title">LOVE_TERMINAL // RESULT_SUMMARY</div>
           <div class="term-stats">
-            <div>> Тест 1 (Держание за руки): [ 100% PASS ]</div>
-            <div>> Тест 2 (Понимание вкуса):  [ 100% PASS ]</div>
-            <div>> Тест 3 (Синхрон пульса):   [ 100% PASS ]</div>
+            <div>> Задание 1 (Держание за руки): [ 100% PASS ]</div>
+            <div>> Задание 2 (Ловец звёзд):     [ 100% PASS ]</div>
+            <div>> Задание 3 (Синхрон сердец):  [ 100% PASS ]</div>
             <div>> СОВМЕСТИМОСТЬ: ∞% (БЕСКОНЕЧНОСТЬ)</div>
           </div>
         </div>
@@ -970,14 +866,12 @@ export class GameEngine {
           postBox.style.display = 'block';
           postBox.scrollIntoView({ behavior: 'smooth' });
         }
-        // Confetti effect
         this.triggerConfetti();
       });
     });
   }
 
   triggerConfetti() {
-    // Burst of colorful heart particles
     const container = document.getElementById('game-viewport');
     if (!container) return;
 
@@ -987,16 +881,16 @@ export class GameEngine {
       p.textContent = ['❤️', '💖', '✨', '🌸', '💕', '🥰'][Math.floor(Math.random() * 6)];
       p.style.left = `${Math.random() * 90 + 5}%`;
       p.style.top = `${Math.random() * 80 + 10}%`;
-      p.style.fontSize = `${16 + Math.random() * 24}px`;
+      p.style.fontSize = `${16 + Math.random() * 20}px`;
       p.style.animation = `floatUpAndFade ${2 + Math.random() * 2}s forwards`;
       container.appendChild(p);
       setTimeout(() => p.remove(), 4000);
     }
   }
 
-  // --- GENERAL UPDATE & RENDER ---
   update(dt) {
     if (this.state === 'test1') this.updateTest1(dt);
+    if (this.state === 'test2') this.updateTest2(dt);
     if (this.state === 'test3') this.updateTest3(dt);
   }
 
@@ -1015,29 +909,20 @@ export class GameEngine {
         this.time
       );
     } else if (this.state === 'test2') {
-      this.ctx.clearRect(0, 0, w, h);
-      this.ctx.fillStyle = PALETTE.bgLight;
-      this.ctx.fillRect(0, 0, w, h);
-
-      // Draw cozy fitting room mirror scene
-      const outfitKey = this.test2.currentRoundData?.outfitKey || 'hoodie';
-      art.drawGirlfriend(this.ctx, 160, 240, 190, 'happy', outfitKey, this.time);
-      art.drawBoyfriend(this.ctx, 480, 260, 180, this.time);
+      const t2 = this.test2;
+      art.drawStarCatcherScene(
+        this.ctx, w, h,
+        t2.stars, t2.catcher,
+        t2.constellation, t2.starEnergy,
+        this.time
+      );
     } else if (this.state === 'test3') {
       const t3 = this.test3;
       art.drawHeartbeatMonitor(this.ctx, w, h, t3.beats, t3.syncScore, t3.stage, this.time);
-    } else if (this.state === 'intro_check' || this.state === 'boot') {
-      this.ctx.clearRect(0, 0, w, h);
-      this.ctx.fillStyle = PALETTE.bgLight;
-      this.ctx.fillRect(0, 0, w, h);
-      // Gentle idle girlfriend & boyfriend
-      art.drawGirlfriend(this.ctx, 220, 230, 180, 'idle', 'hoodie', this.time);
-      art.drawBoyfriend(this.ctx, 420, 240, 180, this.time);
     } else {
       this.ctx.clearRect(0, 0, w, h);
-      this.ctx.fillStyle = PALETTE.bgLight;
+      this.ctx.fillStyle = PALETTE.bgDark;
       this.ctx.fillRect(0, 0, w, h);
-      art.drawGirlfriend(this.ctx, 320, 240, 190, 'holding_hands', 'dress', this.time);
     }
   }
 }

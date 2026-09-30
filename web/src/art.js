@@ -1,684 +1,484 @@
-// Procedural Vector / Pixel Doodle Art Renderer for "Print I Love You: For My Beloved"
-// Hand-crafted chibi art and minigame visual elements matching Print I Love You's doodle aesthetic
+// Procedural Pixel Art Renderer for "Print I Love You: For My Beloved"
+// 100% Authentic Retro Pixel-Art Graphics
 
 export const PALETTE = {
   bgLight: '#FCF1F4',
-  bgDark: '#1E1726',
-  ink: '#2B1B33',
-  inkLight: '#4D3658',
+  bgDark: '#120A21',
+  ink: '#1A1423',
+  inkLight: '#3D2D4D',
   pinkSoft: '#FFB8C6',
   pinkMain: '#FF6B8B',
   pinkDeep: '#E83E6E',
   cream: '#FFF9FA',
   gold: '#FFD166',
+  goldLight: '#FFF275',
   purpleSoft: '#DDD2F2',
-  mint: '#C7EFCF',
+  mint: '#70E4BA',
   iceBlue: '#A0D2EB',
   white: '#FFFFFF'
 };
 
 export class ArtRenderer {
-  constructor() {}
-
-  // --- CHIBI GIRLFRIEND SPRITE ---
-  drawGirlfriend(ctx, x, y, size = 180, emotion = 'idle', outfit = 'hoodie', time = 0) {
-    ctx.save();
-    ctx.translate(x, y);
-
-    const breathe = Math.sin(time * 3) * 2;
-    const blushIntensity = (emotion === 'shy' || emotion === 'holding_hands') ? 1.0 : 0.6;
-
-    // Body / Outfit
-    ctx.fillStyle = outfit === 'dress' ? PALETTE.purpleSoft :
-                    outfit === 'coat' ? PALETTE.pinkSoft :
-                    PALETTE.cream;
-    ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-
-    // Dress / Sweater shape
-    ctx.beginPath();
-    ctx.moveTo(-size * 0.22, size * 0.15 + breathe);
-    ctx.lineTo(-size * 0.3, size * 0.6 + breathe);
-    ctx.quadraticCurveTo(0, size * 0.68 + breathe, size * 0.3, size * 0.6 + breathe);
-    ctx.lineTo(size * 0.22, size * 0.15 + breathe);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    // Cute details on clothes
-    if (outfit === 'hoodie') {
-      // Little kitty face on hoodie
-      ctx.fillStyle = PALETTE.pinkMain;
-      ctx.beginPath();
-      ctx.arc(0, size * 0.38 + breathe, 8, 0, Math.PI * 2);
-      ctx.fill();
-      // Whiskers
-      ctx.strokeStyle = PALETTE.ink;
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(-14, size * 0.38 + breathe); ctx.lineTo(-7, size * 0.38 + breathe);
-      ctx.moveTo(7, size * 0.38 + breathe); ctx.lineTo(14, size * 0.38 + breathe);
-      ctx.stroke();
-    } else if (outfit === 'coat') {
-      // Scarf
-      ctx.fillStyle = PALETTE.pinkMain;
-      ctx.strokeStyle = PALETTE.ink;
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      ctx.roundRect(-size * 0.2, size * 0.12 + breathe, size * 0.4, 22, 10);
-      ctx.fill();
-      ctx.stroke();
-      // Scarf tails
-      ctx.beginPath();
-      ctx.rect(size * 0.05, size * 0.22 + breathe, 16, 32);
-      ctx.fill();
-      ctx.stroke();
-    } else if (outfit === 'dress') {
-      // Romantic ribbon / star
-      ctx.fillStyle = PALETTE.gold;
-      ctx.beginPath();
-      ctx.arc(0, size * 0.25 + breathe, 6, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // Hands / Sleeves
-    ctx.fillStyle = outfit === 'coat' ? PALETTE.pinkSoft : PALETTE.cream;
-    ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 2.5;
-
-    if (emotion === 'shy') {
-      // Hands held up to cheeks
-      ctx.beginPath();
-      ctx.arc(-size * 0.14, size * 0.1 + breathe, 12, 0, Math.PI * 2);
-      ctx.arc(size * 0.14, size * 0.1 + breathe, 12, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-    } else if (emotion === 'holding_hands') {
-      // Arms reaching outward with warmth
-      ctx.beginPath();
-      ctx.ellipse(-size * 0.26, size * 0.3 + breathe, 16, 22, -0.4, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-    } else {
-      // Cute cozy sleeves
-      ctx.beginPath();
-      ctx.ellipse(-size * 0.24, size * 0.35 + breathe, 14, 24, -0.3, 0, Math.PI * 2);
-      ctx.ellipse(size * 0.24, size * 0.35 + breathe, 14, 24, 0.3, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-    }
-
-    // Legs / cute socks
-    ctx.fillStyle = PALETTE.cream;
-    ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.roundRect(-size * 0.15, size * 0.6 + breathe, 14, 30, 7);
-    ctx.roundRect(size * 0.05, size * 0.6 + breathe, 14, 30, 7);
-    ctx.fill();
-    ctx.stroke();
-
-    // Head
-    ctx.fillStyle = PALETTE.cream;
-    ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.ellipse(0, -size * 0.12 + breathe * 0.5, size * 0.28, size * 0.25, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    // Cute ears on hoodie if hoodie outfit
-    if (outfit === 'hoodie') {
-      ctx.fillStyle = PALETTE.cream;
-      ctx.strokeStyle = PALETTE.ink;
-      ctx.lineWidth = 2.5;
-      // Left ear
-      ctx.beginPath();
-      ctx.moveTo(-size * 0.24, -size * 0.28 + breathe * 0.5);
-      ctx.lineTo(-size * 0.32, -size * 0.44 + breathe * 0.5);
-      ctx.lineTo(-size * 0.14, -size * 0.34 + breathe * 0.5);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-      // Right ear
-      ctx.beginPath();
-      ctx.moveTo(size * 0.24, -size * 0.28 + breathe * 0.5);
-      ctx.lineTo(size * 0.32, -size * 0.44 + breathe * 0.5);
-      ctx.lineTo(size * 0.14, -size * 0.34 + breathe * 0.5);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-    } else if (outfit === 'coat') {
-      // French Beret
-      ctx.fillStyle = PALETTE.ink;
-      ctx.beginPath();
-      ctx.ellipse(size * 0.05, -size * 0.32 + breathe * 0.5, size * 0.24, 14, -0.2, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(size * 0.05, -size * 0.4 + breathe * 0.5, 4, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // Hair
-    ctx.fillStyle = PALETTE.inkLight;
-    ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 2.5;
-    // Hair bangs
-    ctx.beginPath();
-    ctx.arc(0, -size * 0.18 + breathe * 0.5, size * 0.26, Math.PI * 1.05, Math.PI * 1.95);
-    ctx.quadraticCurveTo(-size * 0.15, -size * 0.08 + breathe * 0.5, -size * 0.26, -size * 0.02 + breathe * 0.5);
-    ctx.quadraticCurveTo(-size * 0.1, -size * 0.12 + breathe * 0.5, 0, -size * 0.12 + breathe * 0.5);
-    ctx.quadraticCurveTo(size * 0.1, -size * 0.12 + breathe * 0.5, size * 0.26, -size * 0.02 + breathe * 0.5);
-    ctx.quadraticCurveTo(size * 0.15, -size * 0.08 + breathe * 0.5, 0, -size * 0.18 + breathe * 0.5);
-    ctx.fill();
-    ctx.stroke();
-
-    // Twin side strands
-    ctx.beginPath();
-    ctx.ellipse(-size * 0.27, -size * 0.02 + breathe * 0.5, 8, 28, 0.2, 0, Math.PI * 2);
-    ctx.ellipse(size * 0.27, -size * 0.02 + breathe * 0.5, 8, 28, -0.2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    // Rosy Blush
-    ctx.fillStyle = PALETTE.pinkMain;
-    ctx.globalAlpha = blushIntensity;
-    ctx.beginPath();
-    ctx.ellipse(-size * 0.15, -size * 0.08 + breathe * 0.5, 9, 6, 0, 0, Math.PI * 2);
-    ctx.ellipse(size * 0.15, -size * 0.08 + breathe * 0.5, 9, 6, 0, 0, Math.PI * 2);
-    ctx.fill();
-    // Diagonal blush strokes ///
-    ctx.strokeStyle = PALETTE.pinkDeep;
-    ctx.lineWidth = 1.5;
-    for (let i = -1; i <= 1; i++) {
-      ctx.beginPath();
-      ctx.moveTo(-size * 0.15 + i * 3 - 3, -size * 0.08 + breathe * 0.5 - 3);
-      ctx.lineTo(-size * 0.15 + i * 3 + 3, -size * 0.08 + breathe * 0.5 + 3);
-      ctx.moveTo(size * 0.15 + i * 3 - 3, -size * 0.08 + breathe * 0.5 - 3);
-      ctx.lineTo(size * 0.15 + i * 3 + 3, -size * 0.08 + breathe * 0.5 + 3);
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1.0;
-
-    // Eyes
-    const isBlink = Math.sin(time * 1.5) > 0.96;
-    ctx.fillStyle = PALETTE.ink;
-    ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 2.5;
-
-    if (isBlink || emotion === 'happy') {
-      // Happy curved closed eyes ^‿^
-      ctx.beginPath();
-      ctx.arc(-size * 0.12, -size * 0.14 + breathe * 0.5, 8, Math.PI * 1.1, Math.PI * 1.9);
-      ctx.arc(size * 0.12, -size * 0.14 + breathe * 0.5, 8, Math.PI * 1.1, Math.PI * 1.9);
-      ctx.stroke();
-    } else if (emotion === 'playful') {
-      // One wink, one open
-      ctx.beginPath();
-      ctx.arc(-size * 0.12, -size * 0.14 + breathe * 0.5, 8, Math.PI * 1.1, Math.PI * 1.9);
-      ctx.stroke();
-      // Right eye open
-      ctx.beginPath();
-      ctx.arc(size * 0.12, -size * 0.14 + breathe * 0.5, 6, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = PALETTE.white;
-      ctx.beginPath();
-      ctx.arc(size * 0.12 - 2, -size * 0.14 + breathe * 0.5 - 2, 2.5, 0, Math.PI * 2);
-      ctx.fill();
-    } else {
-      // Big cute shiny eyes
-      ctx.beginPath();
-      ctx.arc(-size * 0.12, -size * 0.14 + breathe * 0.5, 7, 0, Math.PI * 2);
-      ctx.arc(size * 0.12, -size * 0.14 + breathe * 0.5, 7, 0, Math.PI * 2);
-      ctx.fill();
-      // Highlights
-      ctx.fillStyle = PALETTE.white;
-      ctx.beginPath();
-      ctx.arc(-size * 0.12 - 2, -size * 0.14 + breathe * 0.5 - 2, 2.5, 0, Math.PI * 2);
-      ctx.arc(size * 0.12 - 2, -size * 0.14 + breathe * 0.5 - 2, 2.5, 0, Math.PI * 2);
-      ctx.arc(-size * 0.12 + 2, -size * 0.14 + breathe * 0.5 + 2, 1.2, 0, Math.PI * 2);
-      ctx.arc(size * 0.12 + 2, -size * 0.14 + breathe * 0.5 + 2, 1.2, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // Mouth
-    ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    if (emotion === 'happy') {
-      // Cute open smile :D
-      ctx.fillStyle = PALETTE.pinkDeep;
-      ctx.arc(0, -size * 0.07 + breathe * 0.5, 5, 0, Math.PI);
-      ctx.fill();
-      ctx.stroke();
-    } else {
-      // Subtle gentle smile
-      ctx.arc(0, -size * 0.08 + breathe * 0.5, 4, 0.2, Math.PI - 0.2);
-      ctx.stroke();
-    }
-
-    // Floating little hearts around her if happy or holding hands
-    if (emotion === 'happy' || emotion === 'holding_hands') {
-      const heartCount = 3;
-      for (let i = 0; i < heartCount; i++) {
-        const hx = Math.sin(time * 2 + i * 2) * 45;
-        const hy = -size * 0.35 - (time * 25 + i * 35) % 40;
-        this.drawHeart(ctx, hx, hy, 10, PALETTE.pinkMain);
-      }
-    }
-
-    ctx.restore();
+  constructor() {
+    this.imgCache = {};
   }
 
-  // --- CHIBI BOYFRIEND SPRITE ---
-  drawBoyfriend(ctx, x, y, size = 180, time = 0) {
-    ctx.save();
-    ctx.translate(x, y);
-
-    const breathe = Math.sin(time * 2.8 + 0.5) * 2;
-
-    // Body: Dark cozy hoodie
-    ctx.fillStyle = PALETTE.inkLight;
-    ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(-size * 0.24, size * 0.18 + breathe);
-    ctx.lineTo(-size * 0.3, size * 0.65 + breathe);
-    ctx.quadraticCurveTo(0, size * 0.72 + breathe, size * 0.3, size * 0.65 + breathe);
-    ctx.lineTo(size * 0.24, size * 0.18 + breathe);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    // Hoodie pocket
-    ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.roundRect(-size * 0.16, size * 0.42 + breathe, size * 0.32, 22, 6);
-    ctx.stroke();
-
-    // Head
-    ctx.fillStyle = PALETTE.cream;
-    ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.ellipse(0, -size * 0.12 + breathe * 0.5, size * 0.27, size * 0.24, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    // Wavy hair
-    ctx.fillStyle = PALETTE.ink;
-    ctx.beginPath();
-    ctx.arc(0, -size * 0.18 + breathe * 0.5, size * 0.27, Math.PI, Math.PI * 2);
-    ctx.quadraticCurveTo(-size * 0.2, -size * 0.15 + breathe * 0.5, -size * 0.28, -size * 0.05 + breathe * 0.5);
-    ctx.quadraticCurveTo(-size * 0.1, -size * 0.14 + breathe * 0.5, 0, -size * 0.14 + breathe * 0.5);
-    ctx.quadraticCurveTo(size * 0.15, -size * 0.14 + breathe * 0.5, size * 0.28, -size * 0.05 + breathe * 0.5);
-    ctx.quadraticCurveTo(size * 0.2, -size * 0.15 + breathe * 0.5, 0, -size * 0.18 + breathe * 0.5);
-    ctx.fill();
-
-    // Glasses
-    ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.roundRect(-size * 0.18, -size * 0.16 + breathe * 0.5, 15, 12, 3);
-    ctx.roundRect(size * 0.04, -size * 0.16 + breathe * 0.5, 15, 12, 3);
-    ctx.moveTo(-size * 0.03, -size * 0.12 + breathe * 0.5);
-    ctx.lineTo(size * 0.04, -size * 0.12 + breathe * 0.5);
-    ctx.stroke();
-
-    // Eyes behind glasses
-    ctx.fillStyle = PALETTE.ink;
-    ctx.beginPath();
-    ctx.arc(-size * 0.11, -size * 0.11 + breathe * 0.5, 3, 0, Math.PI * 2);
-    ctx.arc(size * 0.11, -size * 0.11 + breathe * 0.5, 3, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Blush
-    ctx.fillStyle = PALETTE.pinkSoft;
-    ctx.globalAlpha = 0.6;
-    ctx.beginPath();
-    ctx.ellipse(-size * 0.14, -size * 0.05 + breathe * 0.5, 8, 5, 0, 0, Math.PI * 2);
-    ctx.ellipse(size * 0.14, -size * 0.05 + breathe * 0.5, 8, 5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.globalAlpha = 1.0;
-
-    // Smile
-    ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(0, -size * 0.05 + breathe * 0.5, 5, 0.2, Math.PI - 0.2);
-    ctx.stroke();
-
-    ctx.restore();
+  loadImage(src) {
+    if (this.imgCache[src]) return this.imgCache[src];
+    const img = new Image();
+    img.src = src;
+    this.imgCache[src] = img;
+    return img;
   }
 
-  // --- HAND-HOLDING MINIGAME GRAPHICS ---
-  // Renders the interactive hand holding scene
+  // --- PIXEL RECT & HELPERS ---
+  drawPixelRect(ctx, x, y, w, h, fill, stroke = PALETTE.ink, strokeW = 2) {
+    ctx.fillStyle = fill;
+    ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h));
+    if (stroke && strokeW > 0) {
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = strokeW;
+      ctx.strokeRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h));
+    }
+  }
+
+  // --- TEST 1: HAND-HOLDING SCENE ---
   drawHandHoldingScene(ctx, width, height, playerHand, girlHand, isHolding, warmth, obstacles, bonuses, time) {
     ctx.clearRect(0, 0, width, height);
 
-    // Warm date background grid / aura
-    const gradient = ctx.createRadialGradient(width / 2, height / 2, 50, width / 2, height / 2, width);
-    if (isHolding) {
-      gradient.addColorStop(0, 'rgba(255, 184, 198, 0.35)');
-      gradient.addColorStop(0.5, 'rgba(255, 235, 240, 0.25)');
-      gradient.addColorStop(1, 'rgba(252, 241, 244, 0.1)');
-    } else {
-      gradient.addColorStop(0, 'rgba(240, 240, 250, 0.2)');
-      gradient.addColorStop(1, 'rgba(252, 241, 244, 0.05)');
-    }
-    ctx.fillStyle = gradient;
+    // Retro pixel checkerboard / dither background
+    ctx.fillStyle = isHolding ? '#26142c' : '#1a1423';
     ctx.fillRect(0, 0, width, height);
 
-    // Draw little floating hearts when hands connected
-    if (isHolding) {
-      const midX = (playerHand.x + girlHand.x) / 2;
-      const midY = (playerHand.y + girlHand.y) / 2;
-
-      // Warm glow aura
-      ctx.save();
-      const glow = ctx.createRadialGradient(midX, midY, 10, midX, midY, 70);
-      glow.addColorStop(0, 'rgba(255, 107, 139, 0.6)');
-      glow.addColorStop(0.5, 'rgba(255, 209, 102, 0.3)');
-      glow.addColorStop(1, 'rgba(255, 107, 139, 0)');
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.arc(midX, midY, 70, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Floating hearts
-      for (let i = 0; i < 6; i++) {
-        const offsetAngle = (time * 3 + i * 1.05) % (Math.PI * 2);
-        const dist = 30 + (i * 12);
-        const hx = midX + Math.cos(offsetAngle) * dist;
-        const hy = midY - 20 - ((time * 40 + i * 20) % 60);
-        this.drawHeart(ctx, hx, hy, 9, PALETTE.pinkMain);
+    // Pixel stars / warm glow in background
+    ctx.fillStyle = isHolding ? 'rgba(255, 107, 139, 0.15)' : 'rgba(255, 255, 255, 0.05)';
+    const step = 16;
+    for (let x = 0; x < width; x += step) {
+      for (let y = 0; y < height; y += step) {
+        if ((Math.floor(x / step) + Math.floor(y / step)) % 2 === 0) {
+          ctx.fillRect(x, y, 2, 2);
+        }
       }
-      ctx.restore();
     }
 
-    // Draw girlfriend's hand & arm
-    ctx.save();
-    this._drawHand(ctx, girlHand.x, girlHand.y, isHolding, 'girl', time);
-    ctx.restore();
+    // Warm aura when holding
+    if (isHolding) {
+      const midX = Math.floor((playerHand.x + girlHand.x) / 2);
+      const midY = Math.floor((playerHand.y + girlHand.y) / 2);
 
-    // Draw boyfriend's hand & arm
-    ctx.save();
-    this._drawHand(ctx, playerHand.x, playerHand.y, isHolding, 'boy', time);
-    ctx.restore();
+      // Pixelated concentric heart circles
+      for (let r = 80; r > 10; r -= 14) {
+        ctx.fillStyle = `rgba(255, 107, 139, ${(80 - r) / 220})`;
+        ctx.fillRect(midX - r, midY - r, r * 2, r * 2);
+      }
 
-    // Draw obstacles (cold wind, urgent phone call, alarm clock)
+      // Floating pixel hearts
+      for (let i = 0; i < 5; i++) {
+        const hx = midX + Math.sin(time * 3 + i * 1.3) * (20 + i * 10);
+        const hy = midY - ((time * 40 + i * 25) % 80);
+        this.drawPixelHeart(ctx, hx, hy, 12, PALETTE.pinkMain);
+      }
+    }
+
+    // Draw boyfriend's pixel hand (blue jacket cuff)
+    this.drawPixelHand(ctx, playerHand.x, playerHand.y, isHolding, 'boy', time);
+
+    // Draw girlfriend's pixel hand (white lace cuff)
+    this.drawPixelHand(ctx, girlHand.x, girlHand.y, isHolding, 'girl', time);
+
+    // Obstacles
     for (const obs of obstacles) {
-      this._drawObstacle(ctx, obs, time);
+      this.drawPixelObstacle(ctx, obs, time);
     }
 
-    // Draw date bonuses (hot latte, warm croissant, cute street cat)
+    // Bonuses
     for (const b of bonuses) {
-      this._drawBonus(ctx, b, time);
+      this.drawPixelBonus(ctx, b, time);
     }
   }
 
-  _drawHand(ctx, x, y, isHolding, side = 'boy', time = 0) {
-    ctx.translate(x, y);
-    ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
+  drawPixelHand(ctx, x, y, isHolding, side = 'boy', time = 0) {
+    ctx.save();
+    ctx.translate(Math.floor(x), Math.floor(y));
 
     const isBoy = side === 'boy';
-    const sleeveColor = isBoy ? PALETTE.inkLight : PALETTE.cream;
-    const skinColor = PALETTE.cream;
-
-    // Sleeve
-    ctx.fillStyle = sleeveColor;
-    const sleeveWidth = 38;
-    const sleeveLength = 90;
+    const cuffColor = isBoy ? '#2563EB' : '#FFFFFF'; // Blue bomber jacket vs white lace
+    const skinColor = '#FBD3B6';
+    const shadowSkin = '#E2B294';
     const dir = isBoy ? 1 : -1;
 
-    ctx.beginPath();
-    ctx.roundRect(-sleeveWidth / 2, dir > 0 ? 25 : -25 - sleeveLength, sleeveWidth, sleeveLength, 10);
-    ctx.fill();
-    ctx.stroke();
-
-    // Sleeve ribbing lines
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = isBoy ? PALETTE.ink : PALETTE.pinkSoft;
-    for (let i = 0; i < 3; i++) {
-      const ly = dir > 0 ? 30 + i * 5 : -20 - i * 5;
-      ctx.beginPath();
-      ctx.moveTo(-sleeveWidth / 2 + 4, ly);
-      ctx.lineTo(sleeveWidth / 2 - 4, ly);
-      ctx.stroke();
-    }
-
-    // Hand palm & fingers
-    ctx.fillStyle = skinColor;
+    // Sleeve / Arm (stepped pixel block)
+    ctx.fillStyle = cuffColor;
+    ctx.fillRect(-18, dir > 0 ? 20 : -80, 36, 60);
+    // Dark outline
     ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(-18, dir > 0 ? 20 : -80, 36, 60);
 
+    // Cuff detail
+    ctx.fillStyle = isBoy ? '#1D4ED8' : '#F3E8FF';
+    ctx.fillRect(-18, dir > 0 ? 20 : -28, 36, 8);
+    ctx.strokeRect(-18, dir > 0 ? 20 : -28, 36, 8);
+
+    // Hand palm
+    ctx.fillStyle = skinColor;
+    ctx.fillRect(-14, -14, 28, 28);
+    ctx.fillStyle = shadowSkin;
+    ctx.fillRect(-14, 6, 28, 8);
+    ctx.strokeStyle = PALETTE.ink;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(-14, -14, 28, 28);
+
+    // Fingers
     if (isHolding) {
-      // Clasping fingers with love
-      ctx.beginPath();
-      ctx.ellipse(0, 5 * dir, 17, 19, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-
-      // Interlocking finger curves
-      for (let f = -2; f <= 2; f++) {
-        ctx.beginPath();
-        ctx.moveTo(f * 5, -2 * dir);
-        ctx.quadraticCurveTo(f * 6, 12 * dir, f * 4, 18 * dir);
-        ctx.stroke();
+      // Clasping fingers
+      ctx.fillStyle = skinColor;
+      for (let i = -10; i <= 6; i += 5) {
+        ctx.fillRect(i, -6, 4, 16);
+        ctx.strokeRect(i, -6, 4, 16);
       }
     } else {
-      // Open hand reaching out
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 16, 18, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-
-      // Open fingers
-      const fingers = [-10, -5, 0, 5, 10];
+      // Open reaching fingers
+      const fingers = [-12, -6, 0, 6];
       fingers.forEach((fx, idx) => {
-        const fLen = 14 - Math.abs(idx - 2) * 2;
-        ctx.beginPath();
-        ctx.moveTo(fx, 5 * -dir);
-        ctx.lineTo(fx * 1.2, (5 + fLen) * -dir);
-        ctx.stroke();
+        const fLen = 14 - Math.abs(idx - 1.5) * 3;
+        const fy = dir > 0 ? -14 - fLen : 14;
+        ctx.fillStyle = skinColor;
+        ctx.fillRect(fx, fy, 5, fLen);
+        ctx.strokeRect(fx, fy, 5, fLen);
       });
     }
-  }
-
-  _drawObstacle(ctx, obs, time) {
-    ctx.save();
-    ctx.translate(obs.x, obs.y);
-    const wobble = Math.sin(time * 5 + obs.id) * 3;
-
-    // Obstacle bubble
-    ctx.fillStyle = 'rgba(255, 230, 235, 0.9)';
-    ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(0, wobble, obs.radius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    // Icon & Label
-    ctx.fillStyle = PALETTE.ink;
-    ctx.font = 'bold 18px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(obs.icon, 0, wobble - 5);
-
-    ctx.font = '8px "Press Start 2P", monospace';
-    ctx.fillText(obs.name, 0, wobble + 18);
 
     ctx.restore();
   }
 
-  _drawBonus(ctx, b, time) {
+  drawPixelObstacle(ctx, obs, time) {
     ctx.save();
-    ctx.translate(b.x, b.y);
-    const floatY = Math.sin(time * 4 + b.id) * 5;
+    ctx.translate(Math.floor(obs.x), Math.floor(obs.y));
+    const wobble = Math.floor(Math.sin(time * 6 + obs.id) * 3);
 
-    // Golden glow
-    ctx.fillStyle = 'rgba(255, 209, 102, 0.3)';
-    ctx.beginPath();
-    ctx.arc(0, floatY, b.radius + 6, 0, Math.PI * 2);
-    ctx.fill();
+    // Stepped pixel bubble
+    ctx.fillStyle = '#FFE5EC';
+    ctx.fillRect(-22, -22 + wobble, 44, 44);
+    ctx.strokeStyle = PALETTE.ink;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(-22, -22 + wobble, 44, 44);
 
-    // Bonus bubble
-    ctx.fillStyle = PALETTE.cream;
-    ctx.strokeStyle = PALETTE.gold;
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.arc(0, floatY, b.radius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
+    // Emoji icon
+    ctx.font = '16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(obs.icon, 0, wobble - 2);
 
-    // Icon
-    ctx.font = '22px sans-serif';
+    ctx.fillStyle = PALETTE.ink;
+    ctx.font = '7px "PressStart2P", monospace';
+    ctx.fillText(obs.name, 0, wobble + 16);
+
+    ctx.restore();
+  }
+
+  drawPixelBonus(ctx, b, time) {
+    ctx.save();
+    ctx.translate(Math.floor(b.x), Math.floor(b.y));
+    const floatY = Math.floor(Math.sin(time * 5 + b.id) * 4);
+
+    // Golden pixel box
+    ctx.fillStyle = PALETTE.gold;
+    ctx.fillRect(-24, -24 + floatY, 48, 48);
+    ctx.strokeStyle = PALETTE.ink;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(-24, -24 + floatY, 48, 48);
+
+    ctx.font = '18px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(b.icon, 0, floatY - 2);
 
     ctx.fillStyle = PALETTE.ink;
-    ctx.font = '7px "Press Start 2P", monospace';
+    ctx.font = '7px "PressStart2P", monospace';
     ctx.fillText(b.name, 0, floatY + 16);
 
     ctx.restore();
   }
 
-  // --- HEART RHYTHM / SYNC OSCILLOSCOPE GRAPHICS ---
+  // --- NEW TEST 2: STARGAZING & CATCHING STARS OF WISHES ---
+  drawStarCatcherScene(ctx, width, height, stars, catcher, constellation, starEnergy, time) {
+    ctx.clearRect(0, 0, width, height);
+
+    // Deep pixel night sky gradient with dither
+    ctx.fillStyle = '#0F091A';
+    ctx.fillRect(0, 0, width, height);
+
+    // Dithered skyline / milky way
+    ctx.fillStyle = 'rgba(255, 117, 151, 0.08)';
+    for (let y = 0; y < height; y += 4) {
+      if ((y / 4) % 2 === 0) {
+        ctx.fillRect(0, y, width, 2);
+      }
+    }
+
+    // Glowing Pixel Moon in the top-right
+    const moonX = 550;
+    const moonY = 60;
+    ctx.fillStyle = PALETTE.goldLight;
+    ctx.fillRect(moonX, moonY, 32, 32);
+    ctx.fillStyle = '#0F091A';
+    ctx.fillRect(moonX + 12, moonY, 26, 32); // Crescent cutout
+    ctx.strokeStyle = PALETTE.ink;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(moonX, moonY, 32, 32);
+
+    // Twinkling background stars
+    for (let i = 0; i < 40; i++) {
+      const sx = ((i * 137) % width);
+      const sy = ((i * 89) % 260);
+      const blink = Math.sin(time * 4 + i) > 0.3;
+      if (blink) {
+        ctx.fillStyle = i % 2 === 0 ? PALETTE.white : PALETTE.pinkSoft;
+        ctx.fillRect(sx, sy, 3, 3);
+      }
+    }
+
+    // Constellation lines that form between caught stars
+    if (constellation.length > 1) {
+      ctx.save();
+      ctx.strokeStyle = PALETTE.gold;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(constellation[0].x, constellation[0].y);
+      for (let i = 1; i < constellation.length; i++) {
+        ctx.lineTo(constellation[i].x, constellation[i].y);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Stars on the constellation vertices
+      for (const pt of constellation) {
+        this.drawPixelStar(ctx, pt.x, pt.y, 10, PALETTE.goldLight, time);
+      }
+      ctx.restore();
+    }
+
+    // If constellation completed (100%), draw glowing giant heart in sky
+    if (starEnergy >= 100) {
+      this.drawPixelHeart(ctx, width / 2, 120, 48 + Math.sin(time * 5) * 6, PALETTE.pinkMain);
+    }
+
+    // Rooftop balcony silhouette at bottom
+    ctx.fillStyle = '#181024';
+    ctx.fillRect(0, height - 70, width, 70);
+    ctx.strokeStyle = PALETTE.ink;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(0, height - 70, width, 70);
+
+    // Balcony railing posts
+    for (let rx = 10; rx < width; rx += 28) {
+      ctx.fillStyle = '#26193A';
+      ctx.fillRect(rx, height - 70, 6, 25);
+    }
+    ctx.fillRect(0, height - 70, width, 6);
+
+    // Silhouettes of Boyfriend & Girlfriend watching the sky together on the left
+    this.drawRooftopCoupleSilhouette(ctx, 60, height - 68, time);
+
+    // Falling Shooting Stars
+    for (const star of stars) {
+      this.drawFallingStar(ctx, star, time);
+    }
+
+    // Player's Celestial Catcher / Basket
+    this.drawCatcher(ctx, catcher.x, catcher.y, catcher.width, catcher.height, time);
+  }
+
+  drawRooftopCoupleSilhouette(ctx, x, y, time) {
+    ctx.save();
+    ctx.translate(x, y);
+
+    // Boyfriend pixel silhouette (blue hints)
+    ctx.fillStyle = '#1D4ED8';
+    ctx.fillRect(0, -45, 18, 45); // Body
+    ctx.fillStyle = '#FBD3B6';
+    ctx.fillRect(2, -62, 14, 16); // Face
+    ctx.fillStyle = '#1A1423';
+    ctx.fillRect(0, -68, 18, 12); // Textured hair with fade
+
+    // Girlfriend pixel silhouette (white lace / dark hair)
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(18, -42, 16, 42); // Body
+    ctx.fillStyle = '#FBD3B6';
+    ctx.fillRect(19, -60, 14, 16); // Face
+    ctx.fillStyle = '#1A1423';
+    ctx.fillRect(16, -66, 20, 36); // Long cascading hair
+
+    // Holding hands silhouette
+    ctx.fillStyle = '#FBD3B6';
+    ctx.fillRect(14, -28, 8, 6);
+
+    // Little heart above them
+    const hY = -78 + Math.sin(time * 3) * 4;
+    this.drawPixelHeart(ctx, 18, hY, 7, PALETTE.pinkMain);
+
+    ctx.restore();
+  }
+
+  drawFallingStar(ctx, star, time) {
+    ctx.save();
+    ctx.translate(Math.floor(star.x), Math.floor(star.y));
+
+    // Pixel tail
+    ctx.fillStyle = star.color || PALETTE.gold;
+    ctx.globalAlpha = 0.5;
+    for (let t = 1; t <= 4; t++) {
+      ctx.fillRect(-t * 3, -t * 8, 4 - t * 0.8, 6);
+    }
+    ctx.globalAlpha = 1.0;
+
+    // Star Core
+    this.drawPixelStar(ctx, 0, 0, star.size || 14, star.color || PALETTE.gold, time);
+
+    // Small label tag if wish star
+    if (star.wishText) {
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '7px "PressStart2P", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(star.wishText, 0, -14);
+    }
+
+    ctx.restore();
+  }
+
+  drawCatcher(ctx, x, y, w, h, time) {
+    ctx.save();
+    ctx.translate(Math.floor(x), Math.floor(y));
+
+    // Stepped pixel catcher basket
+    ctx.fillStyle = PALETTE.gold;
+    ctx.fillRect(-w / 2, -h / 2, w, h);
+    ctx.fillStyle = PALETTE.pinkMain;
+    ctx.fillRect(-w / 2 + 4, -h / 2 + 4, w - 8, h - 8);
+
+    // Outline
+    ctx.strokeStyle = PALETTE.ink;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(-w / 2, -h / 2, w, h);
+
+    // Wings on sides
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(-w / 2 - 10, -6, 10, 12);
+    ctx.strokeRect(-w / 2 - 10, -6, 10, 12);
+    ctx.fillRect(w / 2, -6, 10, 12);
+    ctx.strokeRect(w / 2, -6, 10, 12);
+
+    // Heart badge in center
+    this.drawPixelHeart(ctx, 0, 0, 8, '#FFFFFF');
+
+    ctx.restore();
+  }
+
+  // --- TEST 3: HEARTBEAT MONITOR ---
   drawHeartbeatMonitor(ctx, width, height, beats, syncScore, stage, time) {
     ctx.clearRect(0, 0, width, height);
 
-    // Dark retro phosphor CRT display
-    ctx.fillStyle = '#16101F';
+    // Dark retro phosphor CRT
+    ctx.fillStyle = '#100B18';
     ctx.fillRect(0, 0, width, height);
 
-    // Oscillogram grid
-    ctx.strokeStyle = 'rgba(255, 107, 139, 0.12)';
-    ctx.lineWidth = 1;
-    const gridSize = 24;
-    for (let x = 0; x < width; x += gridSize) {
-      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+    // Pixel grid
+    ctx.fillStyle = 'rgba(255, 107, 139, 0.1)';
+    for (let x = 0; x < width; x += 20) {
+      ctx.fillRect(x, 0, 1, height);
     }
-    for (let y = 0; y < height; y += gridSize) {
-      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+    for (let y = 0; y < height; y += 20) {
+      ctx.fillRect(0, y, width, 1);
     }
 
-    const centerY = height / 2;
-    const centerX = width / 2;
+    const centerY = Math.floor(height / 2);
+    const centerX = Math.floor(width / 2);
 
-    // Glowing cardiogram pulse line
-    ctx.save();
-    ctx.strokeStyle = PALETTE.pinkMain;
-    ctx.lineWidth = 2.5;
-    ctx.shadowColor = PALETTE.pinkMain;
-    ctx.shadowBlur = 8;
-
-    ctx.beginPath();
-    ctx.moveTo(0, centerY);
+    // Stepped pixel cardiogram line
+    ctx.fillStyle = PALETTE.pinkMain;
     for (let x = 0; x < width; x += 3) {
-      // Traveling ECG wave
-      const waveX = (x - time * 120) % width;
       let waveY = centerY;
-      const distFromCenter = Math.abs(x - centerX);
-      if (distFromCenter < 120) {
-        const pulse = Math.sin((x + time * 180) * 0.1);
-        waveY += pulse * (1.0 - distFromCenter / 120) * 35;
+      const dist = Math.abs(x - centerX);
+      if (dist < 120) {
+        const pulse = Math.sin((x + time * 200) * 0.12);
+        waveY += Math.floor(pulse * (1.0 - dist / 120) * 36);
       }
-      ctx.lineTo(x, waveY);
+      ctx.fillRect(x, waveY, 3, 3);
     }
-    ctx.stroke();
-    ctx.restore();
 
-    // Center rhythm target node
-    ctx.save();
-    const targetRadius = 36;
-    const pulseRing = (time * 3) % 1;
-    
-    // Outer ripple
-    ctx.strokeStyle = `rgba(255, 107, 139, ${1 - pulseRing})`;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, targetRadius + pulseRing * 25, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Target circle
+    // Center rhythm target box
+    ctx.fillStyle = 'rgba(255, 209, 102, 0.2)';
+    ctx.fillRect(centerX - 30, centerY - 30, 60, 60);
     ctx.strokeStyle = PALETTE.gold;
     ctx.lineWidth = 3;
-    ctx.fillStyle = 'rgba(255, 107, 139, 0.2)';
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, targetRadius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
+    ctx.strokeRect(centerX - 30, centerY - 30, 60, 60);
 
-    // Center symbol
-    ctx.fillStyle = PALETTE.white;
-    ctx.font = '10px "Press Start 2P", monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('SYNC', centerX, centerY);
-    ctx.restore();
+    // Center pulse icon
+    this.drawPixelHeart(ctx, centerX, centerY, 14, PALETTE.pinkMain);
 
-    // Draw travelling beats (His heart from left, Her heart from right)
+    // Moving hearts
     for (const b of beats) {
-      // Left heart (Boy: warm crimson / rose)
-      this.drawHeart(ctx, b.leftX, centerY, 14, '#FF4D6D');
-      // Right heart (Girl: pastel bright pink)
-      this.drawHeart(ctx, b.rightX, centerY, 14, '#FF85A2');
+      // Boyfriend heart (warm crimson / blue)
+      this.drawPixelHeart(ctx, b.leftX, centerY, 14, '#FF4D6D');
+      // Girlfriend heart (pastel rose)
+      this.drawPixelHeart(ctx, b.rightX, centerY, 14, '#FF85A2');
 
-      // Connection beam between them
+      // Pixel connection line
       if (Math.abs(b.leftX - b.rightX) < 180) {
-        ctx.strokeStyle = 'rgba(255, 209, 102, 0.5)';
-        ctx.lineWidth = 1.5;
-        ctx.setLineDash([4, 4]);
-        ctx.beginPath();
-        ctx.moveTo(b.leftX + 10, centerY);
-        ctx.lineTo(b.rightX - 10, centerY);
-        ctx.stroke();
-        ctx.setLineDash([]);
+        ctx.fillStyle = PALETTE.gold;
+        for (let lx = b.leftX + 12; lx < b.rightX - 12; lx += 8) {
+          ctx.fillRect(Math.floor(lx), centerY - 1, 4, 3);
+        }
       }
     }
 
-    // If fully synchronized (100%), draw the grand glowing infinity heart!
+    // If fully synchronized (100%), show grand infinity heart!
     if (syncScore >= 100) {
-      ctx.save();
-      const glowScale = 1.0 + Math.sin(time * 6) * 0.15;
-      this.drawHeart(ctx, centerX, centerY, 34 * glowScale, PALETTE.pinkMain);
-      
-      // Infinity loop inside
-      ctx.strokeStyle = PALETTE.white;
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      // Draw infinity symbol ∞
-      const infR = 10;
-      ctx.arc(centerX - infR, centerY, infR, 0, Math.PI * 2);
-      ctx.arc(centerX + infR, centerY, infR, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.restore();
+      this.drawPixelHeart(ctx, centerX, centerY, 40, PALETTE.pinkMain);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '10px "PressStart2P", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('∞', centerX, centerY);
     }
   }
 
-  // Helper to draw a pixel-perfect doodle heart
-  drawHeart(ctx, x, y, size = 12, color = PALETTE.pinkMain) {
+  // Helper: Draw a crisp pixel-art heart
+  drawPixelHeart(ctx, x, y, size = 12, color = PALETTE.pinkMain) {
     ctx.save();
-    ctx.translate(x, y);
+    ctx.translate(Math.floor(x), Math.floor(y));
     ctx.fillStyle = color;
-    ctx.strokeStyle = PALETTE.ink;
-    ctx.lineWidth = 2;
 
-    ctx.beginPath();
-    ctx.moveTo(0, size * 0.4);
-    ctx.bezierCurveTo(-size, -size * 0.2, -size * 0.8, -size * 0.9, 0, -size * 0.5);
-    ctx.bezierCurveTo(size * 0.8, -size * 0.9, size, -size * 0.2, 0, size * 0.4);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+    // Stepped pixel blocks for classic 8-bit heart
+    const s = Math.max(1, Math.floor(size / 6));
+
+    // Top two lobes
+    ctx.fillRect(-3 * s, -3 * s, 2 * s, 2 * s);
+    ctx.fillRect(1 * s, -3 * s, 2 * s, 2 * s);
+
+    // Middle body
+    ctx.fillRect(-4 * s, -1 * s, 8 * s, 2 * s);
+    ctx.fillRect(-3 * s, 1 * s, 6 * s, 2 * s);
+    ctx.fillRect(-2 * s, 3 * s, 4 * s, 2 * s);
+    ctx.fillRect(-1 * s, 5 * s, 2 * s, 1 * s);
+
+    ctx.restore();
+  }
+
+  // Helper: Draw a 4-point pixel star
+  drawPixelStar(ctx, x, y, size = 10, color = PALETTE.gold, time = 0) {
+    ctx.save();
+    ctx.translate(Math.floor(x), Math.floor(y));
+    ctx.fillStyle = color;
+    const s = Math.max(1, Math.floor(size / 4));
+
+    ctx.fillRect(-s, -s * 3, 2 * s, s * 6);
+    ctx.fillRect(-s * 3, -s, s * 6, 2 * s);
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(-s, -s, 2 * s, 2 * s);
+
     ctx.restore();
   }
 }
