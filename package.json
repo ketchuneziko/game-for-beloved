@@ -1,0 +1,12 @@
+{
+  "name": "print-i-love-you-for-beloved",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A game like Print I Love You, made by a boyfriend for his girlfriend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["game", "romance", "print-i-love-you", "visual-novel"],
+  "license": "MIT"
+}

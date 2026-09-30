@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PRINT("I LOVE YOU") // For My Beloved</title>
+  <link rel="stylesheet" href="src/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+</head>
+<body>
+  <!-- CRT SCANLINES & VIGNETTE EFFECT -->
+  <div class="crt-overlay"></div>
+
+  <!-- AUDIO INITIALIZATION BANNER -->
+  <div class="audio-banner" id="audio-banner">
+    🎵 Кликни в любом месте, чтобы включить музыку и звуки!
+  </div>
+
+  <!-- DESKTOP CONTAINER -->
+  <div class="desktop-container" id="desktop">
+    <!-- DESKTOP ICONS -->
+    <div class="desktop-icons-area">
+      <div class="desktop-icon highlight" data-window="win-game" title="Главная игра">
+        <div class="icon-img">🌸</div>
+        <div class="icon-label">PRINT_I_LOVE_YOU.exe</div>
+      </div>
+
+      <div class="desktop-icon" data-window="win-trash" title="Удалённые черновики">
+        <div class="icon-img">🗑️</div>
+        <div class="icon-label">Корзина</div>
+      </div>
+
+      <div class="desktop-icon" data-window="win-notes" title="Записки с признаниями">
+        <div class="icon-img">💌</div>
+        <div class="icon-label">10_причин_любви.txt</div>
+      </div>
+
+      <div class="desktop-icon" data-window="win-photos" title="Фотографии воспоминаний">
+        <div class="icon-img">📷</div>
+        <div class="icon-label">Фотоальбом.exe</div>
+      </div>
+
+      <div class="desktop-icon" data-window="win-achievements" title="Список достижений">
+        <div class="icon-img">🏆</div>
+        <div class="icon-label">Достижения.exe</div>
+      </div>
+
+      <div class="desktop-icon" data-window="win-player" title="Музыкальный плеер">
+        <div class="icon-img">🎵</div>
+        <div class="icon-label">Музыка.exe</div>
+      </div>
+
+      <div class="desktop-icon" data-window="win-settings" title="Настройки имён">
+        <div class="icon-img">⚙️</div>
+        <div class="icon-label">Персонализация.cfg</div>
+      </div>
+
+      <div class="desktop-icon" data-window="win-help" title="Как отправить девушке">
+        <div class="icon-img">📦</div>
+        <div class="icon-label">Как_отправить.txt</div>
+      </div>
+    </div>
+
+    <!-- WINDOW 1: MAIN GAME (PRINT_I_LOVE_YOU.exe) -->
+    <div class="retro-window" id="win-game" style="display: flex;">
+      <div class="window-header">
+        <div class="window-title">🌸 PRINT_I_LOVE_YOU.exe // Version 1.0</div>
+        <div class="window-controls">
+          <button class="window-btn btn-min" title="Свернуть">—</button>
+          <button class="window-btn btn-close" title="Закрыть">✕</button>
+        </div>
+      </div>
+      <div class="window-content">
+        <div class="game-viewport" id="game-viewport">
+          <canvas id="game-canvas"></canvas>
+          <div class="game-ui-overlay" id="game-ui-overlay">
+            <!-- Dynamically populated by game.js -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WINDOW 2: RECYCLE BIN (DRAFTS) -->
+    <div class="retro-window" id="win-trash" style="display: none; width: 560px; height: 380px; top: 70px; left: calc(50% - 280px);">
+      <div class="window-header">
+        <div class="window-title">🗑️ Корзина // Черновики и удалённые заметки</div>
+        <div class="window-controls">
+          <button class="window-btn btn-min">—</button>
+          <button class="window-btn btn-close">✕</button>
+        </div>
+      </div>
+      <div class="window-content" id="trash-content">
+        <!-- Rendered by desktop.js -->
+      </div>
+    </div>
+
+    <!-- WINDOW 3: STICKY NOTES OF LOVE -->
+    <div class="retro-window" id="win-notes" style="display: none; width: 620px; height: 440px; top: 60px; left: calc(50% - 310px);">
+      <div class="window-header">
+        <div class="window-title">💌 10_причин_почему_я_тебя_люблю.txt</div>
+        <div class="window-controls">
+          <button class="window-btn btn-min">—</button>
+          <button class="window-btn btn-close">✕</button>
+        </div>
+      </div>
+      <div class="window-content" id="notes-content">
+        <!-- Rendered by desktop.js -->
+      </div>
+    </div>
+
+    <!-- WINDOW 4: POLAROID PHOTOS -->
+    <div class="retro-window" id="win-photos" style="display: none; width: 620px; height: 430px; top: 60px; left: calc(50% - 310px);">
+      <div class="window-header">
+        <div class="window-title">📷 Фотоальбом_Наших_Свиданий.exe</div>
+        <div class="window-controls">
+          <button class="window-btn btn-min">—</button>
+          <button class="window-btn btn-close">✕</button>
+        </div>
+      </div>
+      <div class="window-content" id="photos-content">
+        <!-- Rendered by desktop.js -->
+      </div>
+    </div>
+
+    <!-- WINDOW 5: ACHIEVEMENTS -->
+    <div class="retro-window" id="win-achievements" style="display: none; width: 520px; height: 420px; top: 70px; left: calc(50% - 260px);">
+      <div class="window-header">
+        <div class="window-title">🏆 Достижения_Любви.exe</div>
+        <div class="window-controls">
+          <button class="window-btn btn-min">—</button>
+          <button class="window-btn btn-close">✕</button>
+        </div>
+      </div>
+      <div class="window-content" id="achievements-list">
+        <!-- Rendered by desktop.js -->
+      </div>
+    </div>
+
+    <!-- WINDOW 6: MUSIC PLAYER -->
+    <div class="retro-window" id="win-player" style="display: none; width: 440px; height: 320px; top: 100px; left: calc(50% - 220px);">
+      <div class="window-header">
+        <div class="window-title">🎵 Lo-Fi_Романтика_Плеер.exe</div>
+        <div class="window-controls">
+          <button class="window-btn btn-min">—</button>
+          <button class="window-btn btn-close">✕</button>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 18px;">
+        <div style="font-size: 11px; margin-bottom: 12px; font-weight: bold; color: var(--pink-deep);">
+          САУНДТРЕК ИГРЫ (8-BIT / LO-FI SYNTH):
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+          <button class="retro-button" id="play-theme-desktop">🌸 Трек 1: Уютный десктоп (Desktop Romance)</button>
+          <button class="retro-button" id="play-theme-hand">🤝 Трек 2: Тёплые ладошки (Holding Hands Waltz)</button>
+          <button class="retro-button" id="play-theme-dress">👗 Трек 3: Примерочная и улыбки (Dress-up Groove)</button>
+          <button class="retro-button" id="play-theme-heart">💓 Трек 4: Пульс двух сердец (Heartbeat Sync)</button>
+          <button class="retro-button" id="play-theme-finale">💍 Трек 5: Return True (Бесконечность)</button>
+        </div>
+        <button class="retro-button" id="btn-stop-music" style="background:#ff4757; color:#fff;">⏹️ Остановить музыку</button>
+      </div>
+    </div>
+
+    <!-- WINDOW 7: PERSONALIZATION SETTINGS -->
+    <div class="retro-window" id="win-settings" style="display: none; width: 540px; height: 420px; top: 60px; left: calc(50% - 270px);">
+      <div class="window-header">
+        <div class="window-title">⚙️ Настройки_Персонализации.cfg</div>
+        <div class="window-controls">
+          <button class="window-btn btn-min">—</button>
+          <button class="window-btn btn-close">✕</button>
+        </div>
+      </div>
+      <div class="window-content" id="settings-content">
+        <!-- Rendered by desktop.js -->
+      </div>
+    </div>
+
+    <!-- WINDOW 8: HOW TO SEND TO GIRLFRIEND -->
+    <div class="retro-window" id="win-help" style="display: none; width: 560px; height: 420px; top: 60px; left: calc(50% - 280px);">
+      <div class="window-header">
+        <div class="window-title">📦 Как_отправить_девушке.txt</div>
+        <div class="window-controls">
+          <button class="window-btn btn-min">—</button>
+          <button class="window-btn btn-close">✕</button>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 20px; font-size: 12px; line-height: 1.6;">
+        <h3 style="color: var(--pink-deep); margin-bottom: 10px; font-size: 14px;">КАК ПОДАРИТЬ ЭТУ ИГРУ ДЕВУШКЕ:</h3>
+        <p style="margin-bottom: 12px;">
+          <strong>Вариант 1 (Самый простой — прямая ссылка):</strong><br>
+          Скопируй адрес превью этой игры и просто отправь ей в Telegram, WhatsApp или письмом! Она откроет её прямо в браузере на телефоне или компьютере в один клик.
+        </p>
+        <p style="margin-bottom: 12px;">
+          <strong>Вариант 2 (Автономный офлайн-файл):</strong><br>
+          Ты можешь скачать игру одним автономным HTML-файлом, сохранить на флешку или отправить файлом — она работает даже без интернета!
+        </p>
+        <button class="retro-button primary" id="btn-download-standalone" style="margin-top: 10px; width: 100%;">
+          💾 Скачать автономную версию (Single-File HTML)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASKBAR -->
+  <div class="taskbar">
+    <div class="taskbar-left">
+      <button class="start-btn" id="start-btn">🌸 Пуск</button>
+      <div class="task-list" id="task-list">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <div class="taskbar-tray">
+      <button class="tray-btn" id="sound-toggle" title="Звук">🔊</button>
+      <button class="tray-btn" id="crt-toggle" title="Эффект ретро-монитора">📺 CRT: ON</button>
+      <button class="tray-btn" id="theme-toggle" title="Сменить тему">🌙 Midnight</button>
+      <div class="system-clock" id="system-clock">12:00</div>
+    </div>
+  </div>
+
+  <!-- START MENU -->
+  <div class="start-menu" id="start-menu">
+    <div class="start-menu-header">
+      <span>🌸 LOVE_OS 2026</span>
+    </div>
+    <div class="start-menu-items">
+      <div class="start-item" onclick="window.desktop.openWindow('win-game')">
+        <span>🎮</span> <span>Запустить игру</span>
+      </div>
+      <div class="start-item" onclick="window.desktop.openWindow('win-trash')">
+        <span>🗑️</span> <span>Корзина с черновиками</span>
+      </div>
+      <div class="start-item" onclick="window.desktop.openWindow('win-notes')">
+        <span>💌</span> <span>10 причин любви</span>
+      </div>
+      <div class="start-item" onclick="window.desktop.openWindow('win-photos')">
+        <span>📷</span> <span>Фотоальбом</span>
+      </div>
+      <div class="start-item" onclick="window.desktop.openWindow('win-achievements')">
+        <span>🏆</span> <span>Достижения</span>
+      </div>
+      <div class="start-item" onclick="window.desktop.openWindow('win-player')">
+        <span>🎵</span> <span>Плеер музыки</span>
+      </div>
+      <div class="start-item" onclick="window.desktop.openWindow('win-settings')">
+        <span>⚙️</span> <span>Настройки имён</span>
+      </div>
+      <div class="start-item" onclick="window.desktop.openWindow('win-help')">
+        <span>📦</span> <span>Инструкция и экспорт</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- MAIN SCRIPT ENTRY -->
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
