@@ -164,7 +164,7 @@ export class GameEngine {
     ui.innerHTML = `
       <div class="dialogue-box intro-check-box">
         <div class="dialogue-portrait">
-          <div class="chibi-avatar-circle" id="avatar-preview"></div>
+          <img src="assets/characters/girlfriend_portrait.png" alt="${herName}">
         </div>
         <div class="dialogue-content">
           <div class="speaker-name">PRINT_I_LOVE_YOU.exe</div>
@@ -224,16 +224,21 @@ export class GameEngine {
 
     ui.innerHTML = `
       <div class="dialogue-box story-intro-box">
-        <div class="speaker-name">${hisName}</div>
-        <div class="dialogue-text typewriter-text" id="intro-narrative">
-          Привет, любимая ${herName}...<br><br>
-          В одной известной игре парень пытался через тесты доказать свои чувства, потому что боялся и сомневался...<br>
-          Но нам ничего не нужно доказывать — <strong>мы уже вместе</strong>.<br><br>
-          И всё же, я создал наши собственные Тесты Любви. Не для проверки, а чтобы напомнить, как сильно я ценю каждый наш миг.<br>
-          Готова пройти их со мной?
+        <div class="dialogue-portrait">
+          <img src="assets/characters/boyfriend_portrait.png" alt="${hisName}">
         </div>
-        <div class="dialogue-choices">
-          <button class="choice-btn primary" id="btn-start-tests">🌸 Давай начнём свидание!</button>
+        <div class="dialogue-content">
+          <div class="speaker-name">${hisName}</div>
+          <div class="dialogue-text typewriter-text" id="intro-narrative">
+            Привет, любимая ${herName}...<br><br>
+            В одной известной игре парень пытался через тесты доказать свои чувства, потому что боялся и сомневался...<br>
+            Но нам ничего не нужно доказывать — <strong>мы уже вместе</strong>.<br><br>
+            И всё же, я создал наши собственные Тесты Любви. Не для проверки, а чтобы напомнить, как сильно я ценю каждый наш миг.<br>
+            Готова пройти их со мной?
+          </div>
+          <div class="dialogue-choices">
+            <button class="choice-btn primary" id="btn-start-tests">🌸 Давай начнём свидание!</button>
+          </div>
         </div>
       </div>
     `;
@@ -576,7 +581,9 @@ export class GameEngine {
       </div>
       <div class="dressing-room-layout">
         <div class="girl-mirror-view" id="girl-mirror-view">
-          <!-- Canvas draws chibi girl with current outfit -->
+          <div class="mirror-portrait-card">
+            <img src="assets/characters/girlfriend_pixel.png" class="mirror-sprite-img" alt="Примерочная">
+          </div>
         </div>
         <div class="wardrobe-panel">
           <div class="girl-speech-bubble">
@@ -902,6 +909,9 @@ export class GameEngine {
 
         <div class="letter-scroll-area">
           <div class="love-letter-paper">
+            <div class="finale-couple-banner">
+              <img src="assets/characters/couple_pixel.png" class="finale-couple-img" alt="Мы вместе">
+            </div>
             <div class="letter-to">Моей любимой ${herName},</div>
             <div class="letter-body">
               Когда я садился делать эту игру, я вдохновлялся историей о тестах любви.<br><br>

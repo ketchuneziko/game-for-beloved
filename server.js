@@ -66,6 +66,24 @@ function generateSingleFileHtml() {
     .replace('<link rel="stylesheet" href="src/style.css">', `<style>${css}</style>`)
     .replace('<script type="module" src="src/main.js"></script>', `<script>${combinedJs}</script>`);
 
+  const imgMap = [
+    'assets/characters/boyfriend_pixel.png',
+    'assets/characters/girlfriend_pixel.png',
+    'assets/characters/couple_pixel.png',
+    'assets/characters/couple_date_night.png',
+    'assets/characters/girlfriend_portrait.png',
+    'assets/characters/boyfriend_portrait.png'
+  ];
+
+  for (const rel of imgMap) {
+    const fullPath = path.join(PUBLIC_DIR, rel);
+    if (fs.existsSync(fullPath)) {
+      const b64 = fs.readFileSync(fullPath).toString('base64');
+      const dataUri = `data:image/png;base64,${b64}`;
+      bundled = bundled.split(rel).join(dataUri);
+    }
+  }
+
   return bundled;
 }
 

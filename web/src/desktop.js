@@ -425,58 +425,53 @@ export class DesktopManager {
     const body = document.getElementById('photos-content');
     if (!body) return;
     const herName = configManager.get('herName');
+    const hisName = configManager.get('hisName');
 
     const photos = [
       {
         id: 1,
-        title: 'Наше первое свидание',
-        caption: `Помнишь, как мы оба волновались? Но уже через 15 минут смеялись так, будто знаем друг друга сто лет.`,
-        icon: '☕',
-        bg: '#FFE8EE'
+        title: 'Мы вместе ❤️',
+        caption: `Держимся за руки, как и обещали. Твоя ладошка самая тёплая на свете!`,
+        src: 'assets/characters/couple_pixel.png'
       },
       {
         id: 2,
-        title: 'Прогулка под дождём',
-        caption: `Один зонт на двоих и мокрые кроссовки. Но рядом с тобой даже ливень казался идеальной погодой.`,
-        icon: '🌧️',
-        bg: '#E8F0FE'
+        title: 'Осенняя прогулка под фонарями',
+        caption: `Листья падают, фонари горят, а я смотрю только на тебя. Самый волшебный вечер.`,
+        src: 'assets/characters/couple_date_night.png'
       },
       {
         id: 3,
-        title: 'Вечер под пледом',
-        caption: `Пицца, любимый сериал и ты, тихо заснувшая у меня на плече. Самый уютный момент в жизни.`,
-        icon: '🛋️',
-        bg: '#FDF2E9'
+        title: `Любимая ${herName}`,
+        caption: `Каждый раз, когда ты так улыбаешься, у меня замирает сердце. Ты невероятно красивая!`,
+        src: 'assets/characters/girlfriend_portrait.png'
       },
       {
         id: 4,
-        title: 'Звёздная ночь',
-        caption: `Мы считали звёзды, а я всё время смотрел на тебя. Потому что моя главная звезда была рядом.`,
-        icon: '✨',
-        bg: '#EAE6F8'
+        title: `Твой разработчик (${hisName})`,
+        caption: `Тот самый парень, который готов писать для тебя игры и греть твои ручки каждый день.`,
+        src: 'assets/characters/boyfriend_portrait.png'
       },
       {
         id: 5,
-        title: 'Тёплые объятия',
-        caption: `Когда ты обнимаешь меня и прижимаешься щекой — в этот миг я понимаю, что абсолютно счастлив.`,
-        icon: '🫂',
-        bg: '#FCE4EC'
+        title: 'Стильный образ любимой',
+        caption: `Та самая белая кружевная кофточка и твой утончённый стиль, в который я влюбился.`,
+        src: 'assets/characters/girlfriend_pixel.png'
       },
       {
         id: 6,
-        title: 'Наша бесконечность',
-        caption: `Это только начало нашей истории. Впереди тысячи прекрасных дней вместе!`,
-        icon: '💖',
-        bg: '#FFF3E0'
+        title: 'Твой парень в любимой куртке',
+        caption: `Готов бежать к тебе на встречу в любую погоду!`,
+        src: 'assets/characters/boyfriend_pixel.png'
       }
     ];
 
     body.innerHTML = `
       <div class="polaroid-grid">
         ${photos.map(p => `
-          <div class="polaroid-card" style="background: ${p.bg}">
+          <div class="polaroid-card">
             <div class="polaroid-image">
-              <span class="polaroid-emoji">${p.icon}</span>
+              <img src="${p.src}" alt="${p.title}">
             </div>
             <div class="polaroid-title">${p.title}</div>
             <div class="polaroid-caption">${p.caption}</div>

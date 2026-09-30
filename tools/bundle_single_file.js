@@ -51,6 +51,26 @@ function buildOffline() {
     .replace('<link rel="stylesheet" href="src/style.css">', `<style>${css}</style>`)
     .replace('<script type="module" src="src/main.js"></script>', `<script>${combinedJs}</script>`);
 
+  // Convert character images to base64 for truly standalone offline experience!
+  const imgMap = [
+    'assets/characters/boyfriend_pixel.png',
+    'assets/characters/girlfriend_pixel.png',
+    'assets/characters/couple_pixel.png',
+    'assets/characters/couple_date_night.png',
+    'assets/characters/girlfriend_portrait.png',
+    'assets/characters/boyfriend_portrait.png'
+  ];
+
+  for (const rel of imgMap) {
+    const fullPath = path.join(PUBLIC_DIR, rel);
+    if (fs.existsSync(fullPath)) {
+      const b64 = fs.readFileSync(fullPath).toString('base64');
+      const dataUri = `data:image/png;base64,${b64}`;
+      // Replace all occurrences in HTML and JS
+      bundled = bundled.split(rel).join(dataUri);
+    }
+  }
+
   const outPath = path.join(__dirname, '..', 'PRINT_I_LOVE_YOU_OFFLINE.html');
   fs.writeFileSync(outPath, bundled, 'utf-8');
   console.log(`[Success] Bundled standalone offline game to ${outPath}`);
